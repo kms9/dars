@@ -1,0 +1,1 @@
+CREATE INDEX CONCURRENTLY lw_174_access_agent_builder_draft_workspace ON agent_builder_draft (workspace_id);

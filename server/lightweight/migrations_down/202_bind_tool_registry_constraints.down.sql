@@ -1,0 +1,15 @@
+ALTER TABLE tool_source_artifact DROP CONSTRAINT IF EXISTS lw_tool_source_artifact_digest_key;
+ALTER TABLE agent_tool_bundle_head DROP CONSTRAINT IF EXISTS lw_agent_tool_bundle_head_agent_key;
+ALTER TABLE tool_bundle_item DROP CONSTRAINT IF EXISTS lw_tool_bundle_item_name_key;
+ALTER TABLE tool_bundle_item DROP CONSTRAINT IF EXISTS lw_tool_bundle_item_ordinal_key;
+ALTER TABLE tool_definition DROP CONSTRAINT IF EXISTS lw_tool_definition_revision_name_key;
+ALTER TABLE tool_source_revision DROP CONSTRAINT IF EXISTS lw_tool_source_revision_number_key;
+ALTER TABLE tool_source DROP CONSTRAINT IF EXISTS lw_tool_source_workspace_name_key;
+ALTER TABLE tool_source_secret DROP CONSTRAINT IF EXISTS lw_tool_source_secret_pkey;
+ALTER TABLE tool_source_artifact DROP CONSTRAINT IF EXISTS lw_tool_source_artifact_pkey;
+ALTER TABLE agent_tool_bundle_head DROP CONSTRAINT IF EXISTS lw_agent_tool_bundle_head_pkey;
+ALTER TABLE tool_bundle_item DROP CONSTRAINT IF EXISTS lw_tool_bundle_item_pkey;
+ALTER TABLE tool_bundle DROP CONSTRAINT IF EXISTS lw_tool_bundle_pkey;
+ALTER TABLE tool_definition DROP CONSTRAINT IF EXISTS lw_tool_definition_pkey;
+ALTER TABLE tool_source_revision DROP CONSTRAINT IF EXISTS lw_tool_source_revision_pkey;
+ALTER TABLE tool_source DROP CONSTRAINT IF EXISTS lw_tool_source_pkey;

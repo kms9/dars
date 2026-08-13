@@ -1,0 +1,16 @@
+name: dars
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: dars_lightweight
+      POSTGRES_USER: ${POSTGRES_USER:-dars}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dars}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

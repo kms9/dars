@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_172_unique_agent_system_identity;

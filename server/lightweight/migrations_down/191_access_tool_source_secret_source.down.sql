@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_191_access_tool_source_secret_source;

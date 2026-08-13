@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_182_unique_tool_source_artifact_id;

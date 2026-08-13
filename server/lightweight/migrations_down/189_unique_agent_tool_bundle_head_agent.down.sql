@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_189_unique_agent_tool_bundle_head_agent;

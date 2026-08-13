@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_173_unique_agent_builder_draft_session;

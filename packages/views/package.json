@@ -1,0 +1,36 @@
+{
+  "name": "@dars/views",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "exports": {
+    "./navigation": "./navigation/index.ts",
+    "./lightweight": "./lightweight/index.ts"
+  },
+  "dependencies": {
+    "@dars/core": "workspace:*",
+    "@dars/ui": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "lucide-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@dars/eslint-config": "workspace:*",
+    "@dars/tsconfig": "workspace:*",
+    "@testing-library/react": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

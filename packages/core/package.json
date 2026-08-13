@@ -1,0 +1,48 @@
+{
+  "name": "@dars/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./types": "./types/index.ts",
+    "./types/lightweight-protocol": "./types/lightweight-protocol.ts",
+    "./api": "./api/index.ts",
+    "./api/client": "./api/client.ts",
+    "./api/ws-client": "./api/ws-client.ts",
+    "./lightweight": "./lightweight/index.ts",
+    "./auth": "./auth/index.ts",
+    "./workspace": "./workspace/index.ts",
+    "./paths": "./paths/index.ts",
+    "./platform": "./platform/index.ts",
+    "./realtime": "./realtime/index.ts",
+    "./query-client": "./query-client.ts",
+    "./provider": "./provider.tsx",
+    "./logger": "./logger.ts",
+    "./utils": "./utils.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "catalog:",
+    "zod": "catalog:",
+    "zustand": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@dars/eslint-config": "workspace:*",
+    "@dars/tsconfig": "workspace:*",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "jsdom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

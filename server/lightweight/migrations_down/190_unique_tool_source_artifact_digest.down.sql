@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_190_unique_tool_source_artifact_digest;

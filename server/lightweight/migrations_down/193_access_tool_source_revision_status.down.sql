@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_193_access_tool_source_revision_status;

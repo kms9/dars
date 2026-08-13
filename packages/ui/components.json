@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-nova",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "styles/tokens.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@dars/ui/components",
+    "ui": "@dars/ui/components/ui",
+    "hooks": "@dars/ui/hooks",
+    "lib": "@dars/ui/lib",
+    "utils": "@dars/ui/lib/utils"
+  }
+}

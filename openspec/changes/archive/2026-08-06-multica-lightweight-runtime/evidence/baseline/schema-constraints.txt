@@ -1,0 +1,1075 @@
+activity_log|2200_16662_1_not_null|CHECK||id IS NOT NULL
+activity_log|2200_16662_2_not_null|CHECK||workspace_id IS NOT NULL
+activity_log|2200_16662_6_not_null|CHECK||action IS NOT NULL
+activity_log|2200_16662_7_not_null|CHECK||details IS NOT NULL
+activity_log|2200_16662_8_not_null|CHECK||created_at IS NOT NULL
+activity_log|activity_log_actor_type_check|CHECK||((actor_type = ANY (ARRAY['member'::text, 'agent'::text, 'system'::text])))
+activity_log|activity_log_issue_id_fkey|FOREIGN KEY|issue_id|
+activity_log|activity_log_pkey|PRIMARY KEY|id|
+activity_log|activity_log_workspace_id_fkey|FOREIGN KEY|workspace_id|
+agent|2200_16477_11_not_null|CHECK||created_at IS NOT NULL
+agent|2200_16477_12_not_null|CHECK||updated_at IS NOT NULL
+agent|2200_16477_13_not_null|CHECK||description IS NOT NULL
+agent|2200_16477_18_not_null|CHECK||instructions IS NOT NULL
+agent|2200_16477_1_not_null|CHECK||id IS NOT NULL
+agent|2200_16477_21_not_null|CHECK||custom_env IS NOT NULL
+agent|2200_16477_22_not_null|CHECK||custom_args IS NOT NULL
+agent|2200_16477_27_not_null|CHECK||permission_mode IS NOT NULL
+agent|2200_16477_28_not_null|CHECK||kind IS NOT NULL
+agent|2200_16477_2_not_null|CHECK||workspace_id IS NOT NULL
+agent|2200_16477_30_not_null|CHECK||disabled_runtime_skills IS NOT NULL
+agent|2200_16477_3_not_null|CHECK||name IS NOT NULL
+agent|2200_16477_5_not_null|CHECK||runtime_mode IS NOT NULL
+agent|2200_16477_6_not_null|CHECK||runtime_config IS NOT NULL
+agent|2200_16477_7_not_null|CHECK||visibility IS NOT NULL
+agent|2200_16477_8_not_null|CHECK||status IS NOT NULL
+agent|2200_16477_9_not_null|CHECK||max_concurrent_tasks IS NOT NULL
+agent|agent_archived_by_fkey|FOREIGN KEY|archived_by|
+agent|agent_description_length|CHECK||((char_length(description) <= 255))
+agent|agent_kind_check|CHECK||((kind = ANY (ARRAY['user'::text, 'system'::text])))
+agent|agent_owner_id_fkey|FOREIGN KEY|owner_id|
+agent|agent_permission_mode_check|CHECK||((permission_mode = ANY (ARRAY['private'::text, 'public_to'::text])))
+agent|agent_pkey|PRIMARY KEY|id|
+agent|agent_runtime_id_fkey|FOREIGN KEY|runtime_id|
+agent|agent_runtime_mode_check|CHECK||((runtime_mode = ANY (ARRAY['local'::text, 'cloud'::text])))
+agent|agent_status_check|CHECK||((status = ANY (ARRAY['idle'::text, 'working'::text, 'blocked'::text, 'error'::text, 'offline'::text])))
+agent|agent_visibility_check|CHECK||((visibility = ANY (ARRAY['workspace'::text, 'private'::text])))
+agent|agent_workspace_id_fkey|FOREIGN KEY|workspace_id|
+agent|agent_workspace_name_unique|UNIQUE|workspace_id|
+agent|agent_workspace_name_unique|UNIQUE|name|
+agent_builder_draft|2200_18558_1_not_null|CHECK||chat_session_id IS NOT NULL
+agent_builder_draft|2200_18558_2_not_null|CHECK||workspace_id IS NOT NULL
+agent_builder_draft|2200_18558_3_not_null|CHECK||draft IS NOT NULL
+agent_builder_draft|2200_18558_4_not_null|CHECK||updated_at IS NOT NULL
+agent_builder_draft|agent_builder_draft_pkey|PRIMARY KEY|chat_session_id|
+agent_invocation_target|2200_18210_1_not_null|CHECK||id IS NOT NULL
+agent_invocation_target|2200_18210_2_not_null|CHECK||agent_id IS NOT NULL
+agent_invocation_target|2200_18210_3_not_null|CHECK||target_type IS NOT NULL
+agent_invocation_target|2200_18210_4_not_null|CHECK||target_id IS NOT NULL
+agent_invocation_target|2200_18210_6_not_null|CHECK||created_at IS NOT NULL
+agent_invocation_target|agent_invocation_target_agent_id_target_type_target_id_key|UNIQUE|agent_id|
+agent_invocation_target|agent_invocation_target_agent_id_target_type_target_id_key|UNIQUE|target_type|
+agent_invocation_target|agent_invocation_target_agent_id_target_type_target_id_key|UNIQUE|target_id|
+agent_invocation_target|agent_invocation_target_pkey|PRIMARY KEY|id|
+agent_invocation_target|agent_invocation_target_target_type_check|CHECK||((target_type = ANY (ARRAY['workspace'::text, 'member'::text, 'team'::text])))
+agent_runtime|2200_16700_11_not_null|CHECK||created_at IS NOT NULL
+agent_runtime|2200_16700_12_not_null|CHECK||updated_at IS NOT NULL
+agent_runtime|2200_16700_16_not_null|CHECK||visibility IS NOT NULL
+agent_runtime|2200_16700_1_not_null|CHECK||id IS NOT NULL
+agent_runtime|2200_16700_2_not_null|CHECK||workspace_id IS NOT NULL
+agent_runtime|2200_16700_4_not_null|CHECK||name IS NOT NULL
+agent_runtime|2200_16700_5_not_null|CHECK||runtime_mode IS NOT NULL
+agent_runtime|2200_16700_6_not_null|CHECK||provider IS NOT NULL
+agent_runtime|2200_16700_7_not_null|CHECK||status IS NOT NULL
+agent_runtime|2200_16700_8_not_null|CHECK||device_info IS NOT NULL
+agent_runtime|2200_16700_9_not_null|CHECK||metadata IS NOT NULL
+agent_runtime|agent_runtime_owner_id_fkey|FOREIGN KEY|owner_id|
+agent_runtime|agent_runtime_pkey|PRIMARY KEY|id|
+agent_runtime|agent_runtime_runtime_mode_check|CHECK||((runtime_mode = ANY (ARRAY['local'::text, 'cloud'::text])))
+agent_runtime|agent_runtime_status_check|CHECK||((status = ANY (ARRAY['online'::text, 'offline'::text])))
+agent_runtime|agent_runtime_visibility_check|CHECK||((visibility = ANY (ARRAY['private'::text, 'public'::text])))
+agent_runtime|agent_runtime_workspace_id_fkey|FOREIGN KEY|workspace_id|
+agent_skill|2200_16804_1_not_null|CHECK||agent_id IS NOT NULL
+agent_skill|2200_16804_2_not_null|CHECK||skill_id IS NOT NULL
+agent_skill|2200_16804_3_not_null|CHECK||created_at IS NOT NULL
+agent_skill|2200_16804_4_not_null|CHECK||enabled IS NOT NULL
+agent_skill|agent_skill_agent_id_fkey|FOREIGN KEY|agent_id|
+agent_skill|agent_skill_pkey|PRIMARY KEY|agent_id|
+agent_skill|agent_skill_pkey|PRIMARY KEY|skill_id|
+agent_skill|agent_skill_skill_id_fkey|FOREIGN KEY|skill_id|
+agent_task_queue|2200_16622_11_not_null|CHECK||created_at IS NOT NULL
+agent_task_queue|2200_16622_19_not_null|CHECK||attempt IS NOT NULL
+agent_task_queue|2200_16622_1_not_null|CHECK||id IS NOT NULL
+agent_task_queue|2200_16622_20_not_null|CHECK||max_attempts IS NOT NULL
+agent_task_queue|2200_16622_25_not_null|CHECK||force_fresh_session IS NOT NULL
+agent_task_queue|2200_16622_26_not_null|CHECK||is_leader_task IS NOT NULL
+agent_task_queue|2200_16622_2_not_null|CHECK||agent_id IS NOT NULL
+agent_task_queue|2200_16622_37_not_null|CHECK||coalesced_comment_ids IS NOT NULL
+agent_task_queue|2200_16622_38_not_null|CHECK||delivered_comment_ids IS NOT NULL
+agent_task_queue|2200_16622_49_not_null|CHECK||session_rollout_missing IS NOT NULL
+agent_task_queue|2200_16622_4_not_null|CHECK||status IS NOT NULL
+agent_task_queue|2200_16622_51_not_null|CHECK||quick_actions_disabled IS NOT NULL
+agent_task_queue|2200_16622_5_not_null|CHECK||priority IS NOT NULL
+agent_task_queue|agent_task_queue_accountable_matches_originator|CHECK||(((originator_user_id IS NULL) OR ((accountable_user_id IS NOT NULL) AND (accountable_user_id = originator_user_id))))
+agent_task_queue|agent_task_queue_active_requires_runtime|CHECK||(((runtime_id IS NOT NULL) OR (completed_at IS NOT NULL))) NOT VALID
+agent_task_queue|agent_task_queue_agent_id_fkey|FOREIGN KEY|agent_id|
+agent_task_queue|agent_task_queue_autopilot_run_id_fkey|FOREIGN KEY|autopilot_run_id|
+agent_task_queue|agent_task_queue_chat_session_id_fkey|FOREIGN KEY|chat_session_id|
+agent_task_queue|agent_task_queue_issue_id_fkey|FOREIGN KEY|issue_id|
+agent_task_queue|agent_task_queue_parent_task_id_fkey|FOREIGN KEY|parent_task_id|
+agent_task_queue|agent_task_queue_pkey|PRIMARY KEY|id|
+agent_task_queue|agent_task_queue_runtime_id_fkey|FOREIGN KEY|runtime_id|
+agent_task_queue|agent_task_queue_status_check|CHECK||((status = ANY (ARRAY['queued'::text, 'dispatched'::text, 'running'::text, 'completed'::text, 'failed'::text, 'cancelled'::text, 'waiting_local_directory'::text, 'deferred'::text])))
+agent_task_queue|agent_task_queue_trigger_comment_id_fkey|FOREIGN KEY|trigger_comment_id|
+agent_to_label|2200_18341_1_not_null|CHECK||agent_id IS NOT NULL
+agent_to_label|2200_18341_2_not_null|CHECK||label_id IS NOT NULL
+agent_to_label|2200_18341_3_not_null|CHECK||created_at IS NOT NULL
+agent_to_label|agent_to_label_pkey|PRIMARY KEY|agent_id|
+agent_to_label|agent_to_label_pkey|PRIMARY KEY|label_id|
+attachment|2200_16984_10_not_null|CHECK||size_bytes IS NOT NULL
+attachment|2200_16984_11_not_null|CHECK||created_at IS NOT NULL
+attachment|2200_16984_1_not_null|CHECK||id IS NOT NULL
+attachment|2200_16984_2_not_null|CHECK||workspace_id IS NOT NULL
+attachment|2200_16984_5_not_null|CHECK||uploader_type IS NOT NULL
+attachment|2200_16984_6_not_null|CHECK||uploader_id IS NOT NULL
+attachment|2200_16984_7_not_null|CHECK||filename IS NOT NULL
+attachment|2200_16984_8_not_null|CHECK||url IS NOT NULL
+attachment|2200_16984_9_not_null|CHECK||content_type IS NOT NULL
+attachment|attachment_chat_message_id_fkey|FOREIGN KEY|chat_message_id|
+attachment|attachment_chat_session_id_fkey|FOREIGN KEY|chat_session_id|
+attachment|attachment_comment_id_fkey|FOREIGN KEY|comment_id|
+attachment|attachment_issue_id_fkey|FOREIGN KEY|issue_id|
+attachment|attachment_pkey|PRIMARY KEY|id|
+attachment|attachment_uploader_type_check|CHECK||((uploader_type = ANY (ARRAY['member'::text, 'agent'::text])))
+attachment|attachment_workspace_id_fkey|FOREIGN KEY|workspace_id|
+autopilot|2200_17200_12_not_null|CHECK||created_by_type IS NOT NULL
+autopilot|2200_17200_13_not_null|CHECK||created_by_id IS NOT NULL
+autopilot|2200_17200_15_not_null|CHECK||created_at IS NOT NULL
+autopilot|2200_17200_16_not_null|CHECK||updated_at IS NOT NULL
+autopilot|2200_17200_17_not_null|CHECK||assignee_type IS NOT NULL
+autopilot|2200_17200_1_not_null|CHECK||id IS NOT NULL
+autopilot|2200_17200_2_not_null|CHECK||workspace_id IS NOT NULL
+autopilot|2200_17200_4_not_null|CHECK||title IS NOT NULL
+autopilot|2200_17200_6_not_null|CHECK||assignee_id IS NOT NULL
+autopilot|2200_17200_8_not_null|CHECK||status IS NOT NULL
+autopilot|2200_17200_9_not_null|CHECK||execution_mode IS NOT NULL
+autopilot|autopilot_assignee_type_check|CHECK||((assignee_type = ANY (ARRAY['agent'::text, 'squad'::text])))
+autopilot|autopilot_created_by_type_check|CHECK||((created_by_type = ANY (ARRAY['member'::text, 'agent'::text])))
+autopilot|autopilot_execution_mode_check|CHECK||((execution_mode = ANY (ARRAY['create_issue'::text, 'run_only'::text])))
+autopilot|autopilot_pkey|PRIMARY KEY|id|
+autopilot|autopilot_project_id_fkey|FOREIGN KEY|project_id|
+autopilot|autopilot_status_check|CHECK||((status = ANY (ARRAY['active'::text, 'paused'::text, 'archived'::text])))
+autopilot|autopilot_workspace_id_fkey|FOREIGN KEY|workspace_id|
+autopilot_collaborator|2200_18194_1_not_null|CHECK||autopilot_id IS NOT NULL
+autopilot_collaborator|2200_18194_2_not_null|CHECK||user_type IS NOT NULL
+autopilot_collaborator|2200_18194_3_not_null|CHECK||user_id IS NOT NULL
+autopilot_collaborator|2200_18194_4_not_null|CHECK||granted_by IS NOT NULL
+autopilot_collaborator|2200_18194_5_not_null|CHECK||created_at IS NOT NULL
+autopilot_collaborator|autopilot_collaborator_pkey|PRIMARY KEY|autopilot_id|
+autopilot_collaborator|autopilot_collaborator_pkey|PRIMARY KEY|user_type|
+autopilot_collaborator|autopilot_collaborator_pkey|PRIMARY KEY|user_id|
+autopilot_collaborator|autopilot_collaborator_user_type_check|CHECK||((user_type = 'member'::text))
+autopilot_rule_version|2200_18378_1_not_null|CHECK||id IS NOT NULL
+autopilot_rule_version|2200_18378_2_not_null|CHECK||autopilot_id IS NOT NULL
+autopilot_rule_version|2200_18378_3_not_null|CHECK||workspace_id IS NOT NULL
+autopilot_rule_version|2200_18378_4_not_null|CHECK||published_by_type IS NOT NULL
+autopilot_rule_version|2200_18378_6_not_null|CHECK||config_summary IS NOT NULL
+autopilot_rule_version|2200_18378_7_not_null|CHECK||created_at IS NOT NULL
+autopilot_rule_version|autopilot_rule_version_pkey|PRIMARY KEY|id|
+autopilot_run|2200_17256_13_not_null|CHECK||created_at IS NOT NULL
+autopilot_run|2200_17256_1_not_null|CHECK||id IS NOT NULL
+autopilot_run|2200_17256_2_not_null|CHECK||autopilot_id IS NOT NULL
+autopilot_run|2200_17256_4_not_null|CHECK||source IS NOT NULL
+autopilot_run|2200_17256_5_not_null|CHECK||status IS NOT NULL
+autopilot_run|2200_17256_8_not_null|CHECK||triggered_at IS NOT NULL
+autopilot_run|autopilot_run_autopilot_id_fkey|FOREIGN KEY|autopilot_id|
+autopilot_run|autopilot_run_issue_id_fkey|FOREIGN KEY|issue_id|
+autopilot_run|autopilot_run_pkey|PRIMARY KEY|id|
+autopilot_run|autopilot_run_source_check|CHECK||((source = ANY (ARRAY['schedule'::text, 'manual'::text, 'webhook'::text, 'api'::text])))
+autopilot_run|autopilot_run_squad_id_fkey|FOREIGN KEY|squad_id|
+autopilot_run|autopilot_run_status_check|CHECK||((status = ANY (ARRAY['issue_created'::text, 'running'::text, 'completed'::text, 'failed'::text, 'skipped'::text])))
+autopilot_run|autopilot_run_task_id_fkey|FOREIGN KEY|task_id|
+autopilot_run|autopilot_run_trigger_id_fkey|FOREIGN KEY|trigger_id|
+autopilot_subscriber|2200_18033_1_not_null|CHECK||autopilot_id IS NOT NULL
+autopilot_subscriber|2200_18033_2_not_null|CHECK||user_type IS NOT NULL
+autopilot_subscriber|2200_18033_3_not_null|CHECK||user_id IS NOT NULL
+autopilot_subscriber|2200_18033_4_not_null|CHECK||created_at IS NOT NULL
+autopilot_subscriber|autopilot_subscriber_pkey|PRIMARY KEY|autopilot_id|
+autopilot_subscriber|autopilot_subscriber_pkey|PRIMARY KEY|user_type|
+autopilot_subscriber|autopilot_subscriber_pkey|PRIMARY KEY|user_id|
+autopilot_subscriber|autopilot_subscriber_user_type_check|CHECK||((user_type = 'member'::text))
+autopilot_trigger|2200_17236_11_not_null|CHECK||created_at IS NOT NULL
+autopilot_trigger|2200_17236_12_not_null|CHECK||updated_at IS NOT NULL
+autopilot_trigger|2200_17236_13_not_null|CHECK||provider IS NOT NULL
+autopilot_trigger|2200_17236_1_not_null|CHECK||id IS NOT NULL
+autopilot_trigger|2200_17236_2_not_null|CHECK||autopilot_id IS NOT NULL
+autopilot_trigger|2200_17236_3_not_null|CHECK||kind IS NOT NULL
+autopilot_trigger|2200_17236_4_not_null|CHECK||enabled IS NOT NULL
+autopilot_trigger|autopilot_trigger_autopilot_id_fkey|FOREIGN KEY|autopilot_id|
+autopilot_trigger|autopilot_trigger_kind_check|CHECK||((kind = ANY (ARRAY['schedule'::text, 'webhook'::text, 'api'::text])))
+autopilot_trigger|autopilot_trigger_pkey|PRIMARY KEY|id|
+autopilot_trigger|autopilot_trigger_provider_check|CHECK||((provider = ANY (ARRAY['generic'::text, 'github'::text])))
+channel_binding_token|2200_18162_1_not_null|CHECK||token_hash IS NOT NULL
+channel_binding_token|2200_18162_2_not_null|CHECK||workspace_id IS NOT NULL
+channel_binding_token|2200_18162_3_not_null|CHECK||installation_id IS NOT NULL
+channel_binding_token|2200_18162_4_not_null|CHECK||channel_type IS NOT NULL
+channel_binding_token|2200_18162_5_not_null|CHECK||channel_user_id IS NOT NULL
+channel_binding_token|2200_18162_6_not_null|CHECK||expires_at IS NOT NULL
+channel_binding_token|2200_18162_8_not_null|CHECK||created_at IS NOT NULL
+channel_binding_token|channel_binding_token_pkey|PRIMARY KEY|token_hash|
+channel_binding_token|channel_binding_token_ttl_cap|CHECK||((expires_at <= (created_at + '00:15:00'::interval)))
+channel_chat_session_binding|2200_18112_10_not_null|CHECK||created_at IS NOT NULL
+channel_chat_session_binding|2200_18112_1_not_null|CHECK||id IS NOT NULL
+channel_chat_session_binding|2200_18112_2_not_null|CHECK||chat_session_id IS NOT NULL
+channel_chat_session_binding|2200_18112_3_not_null|CHECK||installation_id IS NOT NULL
+channel_chat_session_binding|2200_18112_4_not_null|CHECK||channel_type IS NOT NULL
+channel_chat_session_binding|2200_18112_5_not_null|CHECK||channel_chat_id IS NOT NULL
+channel_chat_session_binding|2200_18112_6_not_null|CHECK||chat_type IS NOT NULL
+channel_chat_session_binding|2200_18112_9_not_null|CHECK||config IS NOT NULL
+channel_chat_session_binding|channel_chat_session_binding_chat_session_id_key|UNIQUE|chat_session_id|
+channel_chat_session_binding|channel_chat_session_binding_chat_type_check|CHECK||((chat_type = ANY (ARRAY['p2p'::text, 'group'::text])))
+channel_chat_session_binding|channel_chat_session_binding_installation_id_channel_chat_i_key|UNIQUE|installation_id|
+channel_chat_session_binding|channel_chat_session_binding_installation_id_channel_chat_i_key|UNIQUE|channel_chat_id|
+channel_chat_session_binding|channel_chat_session_binding_pkey|PRIMARY KEY|id|
+channel_inbound_audit|2200_18138_1_not_null|CHECK||id IS NOT NULL
+channel_inbound_audit|2200_18138_3_not_null|CHECK||channel_type IS NOT NULL
+channel_inbound_audit|2200_18138_5_not_null|CHECK||event_type IS NOT NULL
+channel_inbound_audit|2200_18138_8_not_null|CHECK||drop_reason IS NOT NULL
+channel_inbound_audit|2200_18138_9_not_null|CHECK||received_at IS NOT NULL
+channel_inbound_audit|channel_inbound_audit_pkey|PRIMARY KEY|id|
+channel_inbound_message_dedup|2200_18128_1_not_null|CHECK||installation_id IS NOT NULL
+channel_inbound_message_dedup|2200_18128_2_not_null|CHECK||message_id IS NOT NULL
+channel_inbound_message_dedup|2200_18128_3_not_null|CHECK||received_at IS NOT NULL
+channel_inbound_message_dedup|2200_18128_5_not_null|CHECK||claim_token IS NOT NULL
+channel_inbound_message_dedup|channel_inbound_message_dedup_pkey|PRIMARY KEY|installation_id|
+channel_inbound_message_dedup|channel_inbound_message_dedup_pkey|PRIMARY KEY|message_id|
+channel_installation|2200_18078_10_not_null|CHECK||installed_at IS NOT NULL
+channel_installation|2200_18078_11_not_null|CHECK||created_at IS NOT NULL
+channel_installation|2200_18078_12_not_null|CHECK||updated_at IS NOT NULL
+channel_installation|2200_18078_1_not_null|CHECK||id IS NOT NULL
+channel_installation|2200_18078_2_not_null|CHECK||workspace_id IS NOT NULL
+channel_installation|2200_18078_3_not_null|CHECK||agent_id IS NOT NULL
+channel_installation|2200_18078_4_not_null|CHECK||channel_type IS NOT NULL
+channel_installation|2200_18078_5_not_null|CHECK||config IS NOT NULL
+channel_installation|2200_18078_6_not_null|CHECK||status IS NOT NULL
+channel_installation|2200_18078_9_not_null|CHECK||installer_user_id IS NOT NULL
+channel_installation|channel_installation_pkey|PRIMARY KEY|id|
+channel_installation|channel_installation_status_check|CHECK||((status = ANY (ARRAY['active'::text, 'revoked'::text])))
+channel_installation|channel_installation_workspace_id_agent_id_channel_type_key|UNIQUE|workspace_id|
+channel_installation|channel_installation_workspace_id_agent_id_channel_type_key|UNIQUE|agent_id|
+channel_installation|channel_installation_workspace_id_agent_id_channel_type_key|UNIQUE|channel_type|
+channel_media_pending_object|2200_18507_10_not_null|CHECK||next_attempt_at IS NOT NULL
+channel_media_pending_object|2200_18507_12_not_null|CHECK||tombstone_pass IS NOT NULL
+channel_media_pending_object|2200_18507_13_not_null|CHECK||created_at IS NOT NULL
+channel_media_pending_object|2200_18507_1_not_null|CHECK||storage_key IS NOT NULL
+channel_media_pending_object|2200_18507_2_not_null|CHECK||workspace_id IS NOT NULL
+channel_media_pending_object|2200_18507_3_not_null|CHECK||chat_message_id IS NOT NULL
+channel_media_pending_object|2200_18507_4_not_null|CHECK||storage_url IS NOT NULL
+channel_media_pending_object|2200_18507_6_not_null|CHECK||state IS NOT NULL
+channel_media_pending_object|2200_18507_9_not_null|CHECK||attempt IS NOT NULL
+channel_media_pending_object|channel_media_pending_object_pkey|PRIMARY KEY|storage_key|
+channel_media_pending_object|channel_media_pending_object_state_check|CHECK||((state = ANY (ARRAY['pending'::text, 'deleting'::text, 'tombstoned'::text])))
+channel_outbound_card_message|2200_18149_1_not_null|CHECK||id IS NOT NULL
+channel_outbound_card_message|2200_18149_2_not_null|CHECK||chat_session_id IS NOT NULL
+channel_outbound_card_message|2200_18149_4_not_null|CHECK||channel_type IS NOT NULL
+channel_outbound_card_message|2200_18149_5_not_null|CHECK||channel_chat_id IS NOT NULL
+channel_outbound_card_message|2200_18149_6_not_null|CHECK||channel_card_message_id IS NOT NULL
+channel_outbound_card_message|2200_18149_7_not_null|CHECK||status IS NOT NULL
+channel_outbound_card_message|2200_18149_9_not_null|CHECK||created_at IS NOT NULL
+channel_outbound_card_message|channel_outbound_card_message_pkey|PRIMARY KEY|id|
+channel_outbound_card_message|channel_outbound_card_message_status_check|CHECK||((status = ANY (ARRAY['pending'::text, 'streaming'::text, 'final'::text, 'error'::text])))
+channel_user_binding|2200_18098_1_not_null|CHECK||id IS NOT NULL
+channel_user_binding|2200_18098_2_not_null|CHECK||workspace_id IS NOT NULL
+channel_user_binding|2200_18098_3_not_null|CHECK||multica_user_id IS NOT NULL
+channel_user_binding|2200_18098_4_not_null|CHECK||installation_id IS NOT NULL
+channel_user_binding|2200_18098_5_not_null|CHECK||channel_type IS NOT NULL
+channel_user_binding|2200_18098_6_not_null|CHECK||channel_user_id IS NOT NULL
+channel_user_binding|2200_18098_7_not_null|CHECK||config IS NOT NULL
+channel_user_binding|2200_18098_8_not_null|CHECK||bound_at IS NOT NULL
+channel_user_binding|channel_user_binding_installation_id_channel_user_id_key|UNIQUE|installation_id|
+channel_user_binding|channel_user_binding_installation_id_channel_user_id_key|UNIQUE|channel_user_id|
+channel_user_binding|channel_user_binding_pkey|PRIMARY KEY|id|
+chat_draft_restore|2200_18368_1_not_null|CHECK||id IS NOT NULL
+chat_draft_restore|2200_18368_2_not_null|CHECK||chat_session_id IS NOT NULL
+chat_draft_restore|2200_18368_3_not_null|CHECK||task_id IS NOT NULL
+chat_draft_restore|2200_18368_4_not_null|CHECK||content IS NOT NULL
+chat_draft_restore|2200_18368_5_not_null|CHECK||attachment_ids IS NOT NULL
+chat_draft_restore|2200_18368_6_not_null|CHECK||created_at IS NOT NULL
+chat_draft_restore|chat_draft_restore_pkey|PRIMARY KEY|id|
+chat_message|2200_17091_11_not_null|CHECK||channel_ingested IS NOT NULL
+chat_message|2200_17091_12_not_null|CHECK||quick_actions IS NOT NULL
+chat_message|2200_17091_1_not_null|CHECK||id IS NOT NULL
+chat_message|2200_17091_2_not_null|CHECK||chat_session_id IS NOT NULL
+chat_message|2200_17091_3_not_null|CHECK||role IS NOT NULL
+chat_message|2200_17091_4_not_null|CHECK||content IS NOT NULL
+chat_message|2200_17091_6_not_null|CHECK||created_at IS NOT NULL
+chat_message|2200_17091_9_not_null|CHECK||message_kind IS NOT NULL
+chat_message|chat_message_chat_session_id_fkey|FOREIGN KEY|chat_session_id|
+chat_message|chat_message_pkey|PRIMARY KEY|id|
+chat_message|chat_message_role_check|CHECK||((role = ANY (ARRAY['user'::text, 'assistant'::text])))
+chat_pinned_agent|2200_18321_1_not_null|CHECK||id IS NOT NULL
+chat_pinned_agent|2200_18321_2_not_null|CHECK||workspace_id IS NOT NULL
+chat_pinned_agent|2200_18321_3_not_null|CHECK||user_id IS NOT NULL
+chat_pinned_agent|2200_18321_4_not_null|CHECK||agent_id IS NOT NULL
+chat_pinned_agent|2200_18321_5_not_null|CHECK||position IS NOT NULL
+chat_pinned_agent|2200_18321_6_not_null|CHECK||created_at IS NOT NULL
+chat_pinned_agent|chat_pinned_agent_pkey|PRIMARY KEY|id|
+chat_pinned_agent|chat_pinned_agent_workspace_id_user_id_agent_id_key|UNIQUE|workspace_id|
+chat_pinned_agent|chat_pinned_agent_workspace_id_user_id_agent_id_key|UNIQUE|user_id|
+chat_pinned_agent|chat_pinned_agent_workspace_id_user_id_agent_id_key|UNIQUE|agent_id|
+chat_session|2200_17061_10_not_null|CHECK||updated_at IS NOT NULL
+chat_session|2200_17061_13_not_null|CHECK||last_read_at IS NOT NULL
+chat_session|2200_17061_14_not_null|CHECK||is_agent_intro IS NOT NULL
+chat_session|2200_17061_1_not_null|CHECK||id IS NOT NULL
+chat_session|2200_17061_2_not_null|CHECK||workspace_id IS NOT NULL
+chat_session|2200_17061_3_not_null|CHECK||agent_id IS NOT NULL
+chat_session|2200_17061_4_not_null|CHECK||creator_id IS NOT NULL
+chat_session|2200_17061_5_not_null|CHECK||title IS NOT NULL
+chat_session|2200_17061_8_not_null|CHECK||status IS NOT NULL
+chat_session|2200_17061_9_not_null|CHECK||created_at IS NOT NULL
+chat_session|chat_session_agent_id_fkey|FOREIGN KEY|agent_id|
+chat_session|chat_session_creator_id_fkey|FOREIGN KEY|creator_id|
+chat_session|chat_session_pkey|PRIMARY KEY|id|
+chat_session|chat_session_runtime_id_fkey|FOREIGN KEY|runtime_id|
+chat_session|chat_session_status_check|CHECK||((status = ANY (ARRAY['active'::text, 'archived'::text])))
+chat_session|chat_session_workspace_id_fkey|FOREIGN KEY|workspace_id|
+client_usage_daily|2200_18421_16_not_null|CHECK||created_at IS NOT NULL
+client_usage_daily|2200_18421_17_not_null|CHECK||updated_at IS NOT NULL
+client_usage_daily|2200_18421_1_not_null|CHECK||user_id IS NOT NULL
+client_usage_daily|2200_18421_2_not_null|CHECK||client_type IS NOT NULL
+client_usage_daily|2200_18421_3_not_null|CHECK||install_id IS NOT NULL
+client_usage_daily|2200_18421_4_not_null|CHECK||activity_date IS NOT NULL
+client_usage_daily|2200_18421_6_not_null|CHECK||client_version IS NOT NULL
+client_usage_daily|2200_18421_7_not_null|CHECK||os IS NOT NULL
+client_usage_daily|2200_18421_8_not_null|CHECK||first_active_at IS NOT NULL
+client_usage_daily|2200_18421_9_not_null|CHECK||last_active_at IS NOT NULL
+client_usage_daily|client_usage_daily_check|CHECK||((first_active_at <= last_active_at))
+client_usage_daily|client_usage_daily_check1|CHECK||((((runtime_probed_at IS NULL) AND (probe_result IS NULL) AND (runtime_count IS NULL) AND (provider_summary IS NULL) AND (online_count IS NULL) AND (offline_count IS NULL)) OR ((runtime_probed_at IS NOT NULL) AND (probe_result = 'error'::text) AND (runtime_count IS NULL) AND (provider_summary IS NULL) AND (online_count IS NULL) AND (offline_count IS NULL)) OR ((runtime_probed_at IS NOT NULL) AND (probe_result = 'success'::text) AND (runtime_count IS NOT NULL) AND (provider_summary IS NOT NULL) AND (online_count IS NOT NULL) AND (offline_count IS NOT NULL) AND ((online_count + offline_count) = runtime_count) AND (jsonb_typeof(provider_summary) = 'object'::text))))
+client_usage_daily|client_usage_daily_client_type_check|CHECK||((client_type = ANY (ARRAY['web'::text, 'desktop'::text])))
+client_usage_daily|client_usage_daily_offline_count_check|CHECK||((offline_count >= 0))
+client_usage_daily|client_usage_daily_online_count_check|CHECK||((online_count >= 0))
+client_usage_daily|client_usage_daily_pkey|PRIMARY KEY|user_id|
+client_usage_daily|client_usage_daily_pkey|PRIMARY KEY|client_type|
+client_usage_daily|client_usage_daily_pkey|PRIMARY KEY|install_id|
+client_usage_daily|client_usage_daily_pkey|PRIMARY KEY|activity_date|
+client_usage_daily|client_usage_daily_probe_result_check|CHECK||((probe_result = ANY (ARRAY['success'::text, 'error'::text])))
+client_usage_daily|client_usage_daily_runtime_count_check|CHECK||((runtime_count >= 0))
+comment|2200_16580_10_not_null|CHECK||workspace_id IS NOT NULL
+comment|2200_16580_1_not_null|CHECK||id IS NOT NULL
+comment|2200_16580_2_not_null|CHECK||issue_id IS NOT NULL
+comment|2200_16580_3_not_null|CHECK||author_type IS NOT NULL
+comment|2200_16580_4_not_null|CHECK||author_id IS NOT NULL
+comment|2200_16580_5_not_null|CHECK||content IS NOT NULL
+comment|2200_16580_6_not_null|CHECK||type IS NOT NULL
+comment|2200_16580_7_not_null|CHECK||created_at IS NOT NULL
+comment|2200_16580_8_not_null|CHECK||updated_at IS NOT NULL
+comment|comment_author_type_check|CHECK||((author_type = ANY (ARRAY['member'::text, 'agent'::text, 'system'::text])))
+comment|comment_issue_id_fkey|FOREIGN KEY|issue_id|
+comment|comment_parent_id_fkey|FOREIGN KEY|parent_id|
+comment|comment_pkey|PRIMARY KEY|id|
+comment|comment_resolved_consistency|CHECK||((((resolved_at IS NULL) AND (resolved_by_type IS NULL) AND (resolved_by_id IS NULL)) OR ((resolved_at IS NOT NULL) AND (resolved_by_type IS NOT NULL) AND (resolved_by_id IS NOT NULL))))
+comment|comment_type_check|CHECK||((type = ANY (ARRAY['comment'::text, 'status_change'::text, 'progress_update'::text, 'system'::text])))
+comment|comment_workspace_id_fkey|FOREIGN KEY|workspace_id|
+comment_reaction|2200_16918_1_not_null|CHECK||id IS NOT NULL
+comment_reaction|2200_16918_2_not_null|CHECK||comment_id IS NOT NULL
+comment_reaction|2200_16918_3_not_null|CHECK||workspace_id IS NOT NULL
+comment_reaction|2200_16918_4_not_null|CHECK||actor_type IS NOT NULL
+comment_reaction|2200_16918_5_not_null|CHECK||actor_id IS NOT NULL
+comment_reaction|2200_16918_6_not_null|CHECK||emoji IS NOT NULL
+comment_reaction|2200_16918_7_not_null|CHECK||created_at IS NOT NULL
+comment_reaction|comment_reaction_actor_type_check|CHECK||((actor_type = ANY (ARRAY['member'::text, 'agent'::text])))
+comment_reaction|comment_reaction_comment_id_actor_type_actor_id_emoji_key|UNIQUE|comment_id|
+comment_reaction|comment_reaction_comment_id_actor_type_actor_id_emoji_key|UNIQUE|actor_type|
+comment_reaction|comment_reaction_comment_id_actor_type_actor_id_emoji_key|UNIQUE|actor_id|
+comment_reaction|comment_reaction_comment_id_actor_type_actor_id_emoji_key|UNIQUE|emoji|
+comment_reaction|comment_reaction_comment_id_fkey|FOREIGN KEY|comment_id|
+comment_reaction|comment_reaction_pkey|PRIMARY KEY|id|
+comment_reaction|comment_reaction_workspace_id_fkey|FOREIGN KEY|workspace_id|
+contact_sales_inquiry|2200_17712_10_not_null|CHECK||consent_outreach IS NOT NULL
+contact_sales_inquiry|2200_17712_11_not_null|CHECK||consent_updates IS NOT NULL
+contact_sales_inquiry|2200_17712_13_not_null|CHECK||user_agent IS NOT NULL
+contact_sales_inquiry|2200_17712_14_not_null|CHECK||created_at IS NOT NULL
+contact_sales_inquiry|2200_17712_1_not_null|CHECK||id IS NOT NULL
+contact_sales_inquiry|2200_17712_2_not_null|CHECK||first_name IS NOT NULL
+contact_sales_inquiry|2200_17712_3_not_null|CHECK||last_name IS NOT NULL
+contact_sales_inquiry|2200_17712_4_not_null|CHECK||business_email IS NOT NULL
+contact_sales_inquiry|2200_17712_5_not_null|CHECK||company_name IS NOT NULL
+contact_sales_inquiry|2200_17712_6_not_null|CHECK||company_size IS NOT NULL
+contact_sales_inquiry|2200_17712_7_not_null|CHECK||country_region IS NOT NULL
+contact_sales_inquiry|2200_17712_8_not_null|CHECK||use_case IS NOT NULL
+contact_sales_inquiry|2200_17712_9_not_null|CHECK||goals IS NOT NULL
+contact_sales_inquiry|contact_sales_inquiry_pkey|PRIMARY KEY|id|
+daemon_connection|2200_16644_1_not_null|CHECK||id IS NOT NULL
+daemon_connection|2200_16644_2_not_null|CHECK||agent_id IS NOT NULL
+daemon_connection|2200_16644_3_not_null|CHECK||daemon_id IS NOT NULL
+daemon_connection|2200_16644_4_not_null|CHECK||status IS NOT NULL
+daemon_connection|2200_16644_6_not_null|CHECK||runtime_info IS NOT NULL
+daemon_connection|2200_16644_7_not_null|CHECK||created_at IS NOT NULL
+daemon_connection|2200_16644_8_not_null|CHECK||updated_at IS NOT NULL
+daemon_connection|daemon_connection_agent_id_fkey|FOREIGN KEY|agent_id|
+daemon_connection|daemon_connection_pkey|PRIMARY KEY|id|
+daemon_connection|daemon_connection_status_check|CHECK||((status = ANY (ARRAY['connected'::text, 'disconnected'::text])))
+daemon_connection|uq_daemon_agent|UNIQUE|agent_id|
+daemon_connection|uq_daemon_agent|UNIQUE|daemon_id|
+daemon_token|2200_17012_1_not_null|CHECK||id IS NOT NULL
+daemon_token|2200_17012_2_not_null|CHECK||token_hash IS NOT NULL
+daemon_token|2200_17012_3_not_null|CHECK||workspace_id IS NOT NULL
+daemon_token|2200_17012_4_not_null|CHECK||daemon_id IS NOT NULL
+daemon_token|2200_17012_5_not_null|CHECK||expires_at IS NOT NULL
+daemon_token|2200_17012_6_not_null|CHECK||created_at IS NOT NULL
+daemon_token|daemon_token_pkey|PRIMARY KEY|id|
+daemon_token|daemon_token_workspace_id_fkey|FOREIGN KEY|workspace_id|
+feedback|2200_17313_1_not_null|CHECK||id IS NOT NULL
+feedback|2200_17313_2_not_null|CHECK||user_id IS NOT NULL
+feedback|2200_17313_4_not_null|CHECK||message IS NOT NULL
+feedback|2200_17313_5_not_null|CHECK||metadata IS NOT NULL
+feedback|2200_17313_6_not_null|CHECK||created_at IS NOT NULL
+feedback|feedback_pkey|PRIMARY KEY|id|
+feedback|feedback_user_id_fkey|FOREIGN KEY|user_id|
+feedback|feedback_workspace_id_fkey|FOREIGN KEY|workspace_id|
+github_installation|2200_17445_1_not_null|CHECK||id IS NOT NULL
+github_installation|2200_17445_2_not_null|CHECK||workspace_id IS NOT NULL
+github_installation|2200_17445_3_not_null|CHECK||installation_id IS NOT NULL
+github_installation|2200_17445_4_not_null|CHECK||account_login IS NOT NULL
+github_installation|2200_17445_5_not_null|CHECK||account_type IS NOT NULL
+github_installation|2200_17445_8_not_null|CHECK||created_at IS NOT NULL
+github_installation|2200_17445_9_not_null|CHECK||updated_at IS NOT NULL
+github_installation|github_installation_account_type_check|CHECK||((account_type = ANY (ARRAY['User'::text, 'Organization'::text])))
+github_installation|github_installation_connected_by_id_fkey|FOREIGN KEY|connected_by_id|
+github_installation|github_installation_pkey|PRIMARY KEY|id|
+github_installation|github_installation_workspace_id_fkey|FOREIGN KEY|workspace_id|
+github_installation|github_installation_workspace_id_installation_id_key|UNIQUE|workspace_id|
+github_installation|github_installation_workspace_id_installation_id_key|UNIQUE|installation_id|
+github_pending_check_suite|2200_17696_10_not_null|CHECK||status IS NOT NULL
+github_pending_check_suite|2200_17696_11_not_null|CHECK||suite_updated_at IS NOT NULL
+github_pending_check_suite|2200_17696_12_not_null|CHECK||received_at IS NOT NULL
+github_pending_check_suite|2200_17696_1_not_null|CHECK||workspace_id IS NOT NULL
+github_pending_check_suite|2200_17696_2_not_null|CHECK||installation_id IS NOT NULL
+github_pending_check_suite|2200_17696_3_not_null|CHECK||repo_owner IS NOT NULL
+github_pending_check_suite|2200_17696_4_not_null|CHECK||repo_name IS NOT NULL
+github_pending_check_suite|2200_17696_5_not_null|CHECK||pr_number IS NOT NULL
+github_pending_check_suite|2200_17696_6_not_null|CHECK||suite_id IS NOT NULL
+github_pending_check_suite|2200_17696_7_not_null|CHECK||head_sha IS NOT NULL
+github_pending_check_suite|2200_17696_8_not_null|CHECK||app_id IS NOT NULL
+github_pending_check_suite|github_pending_check_suite_pkey|PRIMARY KEY|workspace_id|
+github_pending_check_suite|github_pending_check_suite_pkey|PRIMARY KEY|repo_owner|
+github_pending_check_suite|github_pending_check_suite_pkey|PRIMARY KEY|repo_name|
+github_pending_check_suite|github_pending_check_suite_pkey|PRIMARY KEY|pr_number|
+github_pending_check_suite|github_pending_check_suite_pkey|PRIMARY KEY|suite_id|
+github_pending_installation|2200_18044_1_not_null|CHECK||installation_id IS NOT NULL
+github_pending_installation|2200_18044_2_not_null|CHECK||account_login IS NOT NULL
+github_pending_installation|2200_18044_3_not_null|CHECK||account_type IS NOT NULL
+github_pending_installation|2200_18044_5_not_null|CHECK||received_at IS NOT NULL
+github_pending_installation|2200_18044_6_not_null|CHECK||updated_at IS NOT NULL
+github_pending_installation|github_pending_installation_account_login_check|CHECK||((account_login <> ''::text))
+github_pending_installation|github_pending_installation_account_type_check|CHECK||((account_type = ANY (ARRAY['User'::text, 'Organization'::text])))
+github_pending_installation|github_pending_installation_pkey|PRIMARY KEY|installation_id|
+github_pull_request|2200_17470_15_not_null|CHECK||pr_created_at IS NOT NULL
+github_pull_request|2200_17470_16_not_null|CHECK||pr_updated_at IS NOT NULL
+github_pull_request|2200_17470_17_not_null|CHECK||created_at IS NOT NULL
+github_pull_request|2200_17470_18_not_null|CHECK||updated_at IS NOT NULL
+github_pull_request|2200_17470_19_not_null|CHECK||head_sha IS NOT NULL
+github_pull_request|2200_17470_1_not_null|CHECK||id IS NOT NULL
+github_pull_request|2200_17470_21_not_null|CHECK||additions IS NOT NULL
+github_pull_request|2200_17470_22_not_null|CHECK||deletions IS NOT NULL
+github_pull_request|2200_17470_23_not_null|CHECK||changed_files IS NOT NULL
+github_pull_request|2200_17470_27_not_null|CHECK||snapshot_head_sha IS NOT NULL
+github_pull_request|2200_17470_2_not_null|CHECK||workspace_id IS NOT NULL
+github_pull_request|2200_17470_3_not_null|CHECK||installation_id IS NOT NULL
+github_pull_request|2200_17470_4_not_null|CHECK||repo_owner IS NOT NULL
+github_pull_request|2200_17470_5_not_null|CHECK||repo_name IS NOT NULL
+github_pull_request|2200_17470_6_not_null|CHECK||pr_number IS NOT NULL
+github_pull_request|2200_17470_7_not_null|CHECK||title IS NOT NULL
+github_pull_request|2200_17470_8_not_null|CHECK||state IS NOT NULL
+github_pull_request|2200_17470_9_not_null|CHECK||html_url IS NOT NULL
+github_pull_request|github_pull_request_pkey|PRIMARY KEY|id|
+github_pull_request|github_pull_request_state_check|CHECK||((state = ANY (ARRAY['open'::text, 'closed'::text, 'merged'::text, 'draft'::text])))
+github_pull_request|github_pull_request_workspace_id_fkey|FOREIGN KEY|workspace_id|
+github_pull_request|github_pull_request_workspace_id_repo_owner_repo_name_pr_nu_key|UNIQUE|workspace_id|
+github_pull_request|github_pull_request_workspace_id_repo_owner_repo_name_pr_nu_key|UNIQUE|repo_owner|
+github_pull_request|github_pull_request_workspace_id_repo_owner_repo_name_pr_nu_key|UNIQUE|repo_name|
+github_pull_request|github_pull_request_workspace_id_repo_owner_repo_name_pr_nu_key|UNIQUE|pr_number|
+github_pull_request_check_run|2200_18498_1_not_null|CHECK||pr_id IS NOT NULL
+github_pull_request_check_run|2200_18498_2_not_null|CHECK||head_sha IS NOT NULL
+github_pull_request_check_run|2200_18498_3_not_null|CHECK||ordinal IS NOT NULL
+github_pull_request_check_run|2200_18498_4_not_null|CHECK||name IS NOT NULL
+github_pull_request_check_run|2200_18498_5_not_null|CHECK||status IS NOT NULL
+github_pull_request_check_run|2200_18498_8_not_null|CHECK||is_status_context IS NOT NULL
+github_pull_request_check_suite|2200_17622_1_not_null|CHECK||pr_id IS NOT NULL
+github_pull_request_check_suite|2200_17622_2_not_null|CHECK||suite_id IS NOT NULL
+github_pull_request_check_suite|2200_17622_3_not_null|CHECK||head_sha IS NOT NULL
+github_pull_request_check_suite|2200_17622_4_not_null|CHECK||app_id IS NOT NULL
+github_pull_request_check_suite|2200_17622_6_not_null|CHECK||status IS NOT NULL
+github_pull_request_check_suite|2200_17622_7_not_null|CHECK||updated_at IS NOT NULL
+github_pull_request_check_suite|github_pull_request_check_suite_pkey|PRIMARY KEY|pr_id|
+github_pull_request_check_suite|github_pull_request_check_suite_pkey|PRIMARY KEY|suite_id|
+github_pull_request_check_suite|github_pull_request_check_suite_pr_id_fkey|FOREIGN KEY|pr_id|
+inbox_item|2200_16598_10_not_null|CHECK||read IS NOT NULL
+inbox_item|2200_16598_11_not_null|CHECK||archived IS NOT NULL
+inbox_item|2200_16598_12_not_null|CHECK||created_at IS NOT NULL
+inbox_item|2200_16598_1_not_null|CHECK||id IS NOT NULL
+inbox_item|2200_16598_2_not_null|CHECK||workspace_id IS NOT NULL
+inbox_item|2200_16598_3_not_null|CHECK||recipient_type IS NOT NULL
+inbox_item|2200_16598_4_not_null|CHECK||recipient_id IS NOT NULL
+inbox_item|2200_16598_5_not_null|CHECK||type IS NOT NULL
+inbox_item|2200_16598_6_not_null|CHECK||severity IS NOT NULL
+inbox_item|2200_16598_8_not_null|CHECK||title IS NOT NULL
+inbox_item|inbox_item_issue_id_fkey|FOREIGN KEY|issue_id|
+inbox_item|inbox_item_pkey|PRIMARY KEY|id|
+inbox_item|inbox_item_recipient_type_check|CHECK||((recipient_type = ANY (ARRAY['member'::text, 'agent'::text])))
+inbox_item|inbox_item_severity_check|CHECK||((severity = ANY (ARRAY['action_required'::text, 'attention'::text, 'info'::text])))
+inbox_item|inbox_item_workspace_id_fkey|FOREIGN KEY|workspace_id|
+issue|2200_16504_10_not_null|CHECK||creator_id IS NOT NULL
+issue|2200_16504_12_not_null|CHECK||acceptance_criteria IS NOT NULL
+issue|2200_16504_13_not_null|CHECK||context_refs IS NOT NULL
+issue|2200_16504_14_not_null|CHECK||position IS NOT NULL
+issue|2200_16504_16_not_null|CHECK||created_at IS NOT NULL
+issue|2200_16504_17_not_null|CHECK||updated_at IS NOT NULL
+issue|2200_16504_18_not_null|CHECK||number IS NOT NULL
+issue|2200_16504_1_not_null|CHECK||id IS NOT NULL
+issue|2200_16504_24_not_null|CHECK||metadata IS NOT NULL
+issue|2200_16504_26_not_null|CHECK||properties IS NOT NULL
+issue|2200_16504_2_not_null|CHECK||workspace_id IS NOT NULL
+issue|2200_16504_3_not_null|CHECK||title IS NOT NULL
+issue|2200_16504_5_not_null|CHECK||status IS NOT NULL
+issue|2200_16504_6_not_null|CHECK||priority IS NOT NULL
+issue|2200_16504_9_not_null|CHECK||creator_type IS NOT NULL
+issue|issue_assignee_type_check|CHECK||((assignee_type = ANY (ARRAY['member'::text, 'agent'::text, 'squad'::text])))
+issue|issue_creator_type_check|CHECK||((creator_type = ANY (ARRAY['member'::text, 'agent'::text])))
+issue|issue_metadata_is_object|CHECK||((jsonb_typeof(metadata) = 'object'::text))
+issue|issue_metadata_size_limit|CHECK||((pg_column_size(metadata) <= 8192))
+issue|issue_origin_type_check|CHECK||((origin_type = ANY (ARRAY['autopilot'::text, 'quick_create'::text, 'lark_chat'::text, 'slack_chat'::text, 'agent_create'::text])))
+issue|issue_parent_issue_id_fkey|FOREIGN KEY|parent_issue_id|
+issue|issue_pkey|PRIMARY KEY|id|
+issue|issue_priority_check|CHECK||((priority = ANY (ARRAY['urgent'::text, 'high'::text, 'medium'::text, 'low'::text, 'none'::text])))
+issue|issue_project_id_fkey|FOREIGN KEY|project_id|
+issue|issue_properties_is_object|CHECK||((jsonb_typeof(properties) = 'object'::text))
+issue|issue_properties_size_limit|CHECK||((pg_column_size(properties) <= 16384))
+issue|issue_stage_check|CHECK||(((stage IS NULL) OR (stage >= 1)))
+issue|issue_status_check|CHECK||((status = ANY (ARRAY['backlog'::text, 'todo'::text, 'in_progress'::text, 'in_review'::text, 'done'::text, 'blocked'::text, 'cancelled'::text])))
+issue|issue_workspace_id_fkey|FOREIGN KEY|workspace_id|
+issue|uq_issue_workspace_number|UNIQUE|workspace_id|
+issue|uq_issue_workspace_number|UNIQUE|number|
+issue_dependency|2200_16561_1_not_null|CHECK||id IS NOT NULL
+issue_dependency|2200_16561_2_not_null|CHECK||issue_id IS NOT NULL
+issue_dependency|2200_16561_3_not_null|CHECK||depends_on_issue_id IS NOT NULL
+issue_dependency|2200_16561_4_not_null|CHECK||type IS NOT NULL
+issue_dependency|issue_dependency_depends_on_issue_id_fkey|FOREIGN KEY|depends_on_issue_id|
+issue_dependency|issue_dependency_issue_id_fkey|FOREIGN KEY|issue_id|
+issue_dependency|issue_dependency_pkey|PRIMARY KEY|id|
+issue_dependency|issue_dependency_type_check|CHECK||((type = ANY (ARRAY['blocks'::text, 'blocked_by'::text, 'related'::text])))
+issue_label|2200_16533_1_not_null|CHECK||id IS NOT NULL
+issue_label|2200_16533_2_not_null|CHECK||workspace_id IS NOT NULL
+issue_label|2200_16533_3_not_null|CHECK||name IS NOT NULL
+issue_label|2200_16533_4_not_null|CHECK||color IS NOT NULL
+issue_label|2200_16533_5_not_null|CHECK||created_at IS NOT NULL
+issue_label|2200_16533_6_not_null|CHECK||updated_at IS NOT NULL
+issue_label|2200_16533_7_not_null|CHECK||resource_type IS NOT NULL
+issue_label|2200_16533_8_not_null|CHECK||description IS NOT NULL
+issue_label|issue_label_pkey|PRIMARY KEY|id|
+issue_label|issue_label_resource_type_check|CHECK||((resource_type = ANY (ARRAY['issue'::text, 'agent'::text, 'skill'::text])))
+issue_label|issue_label_workspace_id_fkey|FOREIGN KEY|workspace_id|
+issue_property|2200_18391_10_not_null|CHECK||updated_at IS NOT NULL
+issue_property|2200_18391_11_not_null|CHECK||icon IS NOT NULL
+issue_property|2200_18391_1_not_null|CHECK||id IS NOT NULL
+issue_property|2200_18391_2_not_null|CHECK||workspace_id IS NOT NULL
+issue_property|2200_18391_3_not_null|CHECK||name IS NOT NULL
+issue_property|2200_18391_4_not_null|CHECK||type IS NOT NULL
+issue_property|2200_18391_5_not_null|CHECK||description IS NOT NULL
+issue_property|2200_18391_6_not_null|CHECK||config IS NOT NULL
+issue_property|2200_18391_7_not_null|CHECK||position IS NOT NULL
+issue_property|2200_18391_9_not_null|CHECK||created_at IS NOT NULL
+issue_property|issue_property_config_check|CHECK||((jsonb_typeof(config) = 'object'::text))
+issue_property|issue_property_pkey|PRIMARY KEY|id|
+issue_property|issue_property_type_check|CHECK||((type = ANY (ARRAY['text'::text, 'number'::text, 'select'::text, 'multi_select'::text, 'date'::text, 'checkbox'::text, 'url'::text])))
+issue_pull_request|2200_17489_1_not_null|CHECK||issue_id IS NOT NULL
+issue_pull_request|2200_17489_2_not_null|CHECK||pull_request_id IS NOT NULL
+issue_pull_request|2200_17489_5_not_null|CHECK||linked_at IS NOT NULL
+issue_pull_request|2200_17489_6_not_null|CHECK||close_intent IS NOT NULL
+issue_pull_request|2200_17489_7_not_null|CHECK||reference_only IS NOT NULL
+issue_pull_request|issue_pull_request_issue_id_fkey|FOREIGN KEY|issue_id|
+issue_pull_request|issue_pull_request_pkey|PRIMARY KEY|issue_id|
+issue_pull_request|issue_pull_request_pkey|PRIMARY KEY|pull_request_id|
+issue_pull_request|issue_pull_request_pull_request_id_fkey|FOREIGN KEY|pull_request_id|
+issue_reaction|2200_16956_1_not_null|CHECK||id IS NOT NULL
+issue_reaction|2200_16956_2_not_null|CHECK||issue_id IS NOT NULL
+issue_reaction|2200_16956_3_not_null|CHECK||workspace_id IS NOT NULL
+issue_reaction|2200_16956_4_not_null|CHECK||actor_type IS NOT NULL
+issue_reaction|2200_16956_5_not_null|CHECK||actor_id IS NOT NULL
+issue_reaction|2200_16956_6_not_null|CHECK||emoji IS NOT NULL
+issue_reaction|2200_16956_7_not_null|CHECK||created_at IS NOT NULL
+issue_reaction|issue_reaction_actor_type_check|CHECK||((actor_type = ANY (ARRAY['member'::text, 'agent'::text])))
+issue_reaction|issue_reaction_issue_id_actor_type_actor_id_emoji_key|UNIQUE|issue_id|
+issue_reaction|issue_reaction_issue_id_actor_type_actor_id_emoji_key|UNIQUE|actor_type|
+issue_reaction|issue_reaction_issue_id_actor_type_actor_id_emoji_key|UNIQUE|actor_id|
+issue_reaction|issue_reaction_issue_id_actor_type_actor_id_emoji_key|UNIQUE|emoji|
+issue_reaction|issue_reaction_issue_id_fkey|FOREIGN KEY|issue_id|
+issue_reaction|issue_reaction_pkey|PRIMARY KEY|id|
+issue_reaction|issue_reaction_workspace_id_fkey|FOREIGN KEY|workspace_id|
+issue_subscriber|2200_16877_1_not_null|CHECK||issue_id IS NOT NULL
+issue_subscriber|2200_16877_2_not_null|CHECK||user_type IS NOT NULL
+issue_subscriber|2200_16877_3_not_null|CHECK||user_id IS NOT NULL
+issue_subscriber|2200_16877_4_not_null|CHECK||reason IS NOT NULL
+issue_subscriber|2200_16877_5_not_null|CHECK||created_at IS NOT NULL
+issue_subscriber|issue_subscriber_issue_id_fkey|FOREIGN KEY|issue_id|
+issue_subscriber|issue_subscriber_opt_out_scope_check|CHECK||((opt_out_scope = ANY (ARRAY['issue'::text, 'subtree'::text])))
+issue_subscriber|issue_subscriber_pkey|PRIMARY KEY|issue_id|
+issue_subscriber|issue_subscriber_pkey|PRIMARY KEY|user_type|
+issue_subscriber|issue_subscriber_pkey|PRIMARY KEY|user_id|
+issue_subscriber|issue_subscriber_reason_check|CHECK||((reason = ANY (ARRAY['creator'::text, 'assignee'::text, 'commenter'::text, 'mentioned'::text, 'manual'::text, 'autopilot'::text, 'delegated'::text])))
+issue_subscriber|issue_subscriber_user_type_check|CHECK||((user_type = ANY (ARRAY['member'::text, 'agent'::text])))
+issue_to_label|2200_16546_1_not_null|CHECK||issue_id IS NOT NULL
+issue_to_label|2200_16546_2_not_null|CHECK||label_id IS NOT NULL
+issue_to_label|issue_to_label_issue_id_fkey|FOREIGN KEY|issue_id|
+issue_to_label|issue_to_label_label_id_fkey|FOREIGN KEY|label_id|
+issue_to_label|issue_to_label_pkey|PRIMARY KEY|issue_id|
+issue_to_label|issue_to_label_pkey|PRIMARY KEY|label_id|
+issue_vcs_pull_request|2200_18474_1_not_null|CHECK||issue_id IS NOT NULL
+issue_vcs_pull_request|2200_18474_2_not_null|CHECK||pull_request_id IS NOT NULL
+issue_vcs_pull_request|2200_18474_3_not_null|CHECK||close_intent IS NOT NULL
+issue_vcs_pull_request|2200_18474_4_not_null|CHECK||reference_only IS NOT NULL
+issue_vcs_pull_request|2200_18474_7_not_null|CHECK||linked_at IS NOT NULL
+issue_vcs_pull_request|issue_vcs_pull_request_pkey|PRIMARY KEY|issue_id|
+issue_vcs_pull_request|issue_vcs_pull_request_pkey|PRIMARY KEY|pull_request_id|
+lark_binding_token|2200_17951_1_not_null|CHECK||token_hash IS NOT NULL
+lark_binding_token|2200_17951_2_not_null|CHECK||workspace_id IS NOT NULL
+lark_binding_token|2200_17951_3_not_null|CHECK||installation_id IS NOT NULL
+lark_binding_token|2200_17951_4_not_null|CHECK||lark_open_id IS NOT NULL
+lark_binding_token|2200_17951_5_not_null|CHECK||expires_at IS NOT NULL
+lark_binding_token|2200_17951_7_not_null|CHECK||created_at IS NOT NULL
+lark_binding_token|lark_binding_token_installation_id_fkey|FOREIGN KEY|installation_id|
+lark_binding_token|lark_binding_token_pkey|PRIMARY KEY|token_hash|
+lark_binding_token|lark_binding_token_ttl_cap|CHECK||((expires_at <= (created_at + '00:15:00'::interval)))
+lark_binding_token|lark_binding_token_workspace_id_fkey|FOREIGN KEY|workspace_id|
+lark_chat_session_binding|2200_17877_1_not_null|CHECK||id IS NOT NULL
+lark_chat_session_binding|2200_17877_2_not_null|CHECK||chat_session_id IS NOT NULL
+lark_chat_session_binding|2200_17877_3_not_null|CHECK||installation_id IS NOT NULL
+lark_chat_session_binding|2200_17877_4_not_null|CHECK||lark_chat_id IS NOT NULL
+lark_chat_session_binding|2200_17877_5_not_null|CHECK||lark_chat_type IS NOT NULL
+lark_chat_session_binding|2200_17877_6_not_null|CHECK||created_at IS NOT NULL
+lark_chat_session_binding|lark_chat_session_binding_chat_session_id_fkey|FOREIGN KEY|chat_session_id|
+lark_chat_session_binding|lark_chat_session_binding_chat_session_id_key|UNIQUE|chat_session_id|
+lark_chat_session_binding|lark_chat_session_binding_installation_id_fkey|FOREIGN KEY|installation_id|
+lark_chat_session_binding|lark_chat_session_binding_installation_id_lark_chat_id_key|UNIQUE|installation_id|
+lark_chat_session_binding|lark_chat_session_binding_installation_id_lark_chat_id_key|UNIQUE|lark_chat_id|
+lark_chat_session_binding|lark_chat_session_binding_lark_chat_type_check|CHECK||((lark_chat_type = ANY (ARRAY['p2p'::text, 'group'::text])))
+lark_chat_session_binding|lark_chat_session_binding_pkey|PRIMARY KEY|id|
+lark_inbound_audit|2200_17912_1_not_null|CHECK||id IS NOT NULL
+lark_inbound_audit|2200_17912_4_not_null|CHECK||event_type IS NOT NULL
+lark_inbound_audit|2200_17912_7_not_null|CHECK||drop_reason IS NOT NULL
+lark_inbound_audit|2200_17912_8_not_null|CHECK||received_at IS NOT NULL
+lark_inbound_audit|lark_inbound_audit_installation_id_fkey|FOREIGN KEY|installation_id|
+lark_inbound_audit|lark_inbound_audit_pkey|PRIMARY KEY|id|
+lark_inbound_message_dedup|2200_17988_1_not_null|CHECK||installation_id IS NOT NULL
+lark_inbound_message_dedup|2200_17988_2_not_null|CHECK||message_id IS NOT NULL
+lark_inbound_message_dedup|2200_17988_3_not_null|CHECK||received_at IS NOT NULL
+lark_inbound_message_dedup|2200_17988_5_not_null|CHECK||claim_token IS NOT NULL
+lark_inbound_message_dedup|lark_inbound_message_dedup_installation_id_fkey|FOREIGN KEY|installation_id|
+lark_inbound_message_dedup|lark_inbound_message_dedup_pkey|PRIMARY KEY|installation_id|
+lark_inbound_message_dedup|lark_inbound_message_dedup_pkey|PRIMARY KEY|message_id|
+lark_installation|2200_17817_12_not_null|CHECK||installed_at IS NOT NULL
+lark_installation|2200_17817_13_not_null|CHECK||created_at IS NOT NULL
+lark_installation|2200_17817_14_not_null|CHECK||updated_at IS NOT NULL
+lark_installation|2200_17817_16_not_null|CHECK||region IS NOT NULL
+lark_installation|2200_17817_1_not_null|CHECK||id IS NOT NULL
+lark_installation|2200_17817_2_not_null|CHECK||workspace_id IS NOT NULL
+lark_installation|2200_17817_3_not_null|CHECK||agent_id IS NOT NULL
+lark_installation|2200_17817_4_not_null|CHECK||app_id IS NOT NULL
+lark_installation|2200_17817_5_not_null|CHECK||app_secret_encrypted IS NOT NULL
+lark_installation|2200_17817_7_not_null|CHECK||bot_open_id IS NOT NULL
+lark_installation|2200_17817_8_not_null|CHECK||installer_user_id IS NOT NULL
+lark_installation|2200_17817_9_not_null|CHECK||status IS NOT NULL
+lark_installation|lark_installation_agent_id_fkey|FOREIGN KEY|agent_id|
+lark_installation|lark_installation_app_id_key|UNIQUE|app_id|
+lark_installation|lark_installation_id_workspace_id_key|UNIQUE|id|
+lark_installation|lark_installation_id_workspace_id_key|UNIQUE|workspace_id|
+lark_installation|lark_installation_installer_user_id_fkey|FOREIGN KEY|installer_user_id|
+lark_installation|lark_installation_pkey|PRIMARY KEY|id|
+lark_installation|lark_installation_region_check|CHECK||((region = ANY (ARRAY['feishu'::text, 'lark'::text])))
+lark_installation|lark_installation_status_check|CHECK||((status = ANY (ARRAY['active'::text, 'revoked'::text])))
+lark_installation|lark_installation_workspace_id_agent_id_key|UNIQUE|workspace_id|
+lark_installation|lark_installation_workspace_id_agent_id_key|UNIQUE|agent_id|
+lark_installation|lark_installation_workspace_id_fkey|FOREIGN KEY|workspace_id|
+lark_outbound_card_message|2200_17928_1_not_null|CHECK||id IS NOT NULL
+lark_outbound_card_message|2200_17928_2_not_null|CHECK||chat_session_id IS NOT NULL
+lark_outbound_card_message|2200_17928_4_not_null|CHECK||lark_chat_id IS NOT NULL
+lark_outbound_card_message|2200_17928_5_not_null|CHECK||lark_card_message_id IS NOT NULL
+lark_outbound_card_message|2200_17928_6_not_null|CHECK||status IS NOT NULL
+lark_outbound_card_message|2200_17928_8_not_null|CHECK||created_at IS NOT NULL
+lark_outbound_card_message|lark_outbound_card_message_chat_session_id_fkey|FOREIGN KEY|chat_session_id|
+lark_outbound_card_message|lark_outbound_card_message_pkey|PRIMARY KEY|id|
+lark_outbound_card_message|lark_outbound_card_message_status_check|CHECK||((status = ANY (ARRAY['pending'::text, 'streaming'::text, 'final'::text, 'error'::text])))
+lark_outbound_card_message|lark_outbound_card_message_task_id_fkey|FOREIGN KEY|task_id|
+lark_user_binding|2200_17854_1_not_null|CHECK||id IS NOT NULL
+lark_user_binding|2200_17854_2_not_null|CHECK||workspace_id IS NOT NULL
+lark_user_binding|2200_17854_3_not_null|CHECK||multica_user_id IS NOT NULL
+lark_user_binding|2200_17854_4_not_null|CHECK||installation_id IS NOT NULL
+lark_user_binding|2200_17854_5_not_null|CHECK||lark_open_id IS NOT NULL
+lark_user_binding|2200_17854_7_not_null|CHECK||bound_at IS NOT NULL
+lark_user_binding|lark_user_binding_installation_fk|FOREIGN KEY|installation_id|
+lark_user_binding|lark_user_binding_installation_fk|FOREIGN KEY|workspace_id|
+lark_user_binding|lark_user_binding_installation_id_lark_open_id_key|UNIQUE|installation_id|
+lark_user_binding|lark_user_binding_installation_id_lark_open_id_key|UNIQUE|lark_open_id|
+lark_user_binding|lark_user_binding_member_fk|FOREIGN KEY|workspace_id|
+lark_user_binding|lark_user_binding_member_fk|FOREIGN KEY|multica_user_id|
+lark_user_binding|lark_user_binding_pkey|PRIMARY KEY|id|
+member|2200_16455_1_not_null|CHECK||id IS NOT NULL
+member|2200_16455_2_not_null|CHECK||workspace_id IS NOT NULL
+member|2200_16455_3_not_null|CHECK||user_id IS NOT NULL
+member|2200_16455_4_not_null|CHECK||role IS NOT NULL
+member|2200_16455_5_not_null|CHECK||created_at IS NOT NULL
+member|member_pkey|PRIMARY KEY|id|
+member|member_role_check|CHECK||((role = ANY (ARRAY['owner'::text, 'admin'::text, 'member'::text])))
+member|member_user_id_fkey|FOREIGN KEY|user_id|
+member|member_workspace_id_fkey|FOREIGN KEY|workspace_id|
+member|member_workspace_id_user_id_key|UNIQUE|workspace_id|
+member|member_workspace_id_user_id_key|UNIQUE|user_id|
+notification_preference|2200_17345_1_not_null|CHECK||id IS NOT NULL
+notification_preference|2200_17345_2_not_null|CHECK||workspace_id IS NOT NULL
+notification_preference|2200_17345_3_not_null|CHECK||user_id IS NOT NULL
+notification_preference|2200_17345_4_not_null|CHECK||preferences IS NOT NULL
+notification_preference|2200_17345_5_not_null|CHECK||updated_at IS NOT NULL
+notification_preference|notification_preference_pkey|PRIMARY KEY|id|
+notification_preference|notification_preference_user_id_fkey|FOREIGN KEY|user_id|
+notification_preference|notification_preference_workspace_id_fkey|FOREIGN KEY|workspace_id|
+notification_preference|notification_preference_workspace_id_user_id_key|UNIQUE|workspace_id|
+notification_preference|notification_preference_workspace_id_user_id_key|UNIQUE|user_id|
+personal_access_token|2200_16836_1_not_null|CHECK||id IS NOT NULL
+personal_access_token|2200_16836_2_not_null|CHECK||user_id IS NOT NULL
+personal_access_token|2200_16836_3_not_null|CHECK||name IS NOT NULL
+personal_access_token|2200_16836_4_not_null|CHECK||token_hash IS NOT NULL
+personal_access_token|2200_16836_5_not_null|CHECK||token_prefix IS NOT NULL
+personal_access_token|2200_16836_8_not_null|CHECK||revoked IS NOT NULL
+personal_access_token|2200_16836_9_not_null|CHECK||created_at IS NOT NULL
+personal_access_token|personal_access_token_pkey|PRIMARY KEY|id|
+personal_access_token|personal_access_token_user_id_fkey|FOREIGN KEY|user_id|
+pinned_item|2200_17141_1_not_null|CHECK||id IS NOT NULL
+pinned_item|2200_17141_2_not_null|CHECK||workspace_id IS NOT NULL
+pinned_item|2200_17141_3_not_null|CHECK||user_id IS NOT NULL
+pinned_item|2200_17141_4_not_null|CHECK||item_type IS NOT NULL
+pinned_item|2200_17141_5_not_null|CHECK||item_id IS NOT NULL
+pinned_item|2200_17141_6_not_null|CHECK||position IS NOT NULL
+pinned_item|2200_17141_7_not_null|CHECK||created_at IS NOT NULL
+pinned_item|pinned_item_item_type_check|CHECK||((item_type = ANY (ARRAY['issue'::text, 'project'::text])))
+pinned_item|pinned_item_pkey|PRIMARY KEY|id|
+pinned_item|pinned_item_user_id_fkey|FOREIGN KEY|user_id|
+pinned_item|pinned_item_workspace_id_fkey|FOREIGN KEY|workspace_id|
+pinned_item|pinned_item_workspace_id_user_id_item_type_item_id_key|UNIQUE|workspace_id|
+pinned_item|pinned_item_workspace_id_user_id_item_type_item_id_key|UNIQUE|user_id|
+pinned_item|pinned_item_workspace_id_user_id_item_type_item_id_key|UNIQUE|item_type|
+pinned_item|pinned_item_workspace_id_user_id_item_type_item_id_key|UNIQUE|item_id|
+project|2200_17112_10_not_null|CHECK||updated_at IS NOT NULL
+project|2200_17112_11_not_null|CHECK||priority IS NOT NULL
+project|2200_17112_1_not_null|CHECK||id IS NOT NULL
+project|2200_17112_2_not_null|CHECK||workspace_id IS NOT NULL
+project|2200_17112_3_not_null|CHECK||title IS NOT NULL
+project|2200_17112_6_not_null|CHECK||status IS NOT NULL
+project|2200_17112_9_not_null|CHECK||created_at IS NOT NULL
+project|project_lead_type_check|CHECK||((lead_type = ANY (ARRAY['member'::text, 'agent'::text])))
+project|project_pkey|PRIMARY KEY|id|
+project|project_priority_check|CHECK||((priority = ANY (ARRAY['urgent'::text, 'high'::text, 'medium'::text, 'low'::text, 'none'::text])))
+project|project_status_check|CHECK||((status = ANY (ARRAY['planned'::text, 'in_progress'::text, 'paused'::text, 'completed'::text, 'cancelled'::text])))
+project|project_workspace_id_fkey|FOREIGN KEY|workspace_id|
+project_resource|2200_17367_1_not_null|CHECK||id IS NOT NULL
+project_resource|2200_17367_2_not_null|CHECK||project_id IS NOT NULL
+project_resource|2200_17367_3_not_null|CHECK||workspace_id IS NOT NULL
+project_resource|2200_17367_4_not_null|CHECK||resource_type IS NOT NULL
+project_resource|2200_17367_5_not_null|CHECK||resource_ref IS NOT NULL
+project_resource|2200_17367_7_not_null|CHECK||position IS NOT NULL
+project_resource|2200_17367_8_not_null|CHECK||created_at IS NOT NULL
+project_resource|project_resource_pkey|PRIMARY KEY|id|
+project_resource|project_resource_project_id_fkey|FOREIGN KEY|project_id|
+project_resource|project_resource_project_id_resource_type_resource_ref_key|UNIQUE|project_id|
+project_resource|project_resource_project_id_resource_type_resource_ref_key|UNIQUE|resource_type|
+project_resource|project_resource_project_id_resource_type_resource_ref_key|UNIQUE|resource_ref|
+project_resource|project_resource_workspace_id_fkey|FOREIGN KEY|workspace_id|
+quick_action|2200_18526_11_not_null|CHECK||use_count IS NOT NULL
+quick_action|2200_18526_12_not_null|CHECK||created_by_type IS NOT NULL
+quick_action|2200_18526_13_not_null|CHECK||created_by_id IS NOT NULL
+quick_action|2200_18526_14_not_null|CHECK||created_at IS NOT NULL
+quick_action|2200_18526_15_not_null|CHECK||updated_at IS NOT NULL
+quick_action|2200_18526_1_not_null|CHECK||id IS NOT NULL
+quick_action|2200_18526_2_not_null|CHECK||workspace_id IS NOT NULL
+quick_action|2200_18526_3_not_null|CHECK||name IS NOT NULL
+quick_action|2200_18526_4_not_null|CHECK||description IS NOT NULL
+quick_action|2200_18526_5_not_null|CHECK||assignee_type IS NOT NULL
+quick_action|2200_18526_6_not_null|CHECK||assignee_id IS NOT NULL
+quick_action|2200_18526_7_not_null|CHECK||prompt IS NOT NULL
+quick_action|2200_18526_8_not_null|CHECK||visibility IS NOT NULL
+quick_action|2200_18526_9_not_null|CHECK||status IS NOT NULL
+quick_action|quick_action_assignee_type_check|CHECK||((assignee_type = ANY (ARRAY['agent'::text, 'squad'::text])))
+quick_action|quick_action_created_by_type_check|CHECK||((created_by_type = ANY (ARRAY['member'::text, 'agent'::text])))
+quick_action|quick_action_pkey|PRIMARY KEY|id|
+quick_action|quick_action_status_check|CHECK||((status = ANY (ARRAY['active'::text, 'archived'::text])))
+quick_action|quick_action_visibility_check|CHECK||((visibility = ANY (ARRAY['private'::text, 'public'::text])))
+runtime_profile|2200_18056_10_not_null|CHECK||enabled IS NOT NULL
+runtime_profile|2200_18056_11_not_null|CHECK||created_at IS NOT NULL
+runtime_profile|2200_18056_12_not_null|CHECK||updated_at IS NOT NULL
+runtime_profile|2200_18056_1_not_null|CHECK||id IS NOT NULL
+runtime_profile|2200_18056_2_not_null|CHECK||workspace_id IS NOT NULL
+runtime_profile|2200_18056_3_not_null|CHECK||display_name IS NOT NULL
+runtime_profile|2200_18056_4_not_null|CHECK||protocol_family IS NOT NULL
+runtime_profile|2200_18056_5_not_null|CHECK||command_name IS NOT NULL
+runtime_profile|2200_18056_7_not_null|CHECK||fixed_args IS NOT NULL
+runtime_profile|2200_18056_8_not_null|CHECK||visibility IS NOT NULL
+runtime_profile|runtime_profile_pkey|PRIMARY KEY|id|
+runtime_profile|runtime_profile_protocol_family_check|CHECK||((protocol_family = ANY (ARRAY['claude'::text, 'codebuddy'::text, 'codex'::text, 'copilot'::text, 'opencode'::text, 'openclaw'::text, 'hermes'::text, 'pi'::text, 'cursor'::text, 'kimi'::text, 'kiro'::text, 'antigravity'::text, 'qoder'::text, 'qoderclicn'::text, 'traecli'::text, 'deveco'::text, 'grok'::text, 'qwen'::text]))) NOT VALID
+runtime_profile|runtime_profile_visibility_check|CHECK||((visibility = ANY (ARRAY['workspace'::text, 'private'::text])))
+runtime_profile|runtime_profile_workspace_id_display_name_key|UNIQUE|workspace_id|
+runtime_profile|runtime_profile_workspace_id_display_name_key|UNIQUE|display_name|
+schema_migrations|2200_16385_1_not_null|CHECK||version IS NOT NULL
+schema_migrations|2200_16385_2_not_null|CHECK||applied_at IS NOT NULL
+schema_migrations|schema_migrations_pkey|PRIMARY KEY|version|
+skill|2200_16762_1_not_null|CHECK||id IS NOT NULL
+skill|2200_16762_2_not_null|CHECK||workspace_id IS NOT NULL
+skill|2200_16762_3_not_null|CHECK||name IS NOT NULL
+skill|2200_16762_4_not_null|CHECK||description IS NOT NULL
+skill|2200_16762_5_not_null|CHECK||content IS NOT NULL
+skill|2200_16762_6_not_null|CHECK||config IS NOT NULL
+skill|2200_16762_8_not_null|CHECK||created_at IS NOT NULL
+skill|2200_16762_9_not_null|CHECK||updated_at IS NOT NULL
+skill|skill_created_by_fkey|FOREIGN KEY|created_by|
+skill|skill_pkey|PRIMARY KEY|id|
+skill|skill_workspace_id_fkey|FOREIGN KEY|workspace_id|
+skill|skill_workspace_id_name_key|UNIQUE|workspace_id|
+skill|skill_workspace_id_name_key|UNIQUE|name|
+skill_file|2200_16787_1_not_null|CHECK||id IS NOT NULL
+skill_file|2200_16787_2_not_null|CHECK||skill_id IS NOT NULL
+skill_file|2200_16787_3_not_null|CHECK||path IS NOT NULL
+skill_file|2200_16787_4_not_null|CHECK||content IS NOT NULL
+skill_file|2200_16787_5_not_null|CHECK||created_at IS NOT NULL
+skill_file|2200_16787_6_not_null|CHECK||updated_at IS NOT NULL
+skill_file|skill_file_pkey|PRIMARY KEY|id|
+skill_file|skill_file_skill_id_fkey|FOREIGN KEY|skill_id|
+skill_file|skill_file_skill_id_path_key|UNIQUE|skill_id|
+skill_file|skill_file_skill_id_path_key|UNIQUE|path|
+skill_to_label|2200_18347_1_not_null|CHECK||skill_id IS NOT NULL
+skill_to_label|2200_18347_2_not_null|CHECK||label_id IS NOT NULL
+skill_to_label|2200_18347_3_not_null|CHECK||created_at IS NOT NULL
+skill_to_label|skill_to_label_pkey|PRIMARY KEY|skill_id|
+skill_to_label|skill_to_label_pkey|PRIMARY KEY|label_id|
+squad|2200_17524_12_not_null|CHECK||instructions IS NOT NULL
+squad|2200_17524_1_not_null|CHECK||id IS NOT NULL
+squad|2200_17524_2_not_null|CHECK||workspace_id IS NOT NULL
+squad|2200_17524_3_not_null|CHECK||name IS NOT NULL
+squad|2200_17524_4_not_null|CHECK||description IS NOT NULL
+squad|2200_17524_5_not_null|CHECK||leader_id IS NOT NULL
+squad|2200_17524_6_not_null|CHECK||creator_id IS NOT NULL
+squad|2200_17524_7_not_null|CHECK||created_at IS NOT NULL
+squad|2200_17524_8_not_null|CHECK||updated_at IS NOT NULL
+squad|squad_leader_id_fkey|FOREIGN KEY|leader_id|
+squad|squad_pkey|PRIMARY KEY|id|
+squad|squad_workspace_id_fkey|FOREIGN KEY|workspace_id|
+squad_member|2200_17548_1_not_null|CHECK||id IS NOT NULL
+squad_member|2200_17548_2_not_null|CHECK||squad_id IS NOT NULL
+squad_member|2200_17548_3_not_null|CHECK||member_type IS NOT NULL
+squad_member|2200_17548_4_not_null|CHECK||member_id IS NOT NULL
+squad_member|2200_17548_5_not_null|CHECK||role IS NOT NULL
+squad_member|2200_17548_6_not_null|CHECK||created_at IS NOT NULL
+squad_member|squad_member_member_type_check|CHECK||((member_type = ANY (ARRAY['agent'::text, 'member'::text])))
+squad_member|squad_member_pkey|PRIMARY KEY|id|
+squad_member|squad_member_squad_id_fkey|FOREIGN KEY|squad_id|
+squad_member|squad_member_squad_id_member_type_member_id_key|UNIQUE|squad_id|
+squad_member|squad_member_squad_id_member_type_member_id_key|UNIQUE|member_type|
+squad_member|squad_member_squad_id_member_type_member_id_key|UNIQUE|member_id|
+sys_cron_executions|2200_18003_11_not_null|CHECK||lease_token IS NOT NULL
+sys_cron_executions|2200_18003_18_not_null|CHECK||result IS NOT NULL
+sys_cron_executions|2200_18003_1_not_null|CHECK||id IS NOT NULL
+sys_cron_executions|2200_18003_21_not_null|CHECK||created_at IS NOT NULL
+sys_cron_executions|2200_18003_22_not_null|CHECK||updated_at IS NOT NULL
+sys_cron_executions|2200_18003_2_not_null|CHECK||job_name IS NOT NULL
+sys_cron_executions|2200_18003_3_not_null|CHECK||scope_kind IS NOT NULL
+sys_cron_executions|2200_18003_4_not_null|CHECK||scope_id IS NOT NULL
+sys_cron_executions|2200_18003_5_not_null|CHECK||plan_time IS NOT NULL
+sys_cron_executions|2200_18003_6_not_null|CHECK||status IS NOT NULL
+sys_cron_executions|2200_18003_7_not_null|CHECK||attempt IS NOT NULL
+sys_cron_executions|2200_18003_8_not_null|CHECK||max_attempts IS NOT NULL
+sys_cron_executions|chk_sys_cron_attempt|CHECK||(((attempt >= 1) AND (max_attempts >= attempt)))
+sys_cron_executions|chk_sys_cron_duration|CHECK||(((duration_ms IS NULL) OR (duration_ms >= 0)))
+sys_cron_executions|chk_sys_cron_status|CHECK||((status = ANY (ARRAY['RUNNING'::text, 'SUCCESS'::text, 'FAILED'::text])))
+sys_cron_executions|sys_cron_executions_pkey|PRIMARY KEY|id|
+sys_cron_executions|uq_sys_cron_execution|UNIQUE|job_name|
+sys_cron_executions|uq_sys_cron_execution|UNIQUE|scope_kind|
+sys_cron_executions|uq_sys_cron_execution|UNIQUE|scope_id|
+sys_cron_executions|uq_sys_cron_execution|UNIQUE|plan_time|
+task_message|2200_16941_1_not_null|CHECK||id IS NOT NULL
+task_message|2200_16941_2_not_null|CHECK||task_id IS NOT NULL
+task_message|2200_16941_3_not_null|CHECK||seq IS NOT NULL
+task_message|2200_16941_4_not_null|CHECK||type IS NOT NULL
+task_message|2200_16941_9_not_null|CHECK||created_at IS NOT NULL
+task_message|task_message_pkey|PRIMARY KEY|id|
+task_message|task_message_task_id_fkey|FOREIGN KEY|task_id|
+task_token|2200_17784_1_not_null|CHECK||id IS NOT NULL
+task_token|2200_17784_2_not_null|CHECK||token_hash IS NOT NULL
+task_token|2200_17784_3_not_null|CHECK||task_id IS NOT NULL
+task_token|2200_17784_4_not_null|CHECK||agent_id IS NOT NULL
+task_token|2200_17784_5_not_null|CHECK||workspace_id IS NOT NULL
+task_token|2200_17784_6_not_null|CHECK||user_id IS NOT NULL
+task_token|2200_17784_7_not_null|CHECK||expires_at IS NOT NULL
+task_token|2200_17784_8_not_null|CHECK||created_at IS NOT NULL
+task_token|task_token_agent_id_fkey|FOREIGN KEY|agent_id|
+task_token|task_token_pkey|PRIMARY KEY|id|
+task_token|task_token_task_id_fkey|FOREIGN KEY|task_id|
+task_token|task_token_user_id_fkey|FOREIGN KEY|user_id|
+task_token|task_token_workspace_id_fkey|FOREIGN KEY|workspace_id|
+task_usage|2200_17039_1_not_null|CHECK||id IS NOT NULL
+task_usage|2200_17039_2_not_null|CHECK||task_id IS NOT NULL
+task_usage|2200_17039_3_not_null|CHECK||provider IS NOT NULL
+task_usage|2200_17039_4_not_null|CHECK||model IS NOT NULL
+task_usage|2200_17039_5_not_null|CHECK||input_tokens IS NOT NULL
+task_usage|2200_17039_6_not_null|CHECK||output_tokens IS NOT NULL
+task_usage|2200_17039_7_not_null|CHECK||cache_read_tokens IS NOT NULL
+task_usage|2200_17039_8_not_null|CHECK||cache_write_tokens IS NOT NULL
+task_usage|2200_17039_9_not_null|CHECK||created_at IS NOT NULL
+task_usage|task_usage_pkey|PRIMARY KEY|id|
+task_usage|task_usage_task_id_fkey|FOREIGN KEY|task_id|
+task_usage|task_usage_task_id_provider_model_key|UNIQUE|task_id|
+task_usage|task_usage_task_id_provider_model_key|UNIQUE|provider|
+task_usage|task_usage_task_id_provider_model_key|UNIQUE|model|
+task_usage_hourly|2200_17727_10_not_null|CHECK||cache_read_tokens IS NOT NULL
+task_usage_hourly|2200_17727_11_not_null|CHECK||cache_write_tokens IS NOT NULL
+task_usage_hourly|2200_17727_12_not_null|CHECK||task_count IS NOT NULL
+task_usage_hourly|2200_17727_13_not_null|CHECK||event_count IS NOT NULL
+task_usage_hourly|2200_17727_14_not_null|CHECK||updated_at IS NOT NULL
+task_usage_hourly|2200_17727_15_not_null|CHECK||cost_usd_ticks IS NOT NULL
+task_usage_hourly|2200_17727_1_not_null|CHECK||bucket_hour IS NOT NULL
+task_usage_hourly|2200_17727_2_not_null|CHECK||workspace_id IS NOT NULL
+task_usage_hourly|2200_17727_3_not_null|CHECK||runtime_id IS NOT NULL
+task_usage_hourly|2200_17727_4_not_null|CHECK||agent_id IS NOT NULL
+task_usage_hourly|2200_17727_6_not_null|CHECK||provider IS NOT NULL
+task_usage_hourly|2200_17727_7_not_null|CHECK||model IS NOT NULL
+task_usage_hourly|2200_17727_8_not_null|CHECK||input_tokens IS NOT NULL
+task_usage_hourly|2200_17727_9_not_null|CHECK||output_tokens IS NOT NULL
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|bucket_hour|
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|workspace_id|
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|runtime_id|
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|agent_id|
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|project_id|
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|provider|
+task_usage_hourly|uq_task_usage_hourly_key|UNIQUE|model|
+task_usage_hourly_dirty|2200_17756_1_not_null|CHECK||bucket_hour IS NOT NULL
+task_usage_hourly_dirty|2200_17756_2_not_null|CHECK||workspace_id IS NOT NULL
+task_usage_hourly_dirty|2200_17756_3_not_null|CHECK||runtime_id IS NOT NULL
+task_usage_hourly_dirty|2200_17756_4_not_null|CHECK||agent_id IS NOT NULL
+task_usage_hourly_dirty|2200_17756_6_not_null|CHECK||provider IS NOT NULL
+task_usage_hourly_dirty|2200_17756_7_not_null|CHECK||model IS NOT NULL
+task_usage_hourly_dirty|2200_17756_8_not_null|CHECK||enqueued_at IS NOT NULL
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|bucket_hour|
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|workspace_id|
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|runtime_id|
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|agent_id|
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|project_id|
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|provider|
+task_usage_hourly_dirty|uq_task_usage_hourly_dirty_key|UNIQUE|model|
+task_usage_hourly_rollup_state|2200_17745_1_not_null|CHECK||id IS NOT NULL
+task_usage_hourly_rollup_state|2200_17745_2_not_null|CHECK||watermark_at IS NOT NULL
+task_usage_hourly_rollup_state|2200_17745_5_not_null|CHECK||last_run_rows IS NOT NULL
+task_usage_hourly_rollup_state|task_usage_hourly_rollup_state_id_check|CHECK||((id = 1))
+task_usage_hourly_rollup_state|task_usage_hourly_rollup_state_pkey|PRIMARY KEY|id|
+user|2200_16430_13_not_null|CHECK||profile_description IS NOT NULL
+user|2200_16430_1_not_null|CHECK||id IS NOT NULL
+user|2200_16430_2_not_null|CHECK||name IS NOT NULL
+user|2200_16430_3_not_null|CHECK||email IS NOT NULL
+user|2200_16430_5_not_null|CHECK||created_at IS NOT NULL
+user|2200_16430_6_not_null|CHECK||updated_at IS NOT NULL
+user|2200_16430_8_not_null|CHECK||onboarding_questionnaire IS NOT NULL
+user|user_email_key|UNIQUE|email|
+user|user_pkey|PRIMARY KEY|id|
+user_composio_connection|2200_18176_10_not_null|CHECK||created_at IS NOT NULL
+user_composio_connection|2200_18176_11_not_null|CHECK||updated_at IS NOT NULL
+user_composio_connection|2200_18176_1_not_null|CHECK||id IS NOT NULL
+user_composio_connection|2200_18176_2_not_null|CHECK||user_id IS NOT NULL
+user_composio_connection|2200_18176_3_not_null|CHECK||toolkit_slug IS NOT NULL
+user_composio_connection|2200_18176_4_not_null|CHECK||auth_config_id IS NOT NULL
+user_composio_connection|2200_18176_5_not_null|CHECK||connected_account_id IS NOT NULL
+user_composio_connection|2200_18176_6_not_null|CHECK||composio_user_id IS NOT NULL
+user_composio_connection|2200_18176_7_not_null|CHECK||status IS NOT NULL
+user_composio_connection|2200_18176_8_not_null|CHECK||connected_at IS NOT NULL
+user_composio_connection|user_composio_connection_pkey|PRIMARY KEY|id|
+user_composio_connection|user_composio_connection_user_id_connected_account_id_key|UNIQUE|user_id|
+user_composio_connection|user_composio_connection_user_id_connected_account_id_key|UNIQUE|connected_account_id|
+vcs_commit_status|2200_18484_1_not_null|CHECK||connection_id IS NOT NULL
+vcs_commit_status|2200_18484_2_not_null|CHECK||sha IS NOT NULL
+vcs_commit_status|2200_18484_3_not_null|CHECK||context IS NOT NULL
+vcs_commit_status|2200_18484_4_not_null|CHECK||state IS NOT NULL
+vcs_commit_status|2200_18484_7_not_null|CHECK||updated_at IS NOT NULL
+vcs_commit_status|vcs_commit_status_pkey|PRIMARY KEY|connection_id|
+vcs_commit_status|vcs_commit_status_pkey|PRIMARY KEY|sha|
+vcs_commit_status|vcs_commit_status_pkey|PRIMARY KEY|context|
+vcs_connection|2200_18441_10_not_null|CHECK||updated_at IS NOT NULL
+vcs_connection|2200_18441_1_not_null|CHECK||id IS NOT NULL
+vcs_connection|2200_18441_2_not_null|CHECK||workspace_id IS NOT NULL
+vcs_connection|2200_18441_3_not_null|CHECK||provider IS NOT NULL
+vcs_connection|2200_18441_4_not_null|CHECK||instance_url IS NOT NULL
+vcs_connection|2200_18441_5_not_null|CHECK||account_login IS NOT NULL
+vcs_connection|2200_18441_6_not_null|CHECK||access_token_encrypted IS NOT NULL
+vcs_connection|2200_18441_7_not_null|CHECK||webhook_secret_encrypted IS NOT NULL
+vcs_connection|2200_18441_9_not_null|CHECK||created_at IS NOT NULL
+vcs_connection|vcs_connection_pkey|PRIMARY KEY|id|
+vcs_connection|vcs_connection_provider_check|CHECK||((provider = ANY (ARRAY['forgejo'::text, 'gitea'::text, 'gitlab'::text])))
+vcs_connection|vcs_connection_workspace_id_instance_url_key|UNIQUE|workspace_id|
+vcs_connection|vcs_connection_workspace_id_instance_url_key|UNIQUE|instance_url|
+vcs_pull_request|2200_18455_10_not_null|CHECK||html_url IS NOT NULL
+vcs_pull_request|2200_18455_12_not_null|CHECK||head_sha IS NOT NULL
+vcs_pull_request|2200_18455_17_not_null|CHECK||pr_created_at IS NOT NULL
+vcs_pull_request|2200_18455_18_not_null|CHECK||pr_updated_at IS NOT NULL
+vcs_pull_request|2200_18455_19_not_null|CHECK||additions IS NOT NULL
+vcs_pull_request|2200_18455_1_not_null|CHECK||id IS NOT NULL
+vcs_pull_request|2200_18455_20_not_null|CHECK||deletions IS NOT NULL
+vcs_pull_request|2200_18455_21_not_null|CHECK||changed_files IS NOT NULL
+vcs_pull_request|2200_18455_22_not_null|CHECK||created_at IS NOT NULL
+vcs_pull_request|2200_18455_23_not_null|CHECK||updated_at IS NOT NULL
+vcs_pull_request|2200_18455_2_not_null|CHECK||workspace_id IS NOT NULL
+vcs_pull_request|2200_18455_3_not_null|CHECK||connection_id IS NOT NULL
+vcs_pull_request|2200_18455_4_not_null|CHECK||provider IS NOT NULL
+vcs_pull_request|2200_18455_5_not_null|CHECK||repo_owner IS NOT NULL
+vcs_pull_request|2200_18455_6_not_null|CHECK||repo_name IS NOT NULL
+vcs_pull_request|2200_18455_7_not_null|CHECK||pr_number IS NOT NULL
+vcs_pull_request|2200_18455_8_not_null|CHECK||title IS NOT NULL
+vcs_pull_request|2200_18455_9_not_null|CHECK||state IS NOT NULL
+vcs_pull_request|vcs_pull_request_connection_id_repo_owner_repo_name_pr_numb_key|UNIQUE|connection_id|
+vcs_pull_request|vcs_pull_request_connection_id_repo_owner_repo_name_pr_numb_key|UNIQUE|repo_owner|
+vcs_pull_request|vcs_pull_request_connection_id_repo_owner_repo_name_pr_numb_key|UNIQUE|repo_name|
+vcs_pull_request|vcs_pull_request_connection_id_repo_owner_repo_name_pr_numb_key|UNIQUE|pr_number|
+vcs_pull_request|vcs_pull_request_pkey|PRIMARY KEY|id|
+vcs_pull_request|vcs_pull_request_provider_check|CHECK||((provider = ANY (ARRAY['forgejo'::text, 'gitea'::text, 'gitlab'::text])))
+vcs_pull_request|vcs_pull_request_state_check|CHECK||((state = ANY (ARRAY['open'::text, 'closed'::text, 'merged'::text, 'draft'::text])))
+verification_code|2200_16824_1_not_null|CHECK||id IS NOT NULL
+verification_code|2200_16824_2_not_null|CHECK||email IS NOT NULL
+verification_code|2200_16824_3_not_null|CHECK||code IS NOT NULL
+verification_code|2200_16824_4_not_null|CHECK||expires_at IS NOT NULL
+verification_code|2200_16824_5_not_null|CHECK||used IS NOT NULL
+verification_code|2200_16824_6_not_null|CHECK||created_at IS NOT NULL
+verification_code|2200_16824_7_not_null|CHECK||attempts IS NOT NULL
+verification_code|verification_code_pkey|PRIMARY KEY|id|
+webhook_delivery|2200_17640_10_not_null|CHECK||status IS NOT NULL
+webhook_delivery|2200_17640_11_not_null|CHECK||attempt_count IS NOT NULL
+webhook_delivery|2200_17640_12_not_null|CHECK||selected_headers IS NOT NULL
+webhook_delivery|2200_17640_1_not_null|CHECK||id IS NOT NULL
+webhook_delivery|2200_17640_20_not_null|CHECK||received_at IS NOT NULL
+webhook_delivery|2200_17640_21_not_null|CHECK||last_attempt_at IS NOT NULL
+webhook_delivery|2200_17640_22_not_null|CHECK||created_at IS NOT NULL
+webhook_delivery|2200_17640_23_not_null|CHECK||available_at IS NOT NULL
+webhook_delivery|2200_17640_26_not_null|CHECK||dispatch_attempts IS NOT NULL
+webhook_delivery|2200_17640_2_not_null|CHECK||workspace_id IS NOT NULL
+webhook_delivery|2200_17640_3_not_null|CHECK||autopilot_id IS NOT NULL
+webhook_delivery|2200_17640_4_not_null|CHECK||trigger_id IS NOT NULL
+webhook_delivery|2200_17640_5_not_null|CHECK||provider IS NOT NULL
+webhook_delivery|2200_17640_6_not_null|CHECK||event IS NOT NULL
+webhook_delivery|2200_17640_9_not_null|CHECK||signature_status IS NOT NULL
+webhook_delivery|webhook_delivery_autopilot_id_fkey|FOREIGN KEY|autopilot_id|
+webhook_delivery|webhook_delivery_autopilot_run_id_fkey|FOREIGN KEY|autopilot_run_id|
+webhook_delivery|webhook_delivery_pkey|PRIMARY KEY|id|
+webhook_delivery|webhook_delivery_provider_check|CHECK||((provider = ANY (ARRAY['generic'::text, 'github'::text])))
+webhook_delivery|webhook_delivery_replayed_from_delivery_id_fkey|FOREIGN KEY|replayed_from_delivery_id|
+webhook_delivery|webhook_delivery_signature_status_check|CHECK||((signature_status = ANY (ARRAY['not_required'::text, 'valid'::text, 'invalid'::text, 'missing'::text])))
+webhook_delivery|webhook_delivery_status_check|CHECK||((status = ANY (ARRAY['queued'::text, 'dispatched'::text, 'rejected'::text, 'ignored'::text, 'failed'::text])))
+webhook_delivery|webhook_delivery_trigger_id_fkey|FOREIGN KEY|trigger_id|
+webhook_delivery|webhook_delivery_workspace_id_fkey|FOREIGN KEY|workspace_id|
+workspace|2200_16442_10_not_null|CHECK||issue_prefix IS NOT NULL
+workspace|2200_16442_11_not_null|CHECK||issue_counter IS NOT NULL
+workspace|2200_16442_13_not_null|CHECK||attribution_fail_closed IS NOT NULL
+workspace|2200_16442_1_not_null|CHECK||id IS NOT NULL
+workspace|2200_16442_2_not_null|CHECK||name IS NOT NULL
+workspace|2200_16442_3_not_null|CHECK||slug IS NOT NULL
+workspace|2200_16442_5_not_null|CHECK||settings IS NOT NULL
+workspace|2200_16442_6_not_null|CHECK||created_at IS NOT NULL
+workspace|2200_16442_7_not_null|CHECK||updated_at IS NOT NULL
+workspace|2200_16442_9_not_null|CHECK||repos IS NOT NULL
+workspace|workspace_pkey|PRIMARY KEY|id|
+workspace|workspace_slug_key|UNIQUE|slug|
+workspace_invitation|2200_17168_10_not_null|CHECK||expires_at IS NOT NULL
+workspace_invitation|2200_17168_1_not_null|CHECK||id IS NOT NULL
+workspace_invitation|2200_17168_2_not_null|CHECK||workspace_id IS NOT NULL
+workspace_invitation|2200_17168_3_not_null|CHECK||inviter_id IS NOT NULL
+workspace_invitation|2200_17168_4_not_null|CHECK||invitee_email IS NOT NULL
+workspace_invitation|2200_17168_6_not_null|CHECK||role IS NOT NULL
+workspace_invitation|2200_17168_7_not_null|CHECK||status IS NOT NULL
+workspace_invitation|2200_17168_8_not_null|CHECK||created_at IS NOT NULL
+workspace_invitation|2200_17168_9_not_null|CHECK||updated_at IS NOT NULL
+workspace_invitation|workspace_invitation_invitee_user_id_fkey|FOREIGN KEY|invitee_user_id|
+workspace_invitation|workspace_invitation_inviter_id_fkey|FOREIGN KEY|inviter_id|
+workspace_invitation|workspace_invitation_pkey|PRIMARY KEY|id|
+workspace_invitation|workspace_invitation_role_check|CHECK||((role = ANY (ARRAY['admin'::text, 'member'::text])))
+workspace_invitation|workspace_invitation_status_check|CHECK||((status = ANY (ARRAY['pending'::text, 'accepted'::text, 'declined'::text, 'expired'::text])))
+workspace_invitation|workspace_invitation_workspace_id_fkey|FOREIGN KEY|workspace_id|

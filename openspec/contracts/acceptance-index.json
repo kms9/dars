@@ -1,0 +1,2158 @@
+{
+  "schema_version": 1,
+  "source": "docs/prd/dars_lightweight_runtime_docs/04_e2e_acceptance_matrix.md",
+  "status_values": [
+    "not_run",
+    "passed",
+    "failed",
+    "blocked"
+  ],
+  "total_cases": 142,
+  "priority_counts": {
+    "P0": 39,
+    "P1": 100,
+    "P2": 3
+  },
+  "release_required_count": 83,
+  "security_p1_count": 15,
+  "id_index": {
+    "AG-01": 0,
+    "AG-02": 1,
+    "AG-03": 2,
+    "AG-04": 3,
+    "AG-05": 4,
+    "AG-06": 5,
+    "AG-07": 6,
+    "API-01": 7,
+    "API-02": 8,
+    "API-03": 9,
+    "API-04": 10,
+    "API-05": 11,
+    "API-06": 12,
+    "API-07": 13,
+    "API-08": 14,
+    "API-09": 15,
+    "API-10": 16,
+    "AUTH-01": 17,
+    "AUTH-02": 18,
+    "AUTH-03": 19,
+    "AUTH-04": 20,
+    "BLD-01": 21,
+    "BLD-02": 22,
+    "BLD-03": 23,
+    "BLD-04": 24,
+    "BLD-05": 25,
+    "CH-01": 26,
+    "CH-02": 27,
+    "CH-03": 28,
+    "CH-04": 29,
+    "CH-05": 30,
+    "CH-06": 31,
+    "CH-07": 32,
+    "CH-08": 33,
+    "CH-09": 34,
+    "CH-10": 35,
+    "CH-11": 36,
+    "CM-01": 37,
+    "CM-02": 38,
+    "CM-03": 39,
+    "CM-04": 40,
+    "CM-05": 41,
+    "CM-06": 42,
+    "CM-07": 43,
+    "CM-08": 44,
+    "CM-09": 45,
+    "CM-10": 46,
+    "CM-11": 47,
+    "DB-01": 48,
+    "DB-02": 49,
+    "DB-03": 50,
+    "DB-04": 51,
+    "DB-05": 52,
+    "DB-06": 53,
+    "DB-07": 54,
+    "DB-08": 55,
+    "DB-09": 56,
+    "DB-10": 57,
+    "DR-01": 58,
+    "DR-02": 59,
+    "DR-03": 60,
+    "DR-04": 61,
+    "DR-05": 62,
+    "DR-06": 63,
+    "DR-07": 64,
+    "DR-08": 65,
+    "DR-09": 66,
+    "DR-10": 67,
+    "DR-11": 68,
+    "FLOW-01": 69,
+    "FLOW-02": 70,
+    "FLOW-03": 71,
+    "FLOW-04": 72,
+    "FLOW-05": 73,
+    "FLOW-06": 74,
+    "FLOW-07": 75,
+    "IS-01": 76,
+    "IS-02": 77,
+    "IS-03": 78,
+    "IS-04": 79,
+    "IS-05": 80,
+    "IS-06": 81,
+    "IS-07": 82,
+    "IS-08": 83,
+    "IS-09": 84,
+    "IS-10": 85,
+    "IS-11": 86,
+    "PRC-01": 87,
+    "PRC-02": 88,
+    "PRC-03": 89,
+    "PRC-04": 90,
+    "PRC-05": 91,
+    "PRC-06": 92,
+    "PRC-07": 93,
+    "RC-01": 94,
+    "RC-02": 95,
+    "RC-03": 96,
+    "RC-04": 97,
+    "RP-01": 98,
+    "SEC-01": 99,
+    "SEC-02": 100,
+    "SEC-03": 101,
+    "SEC-04": 102,
+    "SEC-05": 103,
+    "SEC-06": 104,
+    "SEC-07": 105,
+    "SEC-08": 106,
+    "SEC-09": 107,
+    "SEC-10": 108,
+    "SEC-11": 109,
+    "SEC-12": 110,
+    "SK-01": 111,
+    "SK-02": 112,
+    "SK-03": 113,
+    "SQ-01": 114,
+    "SQ-02": 115,
+    "SQ-03": 116,
+    "SQ-04": 117,
+    "SQ-05": 118,
+    "SQ-06": 119,
+    "SQ-07": 120,
+    "SQ-08": 121,
+    "SQ-09": 122,
+    "SQ-10": 123,
+    "SQ-11": 124,
+    "TQ-01": 125,
+    "TQ-02": 126,
+    "TQ-03": 127,
+    "TQ-04": 128,
+    "TQ-05": 129,
+    "TQ-06": 130,
+    "TQ-07": 131,
+    "TQ-08": 132,
+    "TQ-09": 133,
+    "TQ-10": 134,
+    "TQ-11": 135,
+    "WS-01": 136,
+    "WS-02": 137,
+    "WS-03": 138,
+    "WS-04": 139,
+    "WS-05": 140,
+    "WS-06": 141
+  },
+  "cases": [
+    {
+      "id": "AG-01",
+      "priority": "P0",
+      "family": "AG",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AG-02",
+      "priority": "P0",
+      "family": "AG",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AG-03",
+      "priority": "P1",
+      "family": "AG",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AG-04",
+      "priority": "P1",
+      "family": "AG",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AG-05",
+      "priority": "P1",
+      "family": "AG",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AG-06",
+      "priority": "P1",
+      "family": "AG",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AG-07",
+      "priority": "P2",
+      "family": "AG",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-01",
+      "priority": "P0",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-02",
+      "priority": "P0",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-03",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-04",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-05",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-06",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-07",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-08",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-09",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "API-10",
+      "priority": "P1",
+      "family": "API",
+      "release_required": true,
+      "reasons": [
+        "all_api"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AUTH-01",
+      "priority": "P0",
+      "family": "AUTH",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AUTH-02",
+      "priority": "P1",
+      "family": "AUTH",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AUTH-03",
+      "priority": "P1",
+      "family": "AUTH",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "AUTH-04",
+      "priority": "P0",
+      "family": "AUTH",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "BLD-01",
+      "priority": "P0",
+      "family": "BLD",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_bld"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/build-gates.md",
+        "evidence/phase-6/final-release.md"
+      ]
+    },
+    {
+      "id": "BLD-02",
+      "priority": "P0",
+      "family": "BLD",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_bld"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/build-gates.md",
+        "evidence/phase-6/final-release.md"
+      ]
+    },
+    {
+      "id": "BLD-03",
+      "priority": "P0",
+      "family": "BLD",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_bld"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/build-gates.md",
+        "evidence/phase-6/final-release.md"
+      ]
+    },
+    {
+      "id": "BLD-04",
+      "priority": "P1",
+      "family": "BLD",
+      "release_required": true,
+      "reasons": [
+        "all_bld"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/build-gates.md",
+        "evidence/phase-6/final-release.md"
+      ]
+    },
+    {
+      "id": "BLD-05",
+      "priority": "P1",
+      "family": "BLD",
+      "release_required": true,
+      "reasons": [
+        "all_bld"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/build-gates.md",
+        "evidence/phase-6/final-release.md"
+      ]
+    },
+    {
+      "id": "CH-01",
+      "priority": "P0",
+      "family": "CH",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-02",
+      "priority": "P0",
+      "family": "CH",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-03",
+      "priority": "P0",
+      "family": "CH",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-04",
+      "priority": "P0",
+      "family": "CH",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-05",
+      "priority": "P1",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-06",
+      "priority": "P1",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-07",
+      "priority": "P1",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-08",
+      "priority": "P1",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-09",
+      "priority": "P1",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-10",
+      "priority": "P2",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CH-11",
+      "priority": "P1",
+      "family": "CH",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/direct-chat-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-01",
+      "priority": "P0",
+      "family": "CM",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-02",
+      "priority": "P0",
+      "family": "CM",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-03",
+      "priority": "P0",
+      "family": "CM",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-04",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-05",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-06",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-07",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": true,
+      "reasons": [
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-08",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-09",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-10",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "CM-11",
+      "priority": "P1",
+      "family": "CM",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-01",
+      "priority": "P0",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-02",
+      "priority": "P0",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-03",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-04",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-05",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-06",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-07",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "blocked",
+      "evidence": [
+        "evidence/baseline/old-database-baseline.json",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/final-release.md"
+      ]
+    },
+    {
+      "id": "DB-08",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-09",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DB-10",
+      "priority": "P1",
+      "family": "DB",
+      "release_required": true,
+      "reasons": [
+        "all_db"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-5/physical-delete.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-01",
+      "priority": "P0",
+      "family": "DR",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-02",
+      "priority": "P0",
+      "family": "DR",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-03",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-04",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-05",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-06",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-07",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-08",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-09",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-10",
+      "priority": "P0",
+      "family": "DR",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "DR-11",
+      "priority": "P1",
+      "family": "DR",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/daemon-protocol-claim.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-01",
+      "priority": "P0",
+      "family": "FLOW",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-02",
+      "priority": "P0",
+      "family": "FLOW",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-03",
+      "priority": "P1",
+      "family": "FLOW",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-04",
+      "priority": "P1",
+      "family": "FLOW",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-05",
+      "priority": "P1",
+      "family": "FLOW",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-06",
+      "priority": "P1",
+      "family": "FLOW",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "FLOW-07",
+      "priority": "P1",
+      "family": "FLOW",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-01",
+      "priority": "P0",
+      "family": "IS",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-02",
+      "priority": "P0",
+      "family": "IS",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-03",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-04",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-05",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-06",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-07",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-08",
+      "priority": "P0",
+      "family": "IS",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-09",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-10",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "IS-11",
+      "priority": "P1",
+      "family": "IS",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/run-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-01",
+      "priority": "P0",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-02",
+      "priority": "P1",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-03",
+      "priority": "P1",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-04",
+      "priority": "P1",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-05",
+      "priority": "P1",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-06",
+      "priority": "P1",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "PRC-07",
+      "priority": "P1",
+      "family": "PRC",
+      "release_required": true,
+      "reasons": [
+        "all_prc"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-1/server-composition.md",
+        "evidence/phase-3/protocol-contract-alignment.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "RC-01",
+      "priority": "P1",
+      "family": "RC",
+      "release_required": true,
+      "reasons": [
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "RC-02",
+      "priority": "P1",
+      "family": "RC",
+      "release_required": true,
+      "reasons": [
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "RC-03",
+      "priority": "P1",
+      "family": "RC",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "RC-04",
+      "priority": "P1",
+      "family": "RC",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "RP-01",
+      "priority": "P0",
+      "family": "RP",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-01",
+      "priority": "P0",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-02",
+      "priority": "P0",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-03",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-04",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-05",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-06",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-07",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-08",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-09",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-10",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-11",
+      "priority": "P1",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SEC-12",
+      "priority": "P0",
+      "family": "SEC",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/authorization-task-token.md",
+        "evidence/phase-3/database-runtime-cutover.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SK-01",
+      "priority": "P0",
+      "family": "SK",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SK-02",
+      "priority": "P1",
+      "family": "SK",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SK-03",
+      "priority": "P1",
+      "family": "SK",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/runtime-agent-skill.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-01",
+      "priority": "P0",
+      "family": "SQ",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-02",
+      "priority": "P0",
+      "family": "SQ",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-03",
+      "priority": "P0",
+      "family": "SQ",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-04",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-05",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-06",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-07",
+      "priority": "P2",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-08",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-09",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-10",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "SQ-11",
+      "priority": "P1",
+      "family": "SQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-3/squad-core.md",
+        "evidence/phase-4/real-runtime.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-01",
+      "priority": "P0",
+      "family": "TQ",
+      "release_required": true,
+      "reasons": [
+        "all_p0",
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-02",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-03",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": true,
+      "reasons": [
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-04",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": true,
+      "reasons": [
+        "explicit_core"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-05",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-06",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-07",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-08",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-09",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-10",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "TQ-11",
+      "priority": "P1",
+      "family": "TQ",
+      "release_required": false,
+      "reasons": [],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/task-lifecycle.md",
+        "evidence/phase-3/mention-reentry.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "WS-01",
+      "priority": "P0",
+      "family": "WS",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "WS-02",
+      "priority": "P0",
+      "family": "WS",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "WS-03",
+      "priority": "P1",
+      "family": "WS",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "WS-04",
+      "priority": "P1",
+      "family": "WS",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "WS-05",
+      "priority": "P0",
+      "family": "WS",
+      "release_required": true,
+      "reasons": [
+        "all_p0"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    },
+    {
+      "id": "WS-06",
+      "priority": "P1",
+      "family": "WS",
+      "release_required": true,
+      "reasons": [
+        "security_p1"
+      ],
+      "status": "passed",
+      "evidence": [
+        "evidence/phase-2/identity-workspace-token.md",
+        "evidence/phase-6/acceptance-results.md"
+      ]
+    }
+  ]
+}

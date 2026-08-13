@@ -1,0 +1,105 @@
+type RuntimeEnv = Record<string, string | undefined>;
+
+function cleanUrl(raw: string | undefined): string | undefined {
+  const value = raw?.trim();
+  if (!value) return undefined;
+  return value.replace(/\/+$/, "");
+}
+
+function cleanHttpUrl(raw: string | undefined): string | undefined {
+  const value = cleanUrl(raw);
+  if (!value) return undefined;
+
+  try {
+    const url = new URL(value);
+    if (url.protocol === "http:" || url.protocol === "https:") return value;
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+}
+
+function appendPath(baseUrl: string, path: string): string {
+  return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+export function resolveRemoteApiUrl(env: RuntimeEnv): string | undefined {
+  const explicitRemote = cleanHttpUrl(env.REMOTE_API_URL);
+  if (explicitRemote) return explicitRemote;
+
+  const publicApi = cleanHttpUrl(env.NEXT_PUBLIC_API_URL);
+  if (publicApi) return publicApi;
+  return undefined;
+}
+
+// Dev-only fallback: `next dev` runs on a developer machine, where the
+// conventional localhost backend port is safe to assume when nothing
+// is configured. Builds and the runtime proxy keep the strict resolver so a
+// prebuilt image never guesses an origin (#4787).
+export function resolveDevRemoteApiUrl(env: RuntimeEnv): string {
+  const configured = resolveRemoteApiUrl(env);
+  if (configured) return configured;
+  // Next writes process.env.PORT with the frontend listener port before it
+  // evaluates next.config.ts. Treating that generic variable as a backend port
+  // would make every dev rewrite point back to the frontend itself. Only the
+  // backend-specific aliases are safe fallbacks in this process.
+  const backendPort =
+    env.BACKEND_PORT?.trim() ||
+    env.API_PORT?.trim() ||
+    env.SERVER_PORT?.trim() ||
+    "8080";
+  return `http://localhost:${backendPort}`;
+}
+
+export function resolveBrowserApiBaseUrl(env: RuntimeEnv): string | undefined {
+  return cleanUrl(env.NEXT_PUBLIC_API_URL);
+}
+
+export function resolveBrowserWsUrl(env: RuntimeEnv): string | undefined {
+  const explicit = cleanUrl(env.NEXT_PUBLIC_WS_URL);
+  if (explicit) return explicit;
+
+  const apiUrl = resolveBrowserApiBaseUrl(env);
+  return apiUrl ? tryDeriveWsUrl(apiUrl) : undefined;
+}
+
+export function runtimeRewriteDestination(
+  pathname: string,
+  env: RuntimeEnv,
+): string | undefined {
+  const remoteApiUrl = resolveRemoteApiUrl(env);
+  if (!remoteApiUrl) return undefined;
+
+  if (pathname === "/api" || pathname.startsWith("/api/")) {
+    return appendPath(remoteApiUrl, pathname);
+  }
+  if (pathname === "/ws") {
+    return appendPath(remoteApiUrl, "/ws");
+  }
+  if (isBackendAuthPath(pathname)) {
+    return appendPath(remoteApiUrl, pathname);
+  }
+
+  return undefined;
+}
+
+function isBackendAuthPath(pathname: string): boolean {
+  return pathname === "/auth" || pathname.startsWith("/auth/");
+}
+
+function tryDeriveWsUrl(apiUrl: string): string | undefined {
+  let url: URL;
+  try {
+    url = new URL(apiUrl);
+  } catch {
+    return undefined;
+  }
+  if (url.protocol === "https:") url.protocol = "wss:";
+  else if (url.protocol === "http:") url.protocol = "ws:";
+  else return undefined;
+  url.pathname = appendPath(url.pathname.replace(/\/+$/, ""), "/ws");
+  url.search = "";
+  url.hash = "";
+  return url.toString().replace(/\/$/, "");
+}

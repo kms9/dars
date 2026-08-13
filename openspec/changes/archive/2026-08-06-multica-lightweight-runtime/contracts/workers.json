@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "source": "specs/lightweight-runtime-release/spec.md requirement 后台 Worker 使用严格白名单",
+  "default": [
+    {
+      "id": "runtime_task_sweeper",
+      "duties": [
+        "stale runtime recovery",
+        "stale task recovery",
+        "queued task expiry",
+        "deferred chat cancellation finalization",
+        "expired or used verification code cleanup",
+        "expired daemon token cleanup",
+        "expired task token cleanup"
+      ],
+      "must_not": [
+        "delete personal access token records",
+        "promote deferred tasks"
+      ]
+    },
+    {
+      "id": "batched_heartbeat_scheduler",
+      "duties": [
+        "persist batched runtime heartbeat updates"
+      ]
+    },
+    {
+      "id": "realtime_in_memory_hub",
+      "duties": [
+        "single-node workspace realtime fanout"
+      ]
+    }
+  ],
+  "optional": [
+    {
+      "id": "redis_realtime_relay",
+      "enabled_by": "REDIS_URL",
+      "duties": [
+        "multi-node realtime relay"
+      ]
+    },
+    {
+      "id": "metrics_http_listener",
+      "enabled_by": "METRICS_ADDR",
+      "duties": [
+        "process metrics",
+        "HTTP metrics",
+        "realtime metrics"
+      ],
+      "must_not": [
+        "query business rollups",
+        "run a business sampler"
+      ]
+    }
+  ],
+  "forbidden": [
+    "autopilot",
+    "business metrics sampler",
+    "channel media reconciler",
+    "channel router",
+    "channel supervisor",
+    "database stats logger",
+    "github pull request refresh",
+    "notification worker or listener",
+    "subscriber worker or listener",
+    "task usage rollup scheduler",
+    "webhook delivery worker"
+  ],
+  "notes": [
+    "deferred task promotion belongs to claim and task core and is not a worker",
+    "HTTP serving, Go runtime and database pool internals are not business workers"
+  ]
+}

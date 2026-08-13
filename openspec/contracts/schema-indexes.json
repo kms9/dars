@@ -1,0 +1,1165 @@
+{
+  "schema_version": 1,
+  "source": "docs/prd/dars_lightweight_runtime_docs/03_database_retention_spec.md section 17",
+  "audit_semantics": "compare table, ordered keys, uniqueness, predicate and NULLS NOT DISTINCT; physical index names are not part of the contract",
+  "index_count": 76,
+  "unique_index_count": 47,
+  "access_index_count": 29,
+  "indexes": [
+    {
+      "id": "unique.schema_metadata.id",
+      "table": "schema_metadata",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.user.id",
+      "table": "user",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.verification_code.id",
+      "table": "verification_code",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.workspace.id",
+      "table": "workspace",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.member.id",
+      "table": "member",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.personal_access_token.id",
+      "table": "personal_access_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.daemon_token.id",
+      "table": "daemon_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.task_token.id",
+      "table": "task_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.runtime_profile.id",
+      "table": "runtime_profile",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent_runtime.id",
+      "table": "agent_runtime",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent.id",
+      "table": "agent",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.skill.id",
+      "table": "skill",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.skill_file.id",
+      "table": "skill_file",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent_invocation_target.id",
+      "table": "agent_invocation_target",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.squad.id",
+      "table": "squad",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.squad_member.id",
+      "table": "squad_member",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.issue.id",
+      "table": "issue",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.comment.id",
+      "table": "comment",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent_task_queue.id",
+      "table": "agent_task_queue",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.task_message.id",
+      "table": "task_message",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.task_usage.id",
+      "table": "task_usage",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.activity_log.id",
+      "table": "activity_log",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.chat_session.id",
+      "table": "chat_session",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.chat_message.id",
+      "table": "chat_message",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.chat_draft_restore.id",
+      "table": "chat_draft_restore",
+      "unique": true,
+      "keys": [
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.user.email",
+      "table": "user",
+      "unique": true,
+      "keys": [
+        {
+          "column": "email"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.workspace.slug",
+      "table": "workspace",
+      "unique": true,
+      "keys": [
+        {
+          "column": "slug"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.member.workspace_user",
+      "table": "member",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "user_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.personal_access_token.hash",
+      "table": "personal_access_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "token_hash"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.daemon_token.hash",
+      "table": "daemon_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "token_hash"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.daemon_token.workspace_daemon",
+      "table": "daemon_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "daemon_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.task_token.hash",
+      "table": "task_token",
+      "unique": true,
+      "keys": [
+        {
+          "column": "token_hash"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.runtime_profile.workspace_name",
+      "table": "runtime_profile",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "display_name"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent_runtime.identity",
+      "table": "agent_runtime",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "daemon_id"
+        },
+        {
+          "column": "provider"
+        },
+        {
+          "column": "profile_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": true
+    },
+    {
+      "id": "unique.agent_skill.pair",
+      "table": "agent_skill",
+      "unique": true,
+      "keys": [
+        {
+          "column": "agent_id"
+        },
+        {
+          "column": "skill_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.skill_file.path",
+      "table": "skill_file",
+      "unique": true,
+      "keys": [
+        {
+          "column": "skill_id"
+        },
+        {
+          "column": "path"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent_invocation_target.scope",
+      "table": "agent_invocation_target",
+      "unique": true,
+      "keys": [
+        {
+          "column": "agent_id"
+        },
+        {
+          "column": "target_type"
+        },
+        {
+          "column": "target_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.squad_member.agent",
+      "table": "squad_member",
+      "unique": true,
+      "keys": [
+        {
+          "column": "squad_id"
+        },
+        {
+          "column": "agent_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.issue.number",
+      "table": "issue",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "number"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.issue.idempotency",
+      "table": "issue",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "creator_type"
+        },
+        {
+          "column": "creator_id"
+        },
+        {
+          "column": "idempotency_key"
+        }
+      ],
+      "predicate": "idempotency_key IS NOT NULL",
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.comment.idempotency",
+      "table": "comment",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "issue_id"
+        },
+        {
+          "column": "author_type"
+        },
+        {
+          "column": "author_id"
+        },
+        {
+          "column": "idempotency_key"
+        }
+      ],
+      "predicate": "idempotency_key IS NOT NULL",
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.chat_message.idempotency",
+      "table": "chat_message",
+      "unique": true,
+      "keys": [
+        {
+          "column": "chat_session_id"
+        },
+        {
+          "column": "idempotency_key"
+        }
+      ],
+      "predicate": "idempotency_key IS NOT NULL",
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.task_message.seq",
+      "table": "task_message",
+      "unique": true,
+      "keys": [
+        {
+          "column": "task_id"
+        },
+        {
+          "column": "seq"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.task_usage.model",
+      "table": "task_usage",
+      "unique": true,
+      "keys": [
+        {
+          "column": "task_id"
+        },
+        {
+          "column": "provider"
+        },
+        {
+          "column": "model"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.chat_draft_restore.task",
+      "table": "chat_draft_restore",
+      "unique": true,
+      "keys": [
+        {
+          "column": "chat_session_id"
+        },
+        {
+          "column": "task_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.issue.list",
+      "table": "issue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "updated_at",
+          "order": "DESC"
+        },
+        {
+          "column": "id",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.issue.status",
+      "table": "issue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "status"
+        },
+        {
+          "column": "updated_at",
+          "order": "DESC"
+        },
+        {
+          "column": "id",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.issue.assignee",
+      "table": "issue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "assignee_type"
+        },
+        {
+          "column": "assignee_id"
+        },
+        {
+          "column": "updated_at",
+          "order": "DESC"
+        },
+        {
+          "column": "id",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.comment.timeline",
+      "table": "comment",
+      "unique": false,
+      "keys": [
+        {
+          "column": "issue_id"
+        },
+        {
+          "column": "created_at"
+        },
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.comment.workspace_issue",
+      "table": "comment",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "issue_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.member.user_workspaces",
+      "table": "member",
+      "unique": false,
+      "keys": [
+        {
+          "column": "user_id"
+        },
+        {
+          "column": "workspace_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.verification_code.latest",
+      "table": "verification_code",
+      "unique": false,
+      "keys": [
+        {
+          "column": "email"
+        },
+        {
+          "column": "created_at",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.personal_access_token.user_state",
+      "table": "personal_access_token",
+      "unique": false,
+      "keys": [
+        {
+          "column": "user_id"
+        },
+        {
+          "column": "revoked"
+        },
+        {
+          "column": "expires_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.daemon_token.expiry",
+      "table": "daemon_token",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "daemon_id"
+        },
+        {
+          "column": "expires_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task_token.expiry",
+      "table": "task_token",
+      "unique": false,
+      "keys": [
+        {
+          "column": "task_id"
+        },
+        {
+          "column": "expires_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.runtime_profile.enabled",
+      "table": "runtime_profile",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "enabled"
+        },
+        {
+          "column": "display_name"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.agent.list",
+      "table": "agent",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "archived_at"
+        },
+        {
+          "column": "updated_at",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.skill.list",
+      "table": "skill",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "updated_at",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.claim",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "runtime_id"
+        },
+        {
+          "column": "status"
+        },
+        {
+          "column": "priority",
+          "order": "DESC"
+        },
+        {
+          "column": "created_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.workspace_status",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "status"
+        },
+        {
+          "column": "created_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.issue_timeline",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "issue_id"
+        },
+        {
+          "column": "created_at"
+        },
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.issue_agent_status",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "issue_id"
+        },
+        {
+          "column": "agent_id"
+        },
+        {
+          "column": "status"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.chat_status",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "chat_session_id"
+        },
+        {
+          "column": "status"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.deferred",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "status"
+        },
+        {
+          "column": "fire_at"
+        }
+      ],
+      "predicate": "status = 'deferred'",
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.task.prepare_lease",
+      "table": "agent_task_queue",
+      "unique": false,
+      "keys": [
+        {
+          "column": "status"
+        },
+        {
+          "column": "prepare_lease_expires_at"
+        }
+      ],
+      "predicate": "status IN ('dispatched','waiting_local_directory')",
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.agent_runtime.liveness",
+      "table": "agent_runtime",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "status"
+        },
+        {
+          "column": "last_seen_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.squad.workspace",
+      "table": "squad",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.squad_member.squad",
+      "table": "squad_member",
+      "unique": false,
+      "keys": [
+        {
+          "column": "squad_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.chat_session.list",
+      "table": "chat_session",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "creator_id"
+        },
+        {
+          "column": "updated_at"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.chat_message.timeline",
+      "table": "chat_message",
+      "unique": false,
+      "keys": [
+        {
+          "column": "chat_session_id"
+        },
+        {
+          "column": "created_at"
+        },
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.activity.workspace",
+      "table": "activity_log",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "created_at"
+        },
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.activity.issue",
+      "table": "activity_log",
+      "unique": false,
+      "keys": [
+        {
+          "column": "issue_id"
+        },
+        {
+          "column": "created_at"
+        },
+        {
+          "column": "id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent.system_identity",
+      "table": "agent",
+      "unique": true,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "owner_id"
+        },
+        {
+          "column": "runtime_id"
+        },
+        {
+          "column": "system_key"
+        }
+      ],
+      "predicate": "system_key IS NOT NULL",
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "unique.agent_builder_draft.session",
+      "table": "agent_builder_draft",
+      "unique": true,
+      "keys": [
+        {
+          "column": "chat_session_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.agent_builder_draft.workspace",
+      "table": "agent_builder_draft",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    },
+    {
+      "id": "access.agent.kind_list",
+      "table": "agent",
+      "unique": false,
+      "keys": [
+        {
+          "column": "workspace_id"
+        },
+        {
+          "column": "kind"
+        },
+        {
+          "column": "archived_at"
+        },
+        {
+          "column": "updated_at",
+          "order": "DESC"
+        },
+        {
+          "column": "id",
+          "order": "DESC"
+        }
+      ],
+      "predicate": null,
+      "nulls_not_distinct": false
+    }
+  ]
+}

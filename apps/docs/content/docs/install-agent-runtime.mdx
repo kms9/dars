@@ -1,0 +1,105 @@
+---
+title: 安装 AI 编程工具
+description: 安装并登录一款受支持的 AI 编程工具，让 DARS 在本机执行任务。
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+本地运行时由两部分组成：DARS 守护进程，以及它能够调用的一款 AI 编程工具。只需要安装你准备使用的工具，不必安装全部工具。
+
+## 1. 选择一款工具
+
+已经安装并登录的工具不需要额外配置。工具之间的模型、MCP、会话恢复和 skill 支持有所不同，详细差异见 [AI 编程工具对照](/providers)。
+
+DARS 当前会检测以下命令：
+
+| 工具 | 检测的命令 | 官方安装说明 |
+| --- | --- | --- |
+| Antigravity CLI | `agy` | [Antigravity 安装与登录](https://antigravity.google/docs/cli-install) |
+| Claude Code | `claude` | [Claude Code 快速开始](https://code.claude.com/docs/en/quickstart) |
+| CodeBuddy Code | `codebuddy` | [CodeBuddy 快速开始](https://www.codebuddy.ai/docs/cli/quickstart) |
+| Codex CLI | `codex` | [Codex CLI](https://developers.openai.com/codex/cli/) |
+| GitHub Copilot CLI | `copilot` | [安装 Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli) |
+| Cursor Agent | `cursor-agent` | [安装 Cursor CLI](https://docs.cursor.com/en/cli/installation) |
+| DevEco Code | `deveco` | [DevEco Code](https://gitcode.com/openharmony-sig/deveco-code) |
+| Grok Build | `grok` | [Grok Build 快速开始](https://docs.x.ai/build/overview) |
+| Hermes Agent | `hermes` | [Hermes 快速开始](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/) |
+| Kimi CLI | `kimi` | [Kimi CLI](https://github.com/MoonshotAI/kimi-cli) |
+| Kiro CLI | `kiro-cli` | [安装 Kiro CLI](https://kiro.dev/docs/cli/installation/) |
+| OpenClaw | `openclaw` | [安装 OpenClaw](https://docs.openclaw.ai/install) |
+| OpenCode | `opencode` | [OpenCode 快速开始](https://opencode.ai/en/docs) |
+| Pi coding agent | `pi` | [Pi coding agent](https://github.com/earendil-works/pi) |
+| Qoder CLI | `qodercli` | [Qoder CLI 快速开始](https://docs.qoder.com/en/cli/quick-start) |
+| Qoder CN CLI | `qoderclicn` | [Qoder CN CLI 快速开始](https://help.aliyun.com/zh/lingma/qodercli-cn/user-guide/qoder-cli-cn-get-started-quickly) |
+| Qwen Code | `qwen` | [Qwen Code](https://github.com/QwenLM/qwen-code) |
+| TRAE CLI | `traecli` | [TRAE 官方站](https://www.trae.cn/) |
+
+"受支持"表示 DARS 能够调用对应 CLI，不代表 DARS 会替你提供该工具的账号、订阅或模型额度。
+
+## 2. 在本机完成登录
+
+安装后，先在终端中单独启动一次工具，并按照它自己的流程登录或配置模型服务。工具在终端中无法完成请求时，守护进程调用它同样会失败。
+
+这些登录凭据由工具保存在本机。DARS 不会接收 Claude、Codex、Cursor 或其他 CLI 的登录 token。
+
+<Callout type="info">
+Claude Code 需要 2.0.0 或更高版本，Codex 需要 0.100.0 或更高版本，Copilot 需要 1.0.0 或更高版本，Grok 需要 0.2.89 或更高版本，Qwen Code 需要 0.20.0 或更高版本。低于最低版本时，守护进程不会注册对应运行时。
+</Callout>
+
+## 3. 确认守护进程能够找到命令
+
+在 macOS、Linux 或 WSL 中运行：
+
+```bash
+command -v <command>
+<command> --version
+```
+
+在 Windows PowerShell 中运行：
+
+```powershell
+Get-Command <command>
+<command> --version
+```
+
+把 `<command>` 换成表格中的命令，例如 `claude`、`codex` 或 `cursor-agent`。第一条命令返回可执行文件路径。
+
+如果终端能够找到工具，但后台守护进程找不到，通常是两者使用的 `PATH` 不同。可通过对应的 `DARS_<PROVIDER>_PATH` 环境变量指定绝对路径；完整配置见[环境变量](/environment-variables#守护进程配置)。
+
+## 4. 重新检测并确认上线
+
+使用 CLI 启动守护进程：
+
+```bash
+dars daemon start
+```
+
+如果守护进程已经运行，安装新工具后重新启动：
+
+```bash
+dars daemon restart
+```
+
+然后打开 DARS 的**运行时**页面。目标电脑下面会出现对应工具，并显示为在线。现在可以在创建或编辑智能体时选择这条运行时。
+
+<Callout type="warning">
+守护进程启动时必须先检测到至少一款内置支持的 CLI。自定义运行时配置会在守护进程启动后同步，因此不能作为一台空白机器上的唯一启动条件。
+</Callout>
+
+## 未检测到工具
+
+依次检查：
+
+1. 在终端运行工具本身，确认安装和登录都已完成。
+2. 用 `command -v` 或 `Get-Command` 检查实际命令名和路径。
+3. 运行 `dars daemon logs -f`，查看版本、路径或认证错误。
+4. 重启守护进程，让它重新读取当前环境。
+5. 回到**运行时**页面，确认电脑和工具都已上线。
+
+工具已经显示在线，但执行仍然失败时，打开 issue 的执行记录查看 CLI 返回的具体错误，或继续阅读[故障排查](/troubleshooting)。
+
+## 接下来
+
+- [创建和配置智能体](/agents-create) — 选择刚刚连接的运行时。
+- [守护进程与运行时](/daemon-runtimes) — 了解在线状态、并发和自定义运行时。
+- [AI 编程工具对照](/providers) — 比较各工具在 DARS 中的能力。

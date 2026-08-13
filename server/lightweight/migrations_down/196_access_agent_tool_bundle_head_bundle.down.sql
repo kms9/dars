@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_196_access_agent_tool_bundle_head_bundle;

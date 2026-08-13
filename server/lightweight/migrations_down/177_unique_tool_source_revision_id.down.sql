@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_177_unique_tool_source_revision_id;

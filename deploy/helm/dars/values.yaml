@@ -1,0 +1,164 @@
+# -----------------------------------------------------------------------------
+# Container images
+# -----------------------------------------------------------------------------
+images:
+  backend:
+    repository: ghcr.io/kms9/dars-backend
+    # Empty defaults to Chart.appVersion. Released OCI charts set appVersion to
+    # the Git tag (for example v0.3.5), so installs use matching app images.
+    tag: ""
+    pullPolicy: IfNotPresent
+  frontend:
+    repository: ghcr.io/kms9/dars-web
+    # Empty defaults to Chart.appVersion. Set explicitly to override.
+    tag: ""
+    pullPolicy: IfNotPresent
+  postgres:
+    repository: pgvector/pgvector
+    tag: pg17
+    pullPolicy: IfNotPresent
+
+# -----------------------------------------------------------------------------
+# Pre-created Secret with sensitive values. Create it before `helm install`:
+#
+# Built-in postgres (default):
+#   kubectl -n <namespace> create secret generic dars-secrets \
+#     --from-literal=JWT_SECRET="$(openssl rand -hex 32)" \
+#     --from-literal=POSTGRES_PASSWORD="$(openssl rand -hex 16)" \
+#     --from-literal=DARS_AGENT_SECRET_KEY="$(openssl rand -base64 32)" \
+#     --from-literal=RESEND_API_KEY="" \
+#     --from-literal=DARS_DEV_VERIFICATION_CODE=""
+#
+# External postgres (postgres.external.enabled=true):
+#   Replace POSTGRES_PASSWORD with DATABASE_URL pointing at your external cluster.
+#   kubectl -n <namespace> create secret generic dars-secrets \
+#     --from-literal=JWT_SECRET="$(openssl rand -hex 32)" \
+#     --from-literal=DATABASE_URL="postgres://user:pass@host:5432/dars_lightweight?sslmode=require" \
+#     --from-literal=DARS_AGENT_SECRET_KEY="$(openssl rand -base64 32)" \
+#     --from-literal=RESEND_API_KEY="" \
+#     --from-literal=DARS_DEV_VERIFICATION_CODE=""
+#
+# The chart references this Secret by name; it does not template it, so real
+# values never need to land in git.
+# -----------------------------------------------------------------------------
+existingSecret: dars-secrets
+
+# -----------------------------------------------------------------------------
+# PostgreSQL (pgvector)
+# -----------------------------------------------------------------------------
+postgres:
+  # Set external.enabled=true to skip the built-in postgres Deployment/PVC and
+  # supply DATABASE_URL directly via the existingSecret instead. When true,
+  # the postgres Deployment, PVC, and Service are not created.
+  # Add DATABASE_URL to your existingSecret pointing at the external cluster.
+  external:
+    enabled: false
+  database: dars_lightweight
+  user: dars
+  persistence:
+    size: 10Gi
+    # Leave empty to use the cluster's default StorageClass.
+    storageClass: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  # Standard Kubernetes scheduling constraints for the postgres Deployment.
+  affinity: {}
+  tolerations: []
+
+# -----------------------------------------------------------------------------
+# Backend (Go API + WS server)
+# -----------------------------------------------------------------------------
+backend:
+  # Concurrent backend pods are now safe to start: cmd/migrate uses a
+  # Postgres session-level advisory lock to serialize the startup
+  # `migrate up` run, so late-arriving pods queue and then no-op (see
+  # GitHub kms9/dars#3647). 1 is still the recommended default
+  # because the chart Deployment uses strategy: Recreate and there is no
+  # leader-elected workload split — increase this only if you actually
+  # need horizontal scale of the API/WS server.
+  replicas: 1
+  # All non-secret backend env. Secret values come from `existingSecret`.
+  config:
+    appEnv: production
+    appUrl: http://dars.dev.lan
+    frontendOrigin: http://dars.dev.lan
+    corsAllowedOrigins: ""
+    cookieDomain: ""
+    resendFromEmail: noreply@dars.ai
+    allowSignup: true
+    allowedEmails: ""
+    allowedEmailDomains: ""
+    # Set true to make POST /api/workspaces return 403 for every caller.
+    disableWorkspaceCreation: false
+    databaseMaxConns: 25
+    databaseMinConns: 5
+    databaseMaxIdleConns: 5
+    databaseMaxConnLifetime: 300s
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  # Standard Kubernetes scheduling constraints for the backend Deployment.
+  affinity: {}
+  tolerations: []
+
+# -----------------------------------------------------------------------------
+# Frontend (Next.js standalone)
+# -----------------------------------------------------------------------------
+frontend:
+  replicas: 1
+  config:
+    # Backend origin used by the frontend runtime proxy for /api, /auth,
+    # and /ws. Empty defaults to this release's backend Service.
+    remoteApiUrl: ""
+    # Optional browser-visible split-origin overrides. Leave empty for the
+    # default same-origin frontend proxy.
+    publicApiUrl: ""
+    publicWsUrl: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  # Standard Kubernetes scheduling constraints for the frontend Deployment.
+  affinity: {}
+  tolerations: []
+
+# -----------------------------------------------------------------------------
+# Ingress
+# -----------------------------------------------------------------------------
+ingress:
+  enabled: true
+  className: traefik
+  annotations: {}
+  frontend:
+    host: dars.dev.lan
+  backend:
+    host: api.dars.dev.lan
+  # tls:
+  #   - hosts: [dars.dev.lan, api.dars.dev.lan]
+  #     secretName: dars-tls
+
+# -----------------------------------------------------------------------------
+# Monitoring
+# -----------------------------------------------------------------------------
+monitoring:
+  prometheusRule:
+    # Requires the Prometheus Operator CRD (monitoring.coreos.com/v1). Kept
+    # disabled by default so minimal self-host installs without that CRD still
+    # render and install.
+    enabled: false
+    additionalLabels: {}
+    samplerQueryErrorsFor: 5m
+    samplerQueryLatencyFor: 10m
+    severity: warning

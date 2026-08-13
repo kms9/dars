@@ -1,0 +1,10 @@
+ALTER TABLE task_token DROP COLUMN IF EXISTS tool_bundle_id;
+ALTER TABLE agent_task_queue DROP COLUMN IF EXISTS tool_bundle_id;
+DROP TABLE IF EXISTS agent_tool_bundle_head;
+DROP TABLE IF EXISTS tool_bundle_item;
+DROP TABLE IF EXISTS tool_bundle;
+DROP TABLE IF EXISTS tool_definition;
+DROP TABLE IF EXISTS tool_source_revision;
+DROP TABLE IF EXISTS tool_source_secret;
+DROP TABLE IF EXISTS tool_source_artifact;
+DROP TABLE IF EXISTS tool_source;

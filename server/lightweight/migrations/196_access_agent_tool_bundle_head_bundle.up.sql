@@ -1,0 +1,1 @@
+CREATE INDEX CONCURRENTLY lw_196_access_agent_tool_bundle_head_bundle ON agent_tool_bundle_head (workspace_id, bundle_id);

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX CONCURRENTLY lw_173_unique_agent_builder_draft_session ON agent_builder_draft (chat_session_id);

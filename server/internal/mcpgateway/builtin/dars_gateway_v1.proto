@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dars.gateway.v1;
+
+// GatewayUtility is a build-time descriptor pack. Deployments may bind a
+// Source endpoint that implements the same unary contract.
+service GatewayUtility {
+  rpc Echo(EchoRequest) returns (EchoResponse);
+}
+
+message EchoRequest {
+  string value = 1;
+}
+
+message EchoResponse {
+  string value = 1;
+}

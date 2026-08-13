@@ -1,0 +1,8 @@
+daemon:heartbeat
+daemon:heartbeat_ack
+daemon:pending_work
+daemon:rpc_request
+daemon:rpc_response
+daemon:runtime_profiles_changed
+daemon:task_available
+daemon:workspaces_changed

@@ -1,0 +1,108 @@
+{{- $backendImageTag := default .Chart.AppVersion .Values.images.backend.tag -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dars.backend.fullname" . }}
+  labels:
+    {{- include "dars.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  # The backend entrypoint runs migrations before starting. Concurrent
+  # runs are protected by a Postgres advisory lock in cmd/migrate (see
+  # GitHub kms9/dars#3647), so multiple replicas no longer race;
+  # 1 is still the chart default (strategy: Recreate, no leader split).
+  replicas: {{ .Values.backend.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dars
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      annotations:
+        # Roll the backend pods whenever its config changes. envFrom does not
+        # watch the referenced objects, and helm upgrade alone won't change the
+        # pod template hash, so without these checksums editing values.yaml +
+        # `helm upgrade` would leave the old pods running stale config.
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        # existingSecret is created out-of-band (not a chart template), so we
+        # checksum the live object via lookup instead of $.Template.BasePath.
+        # lookup returns empty during `helm template`/`--dry-run`, so the
+        # rendered value there is a placeholder; on a real install/upgrade it
+        # reflects the actual Secret and rolls pods on rotation.
+        checksum/secret: {{ (lookup "v1" "Secret" .Release.Namespace .Values.existingSecret).data | toYaml | sha256sum }}
+      labels:
+        {{- include "dars.labels" . | nindent 8 }}
+        app.kubernetes.io/component: backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.images.backend.repository }}:{{ $backendImageTag }}"
+          imagePullPolicy: {{ .Values.images.backend.pullPolicy }}
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-config
+            - secretRef:
+                name: {{ .Values.existingSecret }}
+          {{- if not .Values.postgres.external.enabled }}
+          env:
+            - name: DATABASE_URL
+              value: {{ include "dars.databaseUrl" . | quote }}
+          {{- end }}
+          # The entrypoint runs `./migrate up` before serving traffic. On a
+          # cold cluster (Postgres still coming up) this can take minutes. The
+          # startupProbe checks process liveness while migrations finish,
+          # giving migrations a ~5 min budget (30 * 10s) so the pod is never
+          # killed mid-migration. Once it passes, the aggressive livenessProbe
+          # below takes over.
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+      {{- with .Values.backend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dars.backend.fullname" . }}
+  labels:
+    {{- include "dars.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: dars
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http

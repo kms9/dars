@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_195_access_tool_bundle_workspace;

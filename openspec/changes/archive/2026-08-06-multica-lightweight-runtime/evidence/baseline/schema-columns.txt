@@ -1,0 +1,927 @@
+activity_log|id|uuid|NO|gen_random_uuid()
+activity_log|workspace_id|uuid|NO|
+activity_log|issue_id|uuid|YES|
+activity_log|actor_type|text|YES|
+activity_log|actor_id|uuid|YES|
+activity_log|action|text|NO|
+activity_log|details|jsonb|NO|'{}'::jsonb
+activity_log|created_at|timestamp with time zone|NO|now()
+agent|id|uuid|NO|gen_random_uuid()
+agent|workspace_id|uuid|NO|
+agent|name|text|NO|
+agent|avatar_url|text|YES|
+agent|runtime_mode|text|NO|
+agent|runtime_config|jsonb|NO|'{}'::jsonb
+agent|visibility|text|NO|'private'::text
+agent|status|text|NO|'offline'::text
+agent|max_concurrent_tasks|integer|NO|6
+agent|owner_id|uuid|YES|
+agent|created_at|timestamp with time zone|NO|now()
+agent|updated_at|timestamp with time zone|NO|now()
+agent|description|text|NO|''::text
+agent|runtime_id|uuid|YES|
+agent|instructions|text|NO|''::text
+agent|archived_at|timestamp with time zone|YES|
+agent|archived_by|uuid|YES|
+agent|custom_env|jsonb|NO|'{}'::jsonb
+agent|custom_args|jsonb|NO|'[]'::jsonb
+agent|mcp_config|jsonb|YES|
+agent|model|text|YES|
+agent|thinking_level|text|YES|
+agent|composio_toolkit_allowlist|ARRAY|YES|
+agent|permission_mode|text|NO|'private'::text
+agent|kind|text|NO|'user'::text
+agent|system_key|text|YES|
+agent|disabled_runtime_skills|jsonb|NO|'[]'::jsonb
+agent|service_tier|text|YES|
+agent_builder_draft|chat_session_id|uuid|NO|
+agent_builder_draft|workspace_id|uuid|NO|
+agent_builder_draft|draft|jsonb|NO|'{}'::jsonb
+agent_builder_draft|updated_at|timestamp with time zone|NO|now()
+agent_invocation_target|id|uuid|NO|gen_random_uuid()
+agent_invocation_target|agent_id|uuid|NO|
+agent_invocation_target|target_type|text|NO|
+agent_invocation_target|target_id|uuid|NO|
+agent_invocation_target|created_by|uuid|YES|
+agent_invocation_target|created_at|timestamp with time zone|NO|now()
+agent_runtime|id|uuid|NO|gen_random_uuid()
+agent_runtime|workspace_id|uuid|NO|
+agent_runtime|daemon_id|text|YES|
+agent_runtime|name|text|NO|
+agent_runtime|runtime_mode|text|NO|
+agent_runtime|provider|text|NO|
+agent_runtime|status|text|NO|'offline'::text
+agent_runtime|device_info|text|NO|''::text
+agent_runtime|metadata|jsonb|NO|'{}'::jsonb
+agent_runtime|last_seen_at|timestamp with time zone|YES|
+agent_runtime|created_at|timestamp with time zone|NO|now()
+agent_runtime|updated_at|timestamp with time zone|NO|now()
+agent_runtime|owner_id|uuid|YES|
+agent_runtime|legacy_daemon_id|text|YES|
+agent_runtime|visibility|text|NO|'private'::text
+agent_runtime|profile_id|uuid|YES|
+agent_runtime|custom_name|text|YES|
+agent_skill|agent_id|uuid|NO|
+agent_skill|skill_id|uuid|NO|
+agent_skill|created_at|timestamp with time zone|NO|now()
+agent_skill|enabled|boolean|NO|true
+agent_task_queue|id|uuid|NO|gen_random_uuid()
+agent_task_queue|agent_id|uuid|NO|
+agent_task_queue|issue_id|uuid|YES|
+agent_task_queue|status|text|NO|'queued'::text
+agent_task_queue|priority|integer|NO|0
+agent_task_queue|dispatched_at|timestamp with time zone|YES|
+agent_task_queue|started_at|timestamp with time zone|YES|
+agent_task_queue|completed_at|timestamp with time zone|YES|
+agent_task_queue|result|jsonb|YES|
+agent_task_queue|error|text|YES|
+agent_task_queue|created_at|timestamp with time zone|NO|now()
+agent_task_queue|context|jsonb|YES|
+agent_task_queue|runtime_id|uuid|YES|
+agent_task_queue|session_id|text|YES|
+agent_task_queue|work_dir|text|YES|
+agent_task_queue|trigger_comment_id|uuid|YES|
+agent_task_queue|chat_session_id|uuid|YES|
+agent_task_queue|autopilot_run_id|uuid|YES|
+agent_task_queue|attempt|integer|NO|1
+agent_task_queue|max_attempts|integer|NO|2
+agent_task_queue|parent_task_id|uuid|YES|
+agent_task_queue|failure_reason|text|YES|
+agent_task_queue|trigger_summary|text|YES|
+agent_task_queue|force_fresh_session|boolean|NO|false
+agent_task_queue|is_leader_task|boolean|NO|false
+agent_task_queue|wait_reason|text|YES|
+agent_task_queue|initiator_user_id|uuid|YES|
+agent_task_queue|handoff_note|text|YES|
+agent_task_queue|prepare_lease_expires_at|timestamp with time zone|YES|
+agent_task_queue|squad_id|uuid|YES|
+agent_task_queue|runtime_mcp_overlay|jsonb|YES|
+agent_task_queue|escalation_for_task_id|uuid|YES|
+agent_task_queue|fire_at|timestamp with time zone|YES|
+agent_task_queue|originator_user_id|uuid|YES|
+agent_task_queue|runtime_connected_apps|jsonb|YES|
+agent_task_queue|coalesced_comment_ids|ARRAY|NO|'{}'::uuid[]
+agent_task_queue|delivered_comment_ids|ARRAY|NO|'{}'::uuid[]
+agent_task_queue|chat_input_task_id|uuid|YES|
+agent_task_queue|chat_finalize_deferred_at|timestamp with time zone|YES|
+agent_task_queue|originator_source|text|YES|
+agent_task_queue|delegated_from_task_id|uuid|YES|
+agent_task_queue|retry_of_task_id|uuid|YES|
+agent_task_queue|rerun_of_task_id|uuid|YES|
+agent_task_queue|rule_version_id|uuid|YES|
+agent_task_queue|trigger_evidence_kind|text|YES|
+agent_task_queue|trigger_evidence_ref_id|uuid|YES|
+agent_task_queue|accountable_user_id|uuid|YES|
+agent_task_queue|session_rollout_missing|boolean|NO|false
+agent_task_queue|retired_session_id|text|YES|
+agent_task_queue|quick_actions_disabled|boolean|NO|false
+agent_task_queue|regenerate_quick_actions_for|uuid|YES|
+agent_to_label|agent_id|uuid|NO|
+agent_to_label|label_id|uuid|NO|
+agent_to_label|created_at|timestamp with time zone|NO|now()
+attachment|id|uuid|NO|gen_random_uuid()
+attachment|workspace_id|uuid|NO|
+attachment|issue_id|uuid|YES|
+attachment|comment_id|uuid|YES|
+attachment|uploader_type|text|NO|
+attachment|uploader_id|uuid|NO|
+attachment|filename|text|NO|
+attachment|url|text|NO|
+attachment|content_type|text|NO|
+attachment|size_bytes|bigint|NO|
+attachment|created_at|timestamp with time zone|NO|now()
+attachment|chat_session_id|uuid|YES|
+attachment|chat_message_id|uuid|YES|
+attachment|task_id|uuid|YES|
+autopilot|id|uuid|NO|gen_random_uuid()
+autopilot|workspace_id|uuid|NO|
+autopilot|title|text|NO|
+autopilot|description|text|YES|
+autopilot|assignee_id|uuid|NO|
+autopilot|status|text|NO|'active'::text
+autopilot|execution_mode|text|NO|'create_issue'::text
+autopilot|issue_title_template|text|YES|
+autopilot|created_by_type|text|NO|
+autopilot|created_by_id|uuid|NO|
+autopilot|last_run_at|timestamp with time zone|YES|
+autopilot|created_at|timestamp with time zone|NO|now()
+autopilot|updated_at|timestamp with time zone|NO|now()
+autopilot|assignee_type|text|NO|'agent'::text
+autopilot|project_id|uuid|YES|
+autopilot|pause_reason|text|YES|
+autopilot_collaborator|autopilot_id|uuid|NO|
+autopilot_collaborator|user_type|text|NO|
+autopilot_collaborator|user_id|uuid|NO|
+autopilot_collaborator|granted_by|uuid|NO|
+autopilot_collaborator|created_at|timestamp with time zone|NO|now()
+autopilot_rule_version|id|uuid|NO|gen_random_uuid()
+autopilot_rule_version|autopilot_id|uuid|NO|
+autopilot_rule_version|workspace_id|uuid|NO|
+autopilot_rule_version|published_by_type|text|NO|
+autopilot_rule_version|published_by_id|uuid|YES|
+autopilot_rule_version|config_summary|jsonb|NO|'{}'::jsonb
+autopilot_rule_version|created_at|timestamp with time zone|NO|now()
+autopilot_run|id|uuid|NO|gen_random_uuid()
+autopilot_run|autopilot_id|uuid|NO|
+autopilot_run|trigger_id|uuid|YES|
+autopilot_run|source|text|NO|
+autopilot_run|status|text|NO|'pending'::text
+autopilot_run|issue_id|uuid|YES|
+autopilot_run|task_id|uuid|YES|
+autopilot_run|triggered_at|timestamp with time zone|NO|now()
+autopilot_run|completed_at|timestamp with time zone|YES|
+autopilot_run|failure_reason|text|YES|
+autopilot_run|trigger_payload|jsonb|YES|
+autopilot_run|result|jsonb|YES|
+autopilot_run|created_at|timestamp with time zone|NO|now()
+autopilot_run|squad_id|uuid|YES|
+autopilot_run|planned_at|timestamp with time zone|YES|
+autopilot_run|webhook_delivery_id|uuid|YES|
+autopilot_subscriber|autopilot_id|uuid|NO|
+autopilot_subscriber|user_type|text|NO|
+autopilot_subscriber|user_id|uuid|NO|
+autopilot_subscriber|created_at|timestamp with time zone|NO|now()
+autopilot_trigger|id|uuid|NO|gen_random_uuid()
+autopilot_trigger|autopilot_id|uuid|NO|
+autopilot_trigger|kind|text|NO|
+autopilot_trigger|enabled|boolean|NO|true
+autopilot_trigger|cron_expression|text|YES|
+autopilot_trigger|timezone|text|YES|'UTC'::text
+autopilot_trigger|next_run_at|timestamp with time zone|YES|
+autopilot_trigger|webhook_token|text|YES|
+autopilot_trigger|label|text|YES|
+autopilot_trigger|last_fired_at|timestamp with time zone|YES|
+autopilot_trigger|created_at|timestamp with time zone|NO|now()
+autopilot_trigger|updated_at|timestamp with time zone|NO|now()
+autopilot_trigger|provider|text|NO|'generic'::text
+autopilot_trigger|signing_secret|text|YES|
+autopilot_trigger|event_filters|jsonb|YES|
+autopilot_trigger|published_by_type|text|YES|
+autopilot_trigger|published_by_id|uuid|YES|
+channel_binding_token|token_hash|text|NO|
+channel_binding_token|workspace_id|uuid|NO|
+channel_binding_token|installation_id|uuid|NO|
+channel_binding_token|channel_type|text|NO|
+channel_binding_token|channel_user_id|text|NO|
+channel_binding_token|expires_at|timestamp with time zone|NO|
+channel_binding_token|consumed_at|timestamp with time zone|YES|
+channel_binding_token|created_at|timestamp with time zone|NO|now()
+channel_chat_session_binding|id|uuid|NO|gen_random_uuid()
+channel_chat_session_binding|chat_session_id|uuid|NO|
+channel_chat_session_binding|installation_id|uuid|NO|
+channel_chat_session_binding|channel_type|text|NO|
+channel_chat_session_binding|channel_chat_id|text|NO|
+channel_chat_session_binding|chat_type|text|NO|
+channel_chat_session_binding|last_message_id|text|YES|
+channel_chat_session_binding|last_thread_id|text|YES|
+channel_chat_session_binding|config|jsonb|NO|'{}'::jsonb
+channel_chat_session_binding|created_at|timestamp with time zone|NO|now()
+channel_inbound_audit|id|uuid|NO|gen_random_uuid()
+channel_inbound_audit|installation_id|uuid|YES|
+channel_inbound_audit|channel_type|text|NO|
+channel_inbound_audit|channel_chat_id|text|YES|
+channel_inbound_audit|event_type|text|NO|
+channel_inbound_audit|channel_event_id|text|YES|
+channel_inbound_audit|channel_message_id|text|YES|
+channel_inbound_audit|drop_reason|text|NO|
+channel_inbound_audit|received_at|timestamp with time zone|NO|now()
+channel_inbound_message_dedup|installation_id|uuid|NO|
+channel_inbound_message_dedup|message_id|text|NO|
+channel_inbound_message_dedup|received_at|timestamp with time zone|NO|now()
+channel_inbound_message_dedup|processed_at|timestamp with time zone|YES|
+channel_inbound_message_dedup|claim_token|uuid|NO|gen_random_uuid()
+channel_installation|id|uuid|NO|gen_random_uuid()
+channel_installation|workspace_id|uuid|NO|
+channel_installation|agent_id|uuid|NO|
+channel_installation|channel_type|text|NO|
+channel_installation|config|jsonb|NO|'{}'::jsonb
+channel_installation|status|text|NO|'active'::text
+channel_installation|ws_lease_token|text|YES|
+channel_installation|ws_lease_expires_at|timestamp with time zone|YES|
+channel_installation|installer_user_id|uuid|NO|
+channel_installation|installed_at|timestamp with time zone|NO|now()
+channel_installation|created_at|timestamp with time zone|NO|now()
+channel_installation|updated_at|timestamp with time zone|NO|now()
+channel_media_pending_object|storage_key|text|NO|
+channel_media_pending_object|workspace_id|uuid|NO|
+channel_media_pending_object|chat_message_id|uuid|NO|
+channel_media_pending_object|storage_url|text|NO|
+channel_media_pending_object|installation_id|uuid|YES|
+channel_media_pending_object|state|text|NO|'pending'::text
+channel_media_pending_object|lease_token|uuid|YES|
+channel_media_pending_object|lease_expires_at|timestamp with time zone|YES|
+channel_media_pending_object|attempt|integer|NO|0
+channel_media_pending_object|next_attempt_at|timestamp with time zone|NO|now()
+channel_media_pending_object|last_error|text|YES|
+channel_media_pending_object|tombstone_pass|integer|NO|0
+channel_media_pending_object|created_at|timestamp with time zone|NO|now()
+channel_outbound_card_message|id|uuid|NO|gen_random_uuid()
+channel_outbound_card_message|chat_session_id|uuid|NO|
+channel_outbound_card_message|task_id|uuid|YES|
+channel_outbound_card_message|channel_type|text|NO|
+channel_outbound_card_message|channel_chat_id|text|NO|
+channel_outbound_card_message|channel_card_message_id|text|NO|
+channel_outbound_card_message|status|text|NO|'pending'::text
+channel_outbound_card_message|last_patched_at|timestamp with time zone|YES|
+channel_outbound_card_message|created_at|timestamp with time zone|NO|now()
+channel_user_binding|id|uuid|NO|gen_random_uuid()
+channel_user_binding|workspace_id|uuid|NO|
+channel_user_binding|multica_user_id|uuid|NO|
+channel_user_binding|installation_id|uuid|NO|
+channel_user_binding|channel_type|text|NO|
+channel_user_binding|channel_user_id|text|NO|
+channel_user_binding|config|jsonb|NO|'{}'::jsonb
+channel_user_binding|bound_at|timestamp with time zone|NO|now()
+chat_draft_restore|id|uuid|NO|
+chat_draft_restore|chat_session_id|uuid|NO|
+chat_draft_restore|task_id|uuid|NO|
+chat_draft_restore|content|text|NO|
+chat_draft_restore|attachment_ids|ARRAY|NO|'{}'::uuid[]
+chat_draft_restore|created_at|timestamp with time zone|NO|now()
+chat_message|id|uuid|NO|gen_random_uuid()
+chat_message|chat_session_id|uuid|NO|
+chat_message|role|text|NO|
+chat_message|content|text|NO|
+chat_message|task_id|uuid|YES|
+chat_message|created_at|timestamp with time zone|NO|now()
+chat_message|failure_reason|text|YES|
+chat_message|elapsed_ms|bigint|YES|
+chat_message|message_kind|text|NO|'message'::text
+chat_message|channel_media_pending_until|timestamp with time zone|YES|
+chat_message|channel_ingested|boolean|NO|false
+chat_message|quick_actions|jsonb|NO|'[]'::jsonb
+chat_pinned_agent|id|uuid|NO|gen_random_uuid()
+chat_pinned_agent|workspace_id|uuid|NO|
+chat_pinned_agent|user_id|uuid|NO|
+chat_pinned_agent|agent_id|uuid|NO|
+chat_pinned_agent|position|double precision|NO|0
+chat_pinned_agent|created_at|timestamp with time zone|NO|now()
+chat_session|id|uuid|NO|gen_random_uuid()
+chat_session|workspace_id|uuid|NO|
+chat_session|agent_id|uuid|NO|
+chat_session|creator_id|uuid|NO|
+chat_session|title|text|NO|''::text
+chat_session|session_id|text|YES|
+chat_session|work_dir|text|YES|
+chat_session|status|text|NO|'active'::text
+chat_session|created_at|timestamp with time zone|NO|now()
+chat_session|updated_at|timestamp with time zone|NO|now()
+chat_session|unread_since|timestamp with time zone|YES|
+chat_session|runtime_id|uuid|YES|
+chat_session|last_read_at|timestamp with time zone|NO|now()
+chat_session|is_agent_intro|boolean|NO|false
+chat_session|pinned_at|timestamp with time zone|YES|
+chat_session|project_id|uuid|YES|
+client_usage_daily|user_id|uuid|NO|
+client_usage_daily|client_type|text|NO|
+client_usage_daily|install_id|uuid|NO|
+client_usage_daily|activity_date|date|NO|
+client_usage_daily|workspace_id|uuid|YES|
+client_usage_daily|client_version|text|NO|
+client_usage_daily|os|text|NO|
+client_usage_daily|first_active_at|timestamp with time zone|NO|
+client_usage_daily|last_active_at|timestamp with time zone|NO|
+client_usage_daily|runtime_probed_at|timestamp with time zone|YES|
+client_usage_daily|probe_result|text|YES|
+client_usage_daily|runtime_count|integer|YES|
+client_usage_daily|provider_summary|jsonb|YES|
+client_usage_daily|online_count|integer|YES|
+client_usage_daily|offline_count|integer|YES|
+client_usage_daily|created_at|timestamp with time zone|NO|now()
+client_usage_daily|updated_at|timestamp with time zone|NO|now()
+comment|id|uuid|NO|gen_random_uuid()
+comment|issue_id|uuid|NO|
+comment|author_type|text|NO|
+comment|author_id|uuid|NO|
+comment|content|text|NO|
+comment|type|text|NO|'comment'::text
+comment|created_at|timestamp with time zone|NO|now()
+comment|updated_at|timestamp with time zone|NO|now()
+comment|parent_id|uuid|YES|
+comment|workspace_id|uuid|NO|
+comment|resolved_at|timestamp with time zone|YES|
+comment|resolved_by_type|text|YES|
+comment|resolved_by_id|uuid|YES|
+comment|source_task_id|uuid|YES|
+comment|quick_action_id|uuid|YES|
+comment_reaction|id|uuid|NO|gen_random_uuid()
+comment_reaction|comment_id|uuid|NO|
+comment_reaction|workspace_id|uuid|NO|
+comment_reaction|actor_type|text|NO|
+comment_reaction|actor_id|uuid|NO|
+comment_reaction|emoji|text|NO|
+comment_reaction|created_at|timestamp with time zone|NO|now()
+contact_sales_inquiry|id|uuid|NO|gen_random_uuid()
+contact_sales_inquiry|first_name|text|NO|
+contact_sales_inquiry|last_name|text|NO|
+contact_sales_inquiry|business_email|text|NO|
+contact_sales_inquiry|company_name|text|NO|
+contact_sales_inquiry|company_size|text|NO|
+contact_sales_inquiry|country_region|text|NO|
+contact_sales_inquiry|use_case|text|NO|
+contact_sales_inquiry|goals|text|NO|''::text
+contact_sales_inquiry|consent_outreach|boolean|NO|false
+contact_sales_inquiry|consent_updates|boolean|NO|false
+contact_sales_inquiry|submitter_ip|inet|YES|
+contact_sales_inquiry|user_agent|text|NO|''::text
+contact_sales_inquiry|created_at|timestamp with time zone|NO|now()
+daemon_connection|id|uuid|NO|gen_random_uuid()
+daemon_connection|agent_id|uuid|NO|
+daemon_connection|daemon_id|text|NO|
+daemon_connection|status|text|NO|'disconnected'::text
+daemon_connection|last_heartbeat_at|timestamp with time zone|YES|
+daemon_connection|runtime_info|jsonb|NO|'{}'::jsonb
+daemon_connection|created_at|timestamp with time zone|NO|now()
+daemon_connection|updated_at|timestamp with time zone|NO|now()
+daemon_token|id|uuid|NO|gen_random_uuid()
+daemon_token|token_hash|text|NO|
+daemon_token|workspace_id|uuid|NO|
+daemon_token|daemon_id|text|NO|
+daemon_token|expires_at|timestamp with time zone|NO|
+daemon_token|created_at|timestamp with time zone|NO|now()
+feedback|id|uuid|NO|gen_random_uuid()
+feedback|user_id|uuid|NO|
+feedback|workspace_id|uuid|YES|
+feedback|message|text|NO|
+feedback|metadata|jsonb|NO|'{}'::jsonb
+feedback|created_at|timestamp with time zone|NO|now()
+github_installation|id|uuid|NO|gen_random_uuid()
+github_installation|workspace_id|uuid|NO|
+github_installation|installation_id|bigint|NO|
+github_installation|account_login|text|NO|
+github_installation|account_type|text|NO|'User'::text
+github_installation|account_avatar_url|text|YES|
+github_installation|connected_by_id|uuid|YES|
+github_installation|created_at|timestamp with time zone|NO|now()
+github_installation|updated_at|timestamp with time zone|NO|now()
+github_pending_check_suite|workspace_id|uuid|NO|
+github_pending_check_suite|installation_id|bigint|NO|
+github_pending_check_suite|repo_owner|text|NO|
+github_pending_check_suite|repo_name|text|NO|
+github_pending_check_suite|pr_number|integer|NO|
+github_pending_check_suite|suite_id|bigint|NO|
+github_pending_check_suite|head_sha|text|NO|
+github_pending_check_suite|app_id|bigint|NO|
+github_pending_check_suite|conclusion|text|YES|
+github_pending_check_suite|status|text|NO|
+github_pending_check_suite|suite_updated_at|timestamp with time zone|NO|
+github_pending_check_suite|received_at|timestamp with time zone|NO|now()
+github_pending_installation|installation_id|bigint|NO|
+github_pending_installation|account_login|text|NO|
+github_pending_installation|account_type|text|NO|'User'::text
+github_pending_installation|account_avatar_url|text|YES|
+github_pending_installation|received_at|timestamp with time zone|NO|now()
+github_pending_installation|updated_at|timestamp with time zone|NO|now()
+github_pull_request|id|uuid|NO|gen_random_uuid()
+github_pull_request|workspace_id|uuid|NO|
+github_pull_request|installation_id|bigint|NO|
+github_pull_request|repo_owner|text|NO|
+github_pull_request|repo_name|text|NO|
+github_pull_request|pr_number|integer|NO|
+github_pull_request|title|text|NO|
+github_pull_request|state|text|NO|
+github_pull_request|html_url|text|NO|
+github_pull_request|branch|text|YES|
+github_pull_request|author_login|text|YES|
+github_pull_request|author_avatar_url|text|YES|
+github_pull_request|merged_at|timestamp with time zone|YES|
+github_pull_request|closed_at|timestamp with time zone|YES|
+github_pull_request|pr_created_at|timestamp with time zone|NO|
+github_pull_request|pr_updated_at|timestamp with time zone|NO|
+github_pull_request|created_at|timestamp with time zone|NO|now()
+github_pull_request|updated_at|timestamp with time zone|NO|now()
+github_pull_request|head_sha|text|NO|''::text
+github_pull_request|mergeable_state|text|YES|
+github_pull_request|additions|integer|NO|0
+github_pull_request|deletions|integer|NO|0
+github_pull_request|changed_files|integer|NO|0
+github_pull_request|api_mergeable|text|YES|
+github_pull_request|api_merge_state_status|text|YES|
+github_pull_request|checks_rollup_state|text|YES|
+github_pull_request|snapshot_head_sha|text|NO|''::text
+github_pull_request|snapshot_fetched_at|timestamp with time zone|YES|
+github_pull_request_check_run|pr_id|uuid|NO|
+github_pull_request_check_run|head_sha|text|NO|
+github_pull_request_check_run|ordinal|integer|NO|
+github_pull_request_check_run|name|text|NO|
+github_pull_request_check_run|status|text|NO|
+github_pull_request_check_run|conclusion|text|YES|
+github_pull_request_check_run|details_url|text|YES|
+github_pull_request_check_run|is_status_context|boolean|NO|false
+github_pull_request_check_suite|pr_id|uuid|NO|
+github_pull_request_check_suite|suite_id|bigint|NO|
+github_pull_request_check_suite|head_sha|text|NO|
+github_pull_request_check_suite|app_id|bigint|NO|
+github_pull_request_check_suite|conclusion|text|YES|
+github_pull_request_check_suite|status|text|NO|
+github_pull_request_check_suite|updated_at|timestamp with time zone|NO|
+inbox_item|id|uuid|NO|gen_random_uuid()
+inbox_item|workspace_id|uuid|NO|
+inbox_item|recipient_type|text|NO|
+inbox_item|recipient_id|uuid|NO|
+inbox_item|type|text|NO|
+inbox_item|severity|text|NO|'info'::text
+inbox_item|issue_id|uuid|YES|
+inbox_item|title|text|NO|
+inbox_item|body|text|YES|
+inbox_item|read|boolean|NO|false
+inbox_item|archived|boolean|NO|false
+inbox_item|created_at|timestamp with time zone|NO|now()
+inbox_item|actor_type|text|YES|
+inbox_item|actor_id|uuid|YES|
+inbox_item|details|jsonb|YES|'{}'::jsonb
+issue|id|uuid|NO|gen_random_uuid()
+issue|workspace_id|uuid|NO|
+issue|title|text|NO|
+issue|description|text|YES|
+issue|status|text|NO|'backlog'::text
+issue|priority|text|NO|'none'::text
+issue|assignee_type|text|YES|
+issue|assignee_id|uuid|YES|
+issue|creator_type|text|NO|
+issue|creator_id|uuid|NO|
+issue|parent_issue_id|uuid|YES|
+issue|acceptance_criteria|jsonb|NO|'[]'::jsonb
+issue|context_refs|jsonb|NO|'[]'::jsonb
+issue|position|double precision|NO|0
+issue|due_date|date|YES|
+issue|created_at|timestamp with time zone|NO|now()
+issue|updated_at|timestamp with time zone|NO|now()
+issue|number|integer|NO|0
+issue|project_id|uuid|YES|
+issue|origin_type|text|YES|
+issue|origin_id|uuid|YES|
+issue|first_executed_at|timestamp with time zone|YES|
+issue|start_date|date|YES|
+issue|metadata|jsonb|NO|'{}'::jsonb
+issue|stage|integer|YES|
+issue|properties|jsonb|NO|'{}'::jsonb
+issue_dependency|id|uuid|NO|gen_random_uuid()
+issue_dependency|issue_id|uuid|NO|
+issue_dependency|depends_on_issue_id|uuid|NO|
+issue_dependency|type|text|NO|
+issue_label|id|uuid|NO|gen_random_uuid()
+issue_label|workspace_id|uuid|NO|
+issue_label|name|text|NO|
+issue_label|color|text|NO|
+issue_label|created_at|timestamp with time zone|NO|now()
+issue_label|updated_at|timestamp with time zone|NO|now()
+issue_label|resource_type|text|NO|'issue'::text
+issue_label|description|text|NO|''::text
+issue_property|id|uuid|NO|gen_random_uuid()
+issue_property|workspace_id|uuid|NO|
+issue_property|name|text|NO|
+issue_property|type|text|NO|
+issue_property|description|text|NO|''::text
+issue_property|config|jsonb|NO|'{}'::jsonb
+issue_property|position|double precision|NO|0
+issue_property|archived_at|timestamp with time zone|YES|
+issue_property|created_at|timestamp with time zone|NO|now()
+issue_property|updated_at|timestamp with time zone|NO|now()
+issue_property|icon|text|NO|''::text
+issue_pull_request|issue_id|uuid|NO|
+issue_pull_request|pull_request_id|uuid|NO|
+issue_pull_request|linked_by_type|text|YES|
+issue_pull_request|linked_by_id|uuid|YES|
+issue_pull_request|linked_at|timestamp with time zone|NO|now()
+issue_pull_request|close_intent|boolean|NO|false
+issue_pull_request|reference_only|boolean|NO|false
+issue_reaction|id|uuid|NO|gen_random_uuid()
+issue_reaction|issue_id|uuid|NO|
+issue_reaction|workspace_id|uuid|NO|
+issue_reaction|actor_type|text|NO|
+issue_reaction|actor_id|uuid|NO|
+issue_reaction|emoji|text|NO|
+issue_reaction|created_at|timestamp with time zone|NO|now()
+issue_subscriber|issue_id|uuid|NO|
+issue_subscriber|user_type|text|NO|
+issue_subscriber|user_id|uuid|NO|
+issue_subscriber|reason|text|NO|
+issue_subscriber|created_at|timestamp with time zone|NO|now()
+issue_subscriber|unsubscribed_at|timestamp with time zone|YES|
+issue_subscriber|opt_out_scope|text|YES|
+issue_to_label|issue_id|uuid|NO|
+issue_to_label|label_id|uuid|NO|
+issue_vcs_pull_request|issue_id|uuid|NO|
+issue_vcs_pull_request|pull_request_id|uuid|NO|
+issue_vcs_pull_request|close_intent|boolean|NO|false
+issue_vcs_pull_request|reference_only|boolean|NO|false
+issue_vcs_pull_request|linked_by_type|text|YES|
+issue_vcs_pull_request|linked_by_id|uuid|YES|
+issue_vcs_pull_request|linked_at|timestamp with time zone|NO|now()
+lark_binding_token|token_hash|text|NO|
+lark_binding_token|workspace_id|uuid|NO|
+lark_binding_token|installation_id|uuid|NO|
+lark_binding_token|lark_open_id|text|NO|
+lark_binding_token|expires_at|timestamp with time zone|NO|
+lark_binding_token|consumed_at|timestamp with time zone|YES|
+lark_binding_token|created_at|timestamp with time zone|NO|now()
+lark_chat_session_binding|id|uuid|NO|gen_random_uuid()
+lark_chat_session_binding|chat_session_id|uuid|NO|
+lark_chat_session_binding|installation_id|uuid|NO|
+lark_chat_session_binding|lark_chat_id|text|NO|
+lark_chat_session_binding|lark_chat_type|text|NO|
+lark_chat_session_binding|created_at|timestamp with time zone|NO|now()
+lark_chat_session_binding|last_lark_message_id|text|YES|
+lark_chat_session_binding|last_lark_thread_id|text|YES|
+lark_inbound_audit|id|uuid|NO|gen_random_uuid()
+lark_inbound_audit|installation_id|uuid|YES|
+lark_inbound_audit|lark_chat_id|text|YES|
+lark_inbound_audit|event_type|text|NO|
+lark_inbound_audit|lark_event_id|text|YES|
+lark_inbound_audit|lark_message_id|text|YES|
+lark_inbound_audit|drop_reason|text|NO|
+lark_inbound_audit|received_at|timestamp with time zone|NO|now()
+lark_inbound_message_dedup|installation_id|uuid|NO|
+lark_inbound_message_dedup|message_id|text|NO|
+lark_inbound_message_dedup|received_at|timestamp with time zone|NO|now()
+lark_inbound_message_dedup|processed_at|timestamp with time zone|YES|
+lark_inbound_message_dedup|claim_token|uuid|NO|gen_random_uuid()
+lark_installation|id|uuid|NO|gen_random_uuid()
+lark_installation|workspace_id|uuid|NO|
+lark_installation|agent_id|uuid|NO|
+lark_installation|app_id|text|NO|
+lark_installation|app_secret_encrypted|bytea|NO|
+lark_installation|tenant_key|text|YES|
+lark_installation|bot_open_id|text|NO|
+lark_installation|installer_user_id|uuid|NO|
+lark_installation|status|text|NO|'active'::text
+lark_installation|ws_lease_token|text|YES|
+lark_installation|ws_lease_expires_at|timestamp with time zone|YES|
+lark_installation|installed_at|timestamp with time zone|NO|now()
+lark_installation|created_at|timestamp with time zone|NO|now()
+lark_installation|updated_at|timestamp with time zone|NO|now()
+lark_installation|bot_union_id|text|YES|
+lark_installation|region|text|NO|'feishu'::text
+lark_outbound_card_message|id|uuid|NO|gen_random_uuid()
+lark_outbound_card_message|chat_session_id|uuid|NO|
+lark_outbound_card_message|task_id|uuid|YES|
+lark_outbound_card_message|lark_chat_id|text|NO|
+lark_outbound_card_message|lark_card_message_id|text|NO|
+lark_outbound_card_message|status|text|NO|'pending'::text
+lark_outbound_card_message|last_patched_at|timestamp with time zone|YES|
+lark_outbound_card_message|created_at|timestamp with time zone|NO|now()
+lark_user_binding|id|uuid|NO|gen_random_uuid()
+lark_user_binding|workspace_id|uuid|NO|
+lark_user_binding|multica_user_id|uuid|NO|
+lark_user_binding|installation_id|uuid|NO|
+lark_user_binding|lark_open_id|text|NO|
+lark_user_binding|union_id|text|YES|
+lark_user_binding|bound_at|timestamp with time zone|NO|now()
+member|id|uuid|NO|gen_random_uuid()
+member|workspace_id|uuid|NO|
+member|user_id|uuid|NO|
+member|role|text|NO|
+member|created_at|timestamp with time zone|NO|now()
+notification_preference|id|uuid|NO|gen_random_uuid()
+notification_preference|workspace_id|uuid|NO|
+notification_preference|user_id|uuid|NO|
+notification_preference|preferences|jsonb|NO|'{}'::jsonb
+notification_preference|updated_at|timestamp with time zone|NO|now()
+personal_access_token|id|uuid|NO|gen_random_uuid()
+personal_access_token|user_id|uuid|NO|
+personal_access_token|name|text|NO|
+personal_access_token|token_hash|text|NO|
+personal_access_token|token_prefix|text|NO|
+personal_access_token|expires_at|timestamp with time zone|YES|
+personal_access_token|last_used_at|timestamp with time zone|YES|
+personal_access_token|revoked|boolean|NO|false
+personal_access_token|created_at|timestamp with time zone|NO|now()
+pinned_item|id|uuid|NO|gen_random_uuid()
+pinned_item|workspace_id|uuid|NO|
+pinned_item|user_id|uuid|NO|
+pinned_item|item_type|text|NO|
+pinned_item|item_id|uuid|NO|
+pinned_item|position|double precision|NO|0
+pinned_item|created_at|timestamp with time zone|NO|now()
+project|id|uuid|NO|gen_random_uuid()
+project|workspace_id|uuid|NO|
+project|title|text|NO|
+project|description|text|YES|
+project|icon|text|YES|
+project|status|text|NO|'planned'::text
+project|lead_type|text|YES|
+project|lead_id|uuid|YES|
+project|created_at|timestamp with time zone|NO|now()
+project|updated_at|timestamp with time zone|NO|now()
+project|priority|text|NO|'none'::text
+project|start_date|date|YES|
+project|due_date|date|YES|
+project_resource|id|uuid|NO|gen_random_uuid()
+project_resource|project_id|uuid|NO|
+project_resource|workspace_id|uuid|NO|
+project_resource|resource_type|text|NO|
+project_resource|resource_ref|jsonb|NO|
+project_resource|label|text|YES|
+project_resource|position|integer|NO|0
+project_resource|created_at|timestamp with time zone|NO|now()
+project_resource|created_by|uuid|YES|
+quick_action|id|uuid|NO|gen_random_uuid()
+quick_action|workspace_id|uuid|NO|
+quick_action|name|text|NO|
+quick_action|description|text|NO|''::text
+quick_action|assignee_type|text|NO|
+quick_action|assignee_id|uuid|NO|
+quick_action|prompt|text|NO|
+quick_action|visibility|text|NO|'public'::text
+quick_action|status|text|NO|'active'::text
+quick_action|last_used_at|timestamp with time zone|YES|
+quick_action|use_count|bigint|NO|0
+quick_action|created_by_type|text|NO|
+quick_action|created_by_id|uuid|NO|
+quick_action|created_at|timestamp with time zone|NO|now()
+quick_action|updated_at|timestamp with time zone|NO|now()
+runtime_profile|id|uuid|NO|gen_random_uuid()
+runtime_profile|workspace_id|uuid|NO|
+runtime_profile|display_name|text|NO|
+runtime_profile|protocol_family|text|NO|
+runtime_profile|command_name|text|NO|
+runtime_profile|description|text|YES|
+runtime_profile|fixed_args|jsonb|NO|'[]'::jsonb
+runtime_profile|visibility|text|NO|'workspace'::text
+runtime_profile|created_by|uuid|YES|
+runtime_profile|enabled|boolean|NO|true
+runtime_profile|created_at|timestamp with time zone|NO|now()
+runtime_profile|updated_at|timestamp with time zone|NO|now()
+schema_migrations|version|text|NO|
+schema_migrations|applied_at|timestamp with time zone|NO|now()
+skill|id|uuid|NO|gen_random_uuid()
+skill|workspace_id|uuid|NO|
+skill|name|text|NO|
+skill|description|text|NO|''::text
+skill|content|text|NO|''::text
+skill|config|jsonb|NO|'{}'::jsonb
+skill|created_by|uuid|YES|
+skill|created_at|timestamp with time zone|NO|now()
+skill|updated_at|timestamp with time zone|NO|now()
+skill_file|id|uuid|NO|gen_random_uuid()
+skill_file|skill_id|uuid|NO|
+skill_file|path|text|NO|
+skill_file|content|text|NO|
+skill_file|created_at|timestamp with time zone|NO|now()
+skill_file|updated_at|timestamp with time zone|NO|now()
+skill_to_label|skill_id|uuid|NO|
+skill_to_label|label_id|uuid|NO|
+skill_to_label|created_at|timestamp with time zone|NO|now()
+squad|id|uuid|NO|gen_random_uuid()
+squad|workspace_id|uuid|NO|
+squad|name|text|NO|
+squad|description|text|NO|''::text
+squad|leader_id|uuid|NO|
+squad|creator_id|uuid|NO|
+squad|created_at|timestamp with time zone|NO|now()
+squad|updated_at|timestamp with time zone|NO|now()
+squad|archived_at|timestamp with time zone|YES|
+squad|archived_by|uuid|YES|
+squad|avatar_url|text|YES|
+squad|instructions|text|NO|''::text
+squad_member|id|uuid|NO|gen_random_uuid()
+squad_member|squad_id|uuid|NO|
+squad_member|member_type|text|NO|
+squad_member|member_id|uuid|NO|
+squad_member|role|text|NO|''::text
+squad_member|created_at|timestamp with time zone|NO|now()
+sys_cron_executions|id|uuid|NO|gen_random_uuid()
+sys_cron_executions|job_name|text|NO|
+sys_cron_executions|scope_kind|text|NO|'global'::text
+sys_cron_executions|scope_id|text|NO|'global'::text
+sys_cron_executions|plan_time|timestamp with time zone|NO|
+sys_cron_executions|status|text|NO|
+sys_cron_executions|attempt|integer|NO|1
+sys_cron_executions|max_attempts|integer|NO|3
+sys_cron_executions|next_retry_at|timestamp with time zone|YES|
+sys_cron_executions|runner_id|text|YES|
+sys_cron_executions|lease_token|uuid|NO|gen_random_uuid()
+sys_cron_executions|heartbeat_at|timestamp with time zone|YES|
+sys_cron_executions|stale_after|timestamp with time zone|YES|
+sys_cron_executions|started_at|timestamp with time zone|YES|
+sys_cron_executions|finished_at|timestamp with time zone|YES|
+sys_cron_executions|duration_ms|integer|YES|
+sys_cron_executions|rows_affected|bigint|YES|
+sys_cron_executions|result|jsonb|NO|'{}'::jsonb
+sys_cron_executions|error_code|text|YES|
+sys_cron_executions|error_msg|text|YES|
+sys_cron_executions|created_at|timestamp with time zone|NO|now()
+sys_cron_executions|updated_at|timestamp with time zone|NO|now()
+task_message|id|uuid|NO|gen_random_uuid()
+task_message|task_id|uuid|NO|
+task_message|seq|integer|NO|
+task_message|type|text|NO|
+task_message|tool|text|YES|
+task_message|content|text|YES|
+task_message|input|jsonb|YES|
+task_message|output|text|YES|
+task_message|created_at|timestamp with time zone|NO|now()
+task_token|id|uuid|NO|gen_random_uuid()
+task_token|token_hash|text|NO|
+task_token|task_id|uuid|NO|
+task_token|agent_id|uuid|NO|
+task_token|workspace_id|uuid|NO|
+task_token|user_id|uuid|NO|
+task_token|expires_at|timestamp with time zone|NO|
+task_token|created_at|timestamp with time zone|NO|now()
+task_usage|id|uuid|NO|gen_random_uuid()
+task_usage|task_id|uuid|NO|
+task_usage|provider|text|NO|''::text
+task_usage|model|text|NO|
+task_usage|input_tokens|bigint|NO|0
+task_usage|output_tokens|bigint|NO|0
+task_usage|cache_read_tokens|bigint|NO|0
+task_usage|cache_write_tokens|bigint|NO|0
+task_usage|created_at|timestamp with time zone|NO|now()
+task_usage|updated_at|timestamp with time zone|YES|now()
+task_usage|cost_usd_ticks|bigint|YES|
+task_usage_hourly|bucket_hour|timestamp with time zone|NO|
+task_usage_hourly|workspace_id|uuid|NO|
+task_usage_hourly|runtime_id|uuid|NO|
+task_usage_hourly|agent_id|uuid|NO|
+task_usage_hourly|project_id|uuid|YES|
+task_usage_hourly|provider|text|NO|
+task_usage_hourly|model|text|NO|
+task_usage_hourly|input_tokens|bigint|NO|0
+task_usage_hourly|output_tokens|bigint|NO|0
+task_usage_hourly|cache_read_tokens|bigint|NO|0
+task_usage_hourly|cache_write_tokens|bigint|NO|0
+task_usage_hourly|task_count|bigint|NO|0
+task_usage_hourly|event_count|bigint|NO|0
+task_usage_hourly|updated_at|timestamp with time zone|NO|now()
+task_usage_hourly|cost_usd_ticks|bigint|NO|0
+task_usage_hourly|uncosted_input_tokens|bigint|YES|
+task_usage_hourly|uncosted_output_tokens|bigint|YES|
+task_usage_hourly|uncosted_cache_read_tokens|bigint|YES|
+task_usage_hourly|uncosted_cache_write_tokens|bigint|YES|
+task_usage_hourly_dirty|bucket_hour|timestamp with time zone|NO|
+task_usage_hourly_dirty|workspace_id|uuid|NO|
+task_usage_hourly_dirty|runtime_id|uuid|NO|
+task_usage_hourly_dirty|agent_id|uuid|NO|
+task_usage_hourly_dirty|project_id|uuid|YES|
+task_usage_hourly_dirty|provider|text|NO|
+task_usage_hourly_dirty|model|text|NO|
+task_usage_hourly_dirty|enqueued_at|timestamp with time zone|NO|now()
+task_usage_hourly_rollup_state|id|smallint|NO|1
+task_usage_hourly_rollup_state|watermark_at|timestamp with time zone|NO|'1970-01-01 08:00:00+08'::timestamp with time zone
+task_usage_hourly_rollup_state|last_run_started_at|timestamp with time zone|YES|
+task_usage_hourly_rollup_state|last_run_finished_at|timestamp with time zone|YES|
+task_usage_hourly_rollup_state|last_run_rows|bigint|NO|0
+task_usage_hourly_rollup_state|last_error|text|YES|
+user|id|uuid|NO|gen_random_uuid()
+user|name|text|NO|
+user|email|text|NO|
+user|avatar_url|text|YES|
+user|created_at|timestamp with time zone|NO|now()
+user|updated_at|timestamp with time zone|NO|now()
+user|onboarded_at|timestamp with time zone|YES|
+user|onboarding_questionnaire|jsonb|NO|'{}'::jsonb
+user|cloud_waitlist_email|character varying|YES|
+user|cloud_waitlist_reason|text|YES|
+user|starter_content_state|text|YES|
+user|language|character varying|YES|NULL::character varying
+user|profile_description|text|NO|''::text
+user|timezone|text|YES|
+user_composio_connection|id|uuid|NO|gen_random_uuid()
+user_composio_connection|user_id|uuid|NO|
+user_composio_connection|toolkit_slug|text|NO|
+user_composio_connection|auth_config_id|text|NO|
+user_composio_connection|connected_account_id|text|NO|
+user_composio_connection|composio_user_id|text|NO|
+user_composio_connection|status|text|NO|'active'::text
+user_composio_connection|connected_at|timestamp with time zone|NO|now()
+user_composio_connection|last_used_at|timestamp with time zone|YES|
+user_composio_connection|created_at|timestamp with time zone|NO|now()
+user_composio_connection|updated_at|timestamp with time zone|NO|now()
+vcs_commit_status|connection_id|uuid|NO|
+vcs_commit_status|sha|text|NO|
+vcs_commit_status|context|text|NO|
+vcs_commit_status|state|text|NO|
+vcs_commit_status|target_url|text|YES|
+vcs_commit_status|description|text|YES|
+vcs_commit_status|updated_at|timestamp with time zone|NO|now()
+vcs_connection|id|uuid|NO|gen_random_uuid()
+vcs_connection|workspace_id|uuid|NO|
+vcs_connection|provider|text|NO|'forgejo'::text
+vcs_connection|instance_url|text|NO|
+vcs_connection|account_login|text|NO|
+vcs_connection|access_token_encrypted|text|NO|
+vcs_connection|webhook_secret_encrypted|text|NO|
+vcs_connection|connected_by_id|uuid|YES|
+vcs_connection|created_at|timestamp with time zone|NO|now()
+vcs_connection|updated_at|timestamp with time zone|NO|now()
+vcs_pull_request|id|uuid|NO|gen_random_uuid()
+vcs_pull_request|workspace_id|uuid|NO|
+vcs_pull_request|connection_id|uuid|NO|
+vcs_pull_request|provider|text|NO|'forgejo'::text
+vcs_pull_request|repo_owner|text|NO|
+vcs_pull_request|repo_name|text|NO|
+vcs_pull_request|pr_number|integer|NO|
+vcs_pull_request|title|text|NO|
+vcs_pull_request|state|text|NO|
+vcs_pull_request|html_url|text|NO|
+vcs_pull_request|branch|text|YES|
+vcs_pull_request|head_sha|text|NO|''::text
+vcs_pull_request|author_login|text|YES|
+vcs_pull_request|author_avatar_url|text|YES|
+vcs_pull_request|merged_at|timestamp with time zone|YES|
+vcs_pull_request|closed_at|timestamp with time zone|YES|
+vcs_pull_request|pr_created_at|timestamp with time zone|NO|
+vcs_pull_request|pr_updated_at|timestamp with time zone|NO|
+vcs_pull_request|additions|integer|NO|0
+vcs_pull_request|deletions|integer|NO|0
+vcs_pull_request|changed_files|integer|NO|0
+vcs_pull_request|created_at|timestamp with time zone|NO|now()
+vcs_pull_request|updated_at|timestamp with time zone|NO|now()
+verification_code|id|uuid|NO|gen_random_uuid()
+verification_code|email|text|NO|
+verification_code|code|text|NO|
+verification_code|expires_at|timestamp with time zone|NO|
+verification_code|used|boolean|NO|false
+verification_code|created_at|timestamp with time zone|NO|now()
+verification_code|attempts|integer|NO|0
+webhook_delivery|id|uuid|NO|gen_random_uuid()
+webhook_delivery|workspace_id|uuid|NO|
+webhook_delivery|autopilot_id|uuid|NO|
+webhook_delivery|trigger_id|uuid|NO|
+webhook_delivery|provider|text|NO|
+webhook_delivery|event|text|NO|'webhook.received'::text
+webhook_delivery|dedupe_key|text|YES|
+webhook_delivery|dedupe_source|text|YES|
+webhook_delivery|signature_status|text|NO|'not_required'::text
+webhook_delivery|status|text|NO|'queued'::text
+webhook_delivery|attempt_count|integer|NO|1
+webhook_delivery|selected_headers|jsonb|NO|'{}'::jsonb
+webhook_delivery|content_type|text|YES|
+webhook_delivery|raw_body|bytea|YES|
+webhook_delivery|response_status|integer|YES|
+webhook_delivery|response_body|text|YES|
+webhook_delivery|autopilot_run_id|uuid|YES|
+webhook_delivery|replayed_from_delivery_id|uuid|YES|
+webhook_delivery|error|text|YES|
+webhook_delivery|received_at|timestamp with time zone|NO|now()
+webhook_delivery|last_attempt_at|timestamp with time zone|NO|now()
+webhook_delivery|created_at|timestamp with time zone|NO|now()
+webhook_delivery|available_at|timestamp with time zone|NO|now()
+webhook_delivery|lease_token|uuid|YES|
+webhook_delivery|lease_expires_at|timestamp with time zone|YES|
+webhook_delivery|dispatch_attempts|integer|NO|0
+workspace|id|uuid|NO|gen_random_uuid()
+workspace|name|text|NO|
+workspace|slug|text|NO|
+workspace|description|text|YES|
+workspace|settings|jsonb|NO|'{}'::jsonb
+workspace|created_at|timestamp with time zone|NO|now()
+workspace|updated_at|timestamp with time zone|NO|now()
+workspace|context|text|YES|
+workspace|repos|jsonb|NO|'[]'::jsonb
+workspace|issue_prefix|text|NO|''::text
+workspace|issue_counter|integer|NO|0
+workspace|avatar_url|text|YES|
+workspace|attribution_fail_closed|boolean|NO|false
+workspace_invitation|id|uuid|NO|gen_random_uuid()
+workspace_invitation|workspace_id|uuid|NO|
+workspace_invitation|inviter_id|uuid|NO|
+workspace_invitation|invitee_email|text|NO|
+workspace_invitation|invitee_user_id|uuid|YES|
+workspace_invitation|role|text|NO|
+workspace_invitation|status|text|NO|'pending'::text
+workspace_invitation|created_at|timestamp with time zone|NO|now()
+workspace_invitation|updated_at|timestamp with time zone|NO|now()
+workspace_invitation|expires_at|timestamp with time zone|NO|(now() + '7 days'::interval)

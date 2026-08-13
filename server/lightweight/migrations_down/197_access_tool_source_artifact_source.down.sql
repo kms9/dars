@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_197_access_tool_source_artifact_source;

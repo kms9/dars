@@ -1,0 +1,141 @@
+{
+  "evidence_version": 1,
+  "capture_window_utc": {
+    "started_at": "2026-08-05T02:09:43.151026Z",
+    "completed_at": "2026-08-05T02:14:31Z"
+  },
+  "connection": {
+    "host": "10.8.8.120",
+    "port": 5412,
+    "database": "multica",
+    "user": "postgres",
+    "sslmode": "disable",
+    "credential_persisted": false
+  },
+  "read_only_guards": {
+    "session_default_transaction_read_only": true,
+    "sql_transactions": "REPEATABLE READ READ ONLY",
+    "statement_timeout_ms": 120000
+  },
+  "identity": {
+    "database_oid": 5132864,
+    "database_owner": "postgres",
+    "encoding": "UTF8",
+    "collation": "zh_CN.UTF-8",
+    "ctype": "zh_CN.UTF-8",
+    "database_size_bytes_at_start": 10953583,
+    "server_address": "10.8.8.120",
+    "server_port": 5412,
+    "server_version": "12.22",
+    "server_version_num": 120022,
+    "system_identifier": "6873377209962900392"
+  },
+  "revision": {
+    "table": "public.schema_migrations",
+    "migration_count": 106,
+    "lexical_min_version": "001_init",
+    "lexical_max_version": "084_squad",
+    "latest_applied_version": "084_squad",
+    "latest_applied_at_utc": "2026-06-15T06:20:49.515017Z",
+    "ordered_version_and_applied_at_sha256": "d4737531c2fef014e958e5e24cfb719048402f5e8a87cd0820cd119d761960cf"
+  },
+  "schema": {
+    "base_tables": 47,
+    "columns": 441,
+    "indexes": 141,
+    "primary_keys": 47,
+    "unique_constraints": 19,
+    "foreign_keys": 82,
+    "check_constraints": 46,
+    "triggers": 8,
+    "normalized_schema_dump_sha256": "65a4a99585a781ce3eca69bd0fb4051a34b9b328e4e7e612331438cd9a322104",
+    "repeat_sample_sha256": "65a4a99585a781ce3eca69bd0fb4051a34b9b328e4e7e612331438cd9a322104",
+    "application_table_names": [
+      "public.activity_log",
+      "public.agent",
+      "public.agent_runtime",
+      "public.agent_skill",
+      "public.agent_task_queue",
+      "public.attachment",
+      "public.autopilot",
+      "public.autopilot_run",
+      "public.autopilot_trigger",
+      "public.chat_message",
+      "public.chat_session",
+      "public.comment",
+      "public.comment_reaction",
+      "public.daemon_connection",
+      "public.daemon_token",
+      "public.feedback",
+      "public.github_installation",
+      "public.github_pull_request",
+      "public.inbox_item",
+      "public.issue",
+      "public.issue_dependency",
+      "public.issue_label",
+      "public.issue_pull_request",
+      "public.issue_reaction",
+      "public.issue_subscriber",
+      "public.issue_to_label",
+      "public.member",
+      "public.notification_preference",
+      "public.personal_access_token",
+      "public.pinned_item",
+      "public.project",
+      "public.project_resource",
+      "public.schema_migrations",
+      "public.skill",
+      "public.skill_file",
+      "public.squad",
+      "public.squad_member",
+      "public.task_message",
+      "public.task_usage",
+      "public.task_usage_daily",
+      "public.task_usage_daily_dirty",
+      "public.task_usage_dashboard_rollup_state",
+      "public.task_usage_rollup_state",
+      "public.user",
+      "public.verification_code",
+      "public.workspace",
+      "public.workspace_invitation"
+    ]
+  },
+  "content": {
+    "normalized_data_dump_sha256": "40fbbf426607ac33a899b974fb4d1f0b4d78af1a5720c55f7a48ed0106f7b8c9",
+    "repeat_data_dump_sha256": "40fbbf426607ac33a899b974fb4d1f0b4d78af1a5720c55f7a48ed0106f7b8c9",
+    "canonical_logical_content_sha256": "8d728eaa430982b6609ddb392217e863b0e1553102a9b0f017f3985442f4b980",
+    "repeat_canonical_logical_content_sha256": "8d728eaa430982b6609ddb392217e863b0e1553102a9b0f017f3985442f4b980",
+    "per_table_manifest_sha256": "5e7f5c1216117cb3501b049de5ed2a3a7fc7370e0573c63b88fb09db9894ac0b",
+    "empty_table_count": 44,
+    "non_empty_tables": [
+      {
+        "table": "public.schema_migrations",
+        "row_count": 106,
+        "sorted_row_digest_md5": "03f7d5874f6dd921b015a04cad2e34ea"
+      },
+      {
+        "table": "public.task_usage_dashboard_rollup_state",
+        "row_count": 1,
+        "sorted_row_digest_md5": "4cf8c3a27e1dff38f537a3d4c92339c8"
+      },
+      {
+        "table": "public.task_usage_rollup_state",
+        "row_count": 1,
+        "sorted_row_digest_md5": "4cf8c3a27e1dff38f537a3d4c92339c8"
+      }
+    ]
+  },
+  "method": {
+    "psql_version": "18.3",
+    "pg_dump_version": "18.3",
+    "digest": "SHA-256 via OpenSSL 3.6.2",
+    "schema_dump": "pg_dump --schema-only --schema=public --no-owner --no-privileges --no-comments --quote-all-identifiers, with PostgreSQL 18 random restrict markers removed",
+    "data_dump": "pg_dump --data-only --schema=public --no-owner --no-privileges --no-comments --quote-all-identifiers, with PostgreSQL 18 random restrict markers removed",
+    "canonical_content": "For every non-system base table ordered by schema and table name, hash a table sentinel followed by to_jsonb(row)::text ordered with C collation",
+    "per_table_manifest": "For every non-system base table, record row count and MD5 of sorted per-row MD5 values; MD5 is diagnostic only and the SHA-256 fingerprints are authoritative"
+  },
+  "warnings": [
+    "sslmode=disable means the PostgreSQL connection was not protected by PostgreSQL TLS.",
+    "pg_dump --data-only reported circular foreign-key restore-order warnings for issue, comment, agent_task_queue, and autopilot_run; both dump checksum samples still completed and matched."
+  ]
+}

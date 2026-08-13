@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_194_access_tool_definition_revision;

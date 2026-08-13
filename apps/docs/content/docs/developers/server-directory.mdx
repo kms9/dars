@@ -1,0 +1,342 @@
+---
+title: Server 目录导读
+description: 基于 server/ 源码与包注释整理的目录职责说明；代码注释原文保持英文，本页给出中文释义与功能总结。
+---
+
+本文按 `server/` 现有目录依次说明职责，并摘录关键 `// Package` / 文件头注释的中文翻译。整体架构与请求流见 [项目架构](/developers/architecture)。
+
+> **约定**：仓库要求代码注释使用英文（见根目录 `CLAUDE.md`）。本页把这些英文注释翻译为中文，方便阅读，**不**改写 Go 源码中的注释。
+
+## 总览
+
+依赖方向大致为：
+
+```text
+cmd/*（进程入口）
+  → internal/*（业务实现，不对外导出）
+  → pkg/*（可复用库）
+  ← lightweight/*（schema / SQL 源）
+```
+
+| 顶层目录 | 职责 |
+| --- | --- |
+| `cmd/` | 可执行入口：`server`、`dars`、`migrate` |
+| `internal/` | HTTP API、Daemon、实时、中间件、横切服务 |
+| `pkg/` | Agent 后端、协议常量、sqlc 生成层、脱敏与失败分类 |
+| `lightweight/` | Lightweight 迁移 SQL 与 sqlc 查询源 |
+
+---
+
+## 1. `cmd/` — 进程入口
+
+### `cmd/server`
+
+**功能**：DARS API 服务主进程。连接 PostgreSQL（`dars_lightweight`）、可选 Redis，装配路由、事件总线、用户 WebSocket、Daemon WebSocket、Prometheus metrics、健康检查与后台 task sweeper。Lightweight 产品的唯一服务端 composition root。
+
+**关键文件**：
+
+| 文件 | 作用 |
+| --- | --- |
+| `main.go` | DB / Redis / Hub 初始化与优雅关闭 |
+| `lightweight_composition.go` | 路由注册与中间件链 |
+| `lightweight_listeners.go` | `events.Bus` → WebSocket 广播 |
+| `lightweight_health.go` | `/live`、`/ready` |
+| `lightweight_sweeper.go` | 定时清理过期 / 陈旧任务 |
+| `scope_authorizer.go` | task / chat scope 鉴权 |
+
+**注释译文（节选）**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `LightweightComposition is the server's single shipping composition root.` | `LightweightComposition` 是服务端唯一的交付组合根。 |
+| `It exposes only the lifecycle objects main needs; every request dependency is owned by Handler and every route is registered from one manifest below.` | 它只向 `main` 暴露生命周期对象；请求依赖由 Handler 持有，全部路由在下方单一清单中注册。 |
+
+### `cmd/dars`
+
+**功能**：DARS CLI（Cobra）。提供 issue / agent / workspace / skill / squad / chat 等资源命令，以及本机 Daemon 启停、登录认证、自托管 setup、本地配置读写。
+
+**关键文件**：`main.go`、`cmd_daemon.go`、`cmd_lightweight_*.go`、`cmd_login.go`、`cmd_auth.go`、`cmd_setup.go`、`cmd_config.go`。
+
+### `cmd/migrate`
+
+**功能**：独立数据库迁移工具（`up` / `down`）。使用 PostgreSQL advisory lock 串行化并发迁移，读写 `schema_migrations`，调用 `lightweightmigrations` 定位 SQL。
+
+---
+
+## 2. `internal/` — 核心实现
+
+### `internal/lightweightapi`
+
+**功能**：Lightweight 全部 REST API 与鉴权核心。基于 27 表 schema，处理 JWT / PAT / Daemon token / Task token、workspace 成员权限，以及 issue / comment / task / chat / agent / squad / skill 等生命周期。写操作后通过 `events.Bus` 发布领域事件。
+
+**包注释**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `Package lightweightapi implements the HTTP and authorization core that is backed exclusively by the Lightweight 27-table baseline.` | `lightweightapi` 实现 HTTP 与鉴权核心，且仅以 Lightweight 27 表基线为数据后端。 |
+
+**关键文件**：`handler.go`、`middleware.go`、`auth.go`、`issue.go`、`claim.go`、`task_lifecycle.go`、`daemon.go`、`chat.go`、`events.go`。
+
+### `internal/daemon`
+
+**功能**：本机 Agent Runtime Daemon。轮询 / claim 任务、注册 runtime 与心跳、调用各 agent CLI、处理 skill bundle、repo checkout、失败分类、GC、磁盘用量，并与 server 做 HTTP / WS RPC。对应 `dars daemon start`。
+
+**关键类型**：`Daemon`、`Client`、`Config`、`Task`、`Runtime`。
+
+### `internal/daemon/execenv`
+
+**功能**：为每个 task 准备隔离工作目录：注入 runtime brief、MCP / Codex / OpenClaw / Cursor / Hermes 等 provider 配置、handoff 上下文与 skill 可见性策略；含 Unix / Windows 隔离实现。
+
+**包注释**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `Package execenv manages isolated per-task execution environments for the daemon.` | `execenv` 管理 Daemon 侧按任务隔离的执行环境。 |
+| `Each task gets its own directory with injected context files. Repositories are checked out on demand by the agent via dars repo checkout.` | 每个任务拥有独立目录并注入上下文文件；仓库由智能体按需通过 `dars repo checkout` 检出。 |
+
+### `internal/daemon/repocache`
+
+**功能**：维护 workspace 仓库的 bare git clone 缓存，支持 fetch、partial clone、worktree，作为 per-task checkout 的源。
+
+**包注释**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `Package repocache manages bare git clone caches for workspace repositories.` | `repocache` 管理 workspace 仓库的 bare git clone 缓存。 |
+| `The daemon uses these caches as the source for creating per-task worktrees.` | Daemon 用这些缓存作为创建 per-task worktree 的源。 |
+
+### `internal/daemonws`
+
+**功能**：Daemon 专用 WebSocket Hub。管理长连接，按 runtime / workspace / user 索引，推送 `task_available` / `pending_work` / RPC，处理心跳；多节点时经 Redis relay 跨节点唤醒。
+
+### `internal/events`
+
+**功能**：进程内同步 pub/sub 事件总线。Handler 发布领域事件（如 `issue:created`），`cmd/server` 的 listener 转为 WebSocket 帧。
+
+**注释译文（`bus.go`）**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `Event represents a domain event published by handlers or services.` | `Event` 表示由 handler 或 service 发布的领域事件。 |
+| `Bus is an in-process synchronous pub/sub event bus.` | `Bus` 是进程内同步的发布/订阅事件总线。 |
+| `Optional scope hints used by the realtime fanout layer...` | 可选 scope 提示，供实时扇出层路由到比整个 workspace 更细的范围（如 task / chat），无需反序列化 `Payload`。 |
+| `Publish ... Panics in individual handlers are recovered...` | `Publish` 同步调用监听器；单个 handler panic 会被恢复，以免阻断其他监听器。 |
+
+### `internal/realtime`
+
+**功能**：面向 Web 客户端的 WebSocket 实时层。管理 workspace / user / task / chat 等订阅，JWT / PAT 认证，慢消费者驱逐；可选 Redis Stream relay 做多节点扇出。
+
+**注释译文**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `Broadcaster is the abstraction every realtime event producer should depend on instead of *Hub directly.` | 所有实时事件生产者应依赖 `Broadcaster` 抽象，而不是直接依赖 `*Hub`。 |
+| `ScopeDaemonRuntime routes daemon wakeup frames through the Redis relay.` | `ScopeDaemonRuntime` 经 Redis relay 路由 Daemon 唤醒帧；由 Daemon WS Hub 消费，不给浏览器客户端。 |
+
+### `internal/auth`
+
+**功能**：认证基础设施：JWT secret、PAT / Daemon / Task token 生成与哈希、auth / CSRF cookie、TTL 配置。
+
+### `internal/cli`
+
+**功能**：CLI 共享库：`~/.dars/config.json`、表格 / JSON 输出、flag / env 解析、错误格式化。被 `cmd/dars` 与 `internal/daemon` 共用。
+
+### `internal/lightweightmigrations`
+
+**功能**：定位 `server/lightweight/migrations`，校验 DB identity（`edition=dars_lightweight`，`schema_version=1`），区分迁移前检查与 server 启动时的严格检查。
+
+**注释译文**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `ValidateDatabaseIdentity is deliberately read-only and must run before the migration runner creates schema_migrations or executes target DDL.` | `ValidateDatabaseIdentity` 只读，且必须在迁移 runner 创建 `schema_migrations` 或执行目标 DDL 之前运行。 |
+| `ValidateRuntimeDatabaseIdentity is the stricter Server startup gate... an empty database is not runnable...` | `ValidateRuntimeDatabaseIdentity` 是更严格的 Server 启动门禁；空库不可运行，marker 必须已存在且标识受支持的 Lightweight schema。 |
+
+### `internal/metrics`
+
+**功能**：Prometheus 观测：HTTP 请求指标、独立 metrics server、realtime WebSocket / Redis relay collector。
+
+### `internal/middleware`
+
+**功能**：HTTP 中间件：CSP、Redis 限流、请求日志、`X-Client-*` 客户端元数据解析。
+
+### `internal/service`
+
+**功能**：横切服务：邮件（Resend / SMTP）、内置 skill 嵌入与加载、skill bundle 规范化。
+
+### `internal/service/builtin_skills`
+
+**功能**：编译期内置 skill（`//go:embed`）。当前包括：
+
+- `dars-runtime-protocol`
+- `dars-squad-collaboration`
+- `dars-working-on-runs`
+- `dars-direct-chat`
+- `dars-lightweight-resources`
+
+### `internal/skill`
+
+**功能**：`SKILL.md` 解析与导入：YAML frontmatter、zip / `.skill` 归档（防 zip-slip）、保留路径校验。
+
+**包注释**：`provides shared utilities for working with SKILL.md files.` → 提供处理 `SKILL.md` 的共享工具。
+
+### `internal/agentconfigsecret`
+
+**功能**：Agent 敏感配置加密：`custom_env` 各键独立加密，`mcp_config` 整文档封入认证 envelope，再写入 PostgreSQL JSONB。
+
+**包注释**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `encrypts Agent custom_env values independently and an entire mcp_config document as one authenticated envelope before either is persisted in PostgreSQL JSONB.` | 在写入 PostgreSQL JSONB 之前，分别独立加密 Agent 的 `custom_env` 各值，并将整个 `mcp_config` 文档封装为一个带认证的 envelope。 |
+
+### `internal/selfexec`
+
+**功能**：解析当前进程可执行文件路径（`os.Executable` + `argv[0]` 回退），供迁移与 Daemon 自重启使用。
+
+**包注释**：`resolves the executable backing the current process.` → 解析承载当前进程的可执行文件路径。
+
+### `internal/logger`
+
+**功能**：全局 `slog` 初始化（tint 彩色输出、`LOG_LEVEL`）、HTTP 请求日志 helper。
+
+### `internal/util`
+
+**功能**：通用工具：严格 UUID 解析、mention 解析、JSON / 进程辅助。
+
+### `internal/util/secretbox`
+
+**功能**：AES-256-GCM 对称加密，用于静态密钥保护（每消息随机 nonce）。
+
+**包注释**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `provides authenticated symmetric encryption for secrets stored at rest` | 为静态存储的密钥提供带认证的对称加密。 |
+| `primarily Lark app_secret and any future per-tenant secret column that must not appear in plaintext in a DB dump` | 主要用于 Lark `app_secret` 及未来任何不得在 DB dump 中以明文出现的 per-tenant 密钥列。 |
+
+---
+
+## 3. `pkg/` — 可复用库
+
+### `pkg/agent`
+
+**功能**：统一 agent 执行后端。各 provider 实现 `Backend.Execute()`，支持流式消息、session resume、MCP、thinking level、超时与 watchdog。Daemon 通过 `agent.New(provider, cfg)` 选择后端。
+
+**包注释**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `Package agent provides a unified interface for executing prompts via coding agents (Claude Code, CodeBuddy, Codex, Copilot, OpenCode, DevEco Code, OpenClaw, Hermes, Pi, Cursor, Kimi, Kiro, Antigravity, Qoder, Trae, Grok, Qwen Code).` | `agent` 包通过各类编程智能体提供统一的 prompt 执行接口（Claude Code、CodeBuddy、Codex、Copilot、OpenCode、DevEco Code、OpenClaw、Hermes、Pi、Cursor、Kimi、Kiro、Antigravity、Qoder、Trae、Grok、Qwen Code）。 |
+| `It mirrors the happy-cli AgentBackend pattern, translated to idiomatic Go.` | 其模式对齐 happy-cli 的 `AgentBackend`，并以惯用 Go 风格实现。 |
+
+**子目录 `pkg/agent/testdata`**：流式解析 / 集成测试夹具，不参与运行时。
+
+### `pkg/lightweightdb`
+
+**功能**：sqlc 生成的 Lightweight 数据访问层（`Queries`、row model）。对应 `server/lightweight/queries/*.sql`。
+
+### `pkg/protocol`
+
+**功能**：冻结协议契约：Daemon HTTP 路由常量、WebSocket 事件名、RPC 消息类型、协议版本与 capability。服务端注册与 Daemon 客户端共用同一常量，防止路径漂移。
+
+**注释译文**：
+
+| 原文 | 中文 |
+| --- | --- |
+| `LightweightDaemonRoute is one method+path template in the frozen daemon HTTP contract.` | `LightweightDaemonRoute` 是冻结的 Daemon HTTP 契约中的一条 method + path 模板。 |
+| `Server registration and daemon client path construction use the constants below so a path cutover cannot drift independently.` | 服务端注册与 Daemon 客户端路径构造共用下方常量，避免路径切换时两边独立漂移。 |
+
+### `pkg/redact`
+
+**功能**：在 agent 输出写入 DB 或 WebSocket 前，检测并遮蔽 AWS key、GitHub token、OpenAI key、PEM 私钥等。
+
+**包注释**：`detecting and masking secrets in agent output before it reaches the database or WebSocket broadcast.` → 在 agent 输出到达数据库或 WebSocket 广播之前检测并遮蔽密钥。
+
+### `pkg/skillbundle`
+
+**功能**：Skill 内容 bundle 的 hash / manifest 计算，统一 workspace 与 builtin skill 的内容寻址与完整性校验。
+
+### `pkg/taskfailure`
+
+**功能**：任务 / 聊天失败原因的标准分类（22 个 canonical 值）。`Classify()` 将 agent 原始错误映射为 `agent_error.*`，供 DB、重试策略与 Prometheus 标签使用。
+
+**包注释（摘要）**：
+
+| 原文要点 | 中文 |
+| --- | --- |
+| canonical taxonomy for `failure_reason` | `agent_task_queue.failure_reason` 与 `chat_message.failure_reason` 的权威分类体系。 |
+| 8 platform-side + 14 agent-side values | 8 个平台侧原因（无前缀）+ 14 个智能体侧原因（`agent_error.` 前缀）。 |
+| Wire stability / renaming is breaking | 字符串形式会持久化到 DB 并作为 Prometheus label；重命名属于破坏性变更。 |
+
+---
+
+## 4. `lightweight/` — Schema 与 SQL 源
+
+### `lightweight/`（根）
+
+**功能**：Lightweight schema 与 SQL 源根目录；`contract_test.go` 约束查询只引用 Lightweight 表、Comment 追加写模型、必需查询存在。
+
+### `lightweight/migrations`
+
+**功能**：正向 PostgreSQL 迁移（`001`–`201`）。建立 27 表 baseline，以及大量 `CREATE INDEX CONCURRENTLY` 与 access / 唯一索引绑定迁移。由 `cmd/migrate up` 应用。
+
+### `lightweight/migrations_down`
+
+**功能**：反向迁移（开发 / 测试回滚）。覆盖范围小于 up 集；由 `cmd/migrate down` 使用。
+
+### `lightweight/queries`
+
+**功能**：sqlc 查询源，按域拆分后生成 `pkg/lightweightdb/*.sql.go`。
+
+| 文件 | 主要职责 |
+| --- | --- |
+| `identity_workspace_token.sql` | 用户、workspace、member、PAT、daemon token、验证码 |
+| `runtime_agent_skill.sql` | agent runtime、skill、runtime profile |
+| `agent_management.sql` | agent CRUD、avatar、skill 绑定 |
+| `agent_builder.sql` | agent builder draft |
+| `collaboration_task.sql` | issue、comment、task queue、claim、sweep、squad |
+| `chat.sql` | chat session / message |
+| `workspace_cleanup.sql` | GC、sweeper、orphan 清理 |
+
+变更查询后需运行 `make sqlc` 重新生成 Go 代码。
+
+---
+
+## 5. 目录协作关系
+
+```text
+Web / CLI
+  │ HTTP + JWT/PAT
+  ▼
+cmd/server → lightweightapi → lightweightdb → PostgreSQL
+                │ publish
+                ▼
+            events.Bus → realtime (用户 WS)
+                       → daemonws (Daemon 唤醒)
+
+dars daemon
+  → internal/daemon → pkg/agent (本机 CLI)
+                   → pkg/protocol (冻结路径)
+                   → /api/daemon/* (ddt_)
+```
+
+更完整的认证边界、27 表模型与 task 状态机，见 [项目架构](/developers/architecture)。
+
+---
+
+## 6. 快速索引
+
+| 想找… | 去哪里 |
+| --- | --- |
+| 路由与 composition | `cmd/server/lightweight_composition.go` |
+| REST handler | `internal/lightweightapi/` |
+| Daemon 执行循环 | `internal/daemon/daemon.go` |
+| 任务工作目录 | `internal/daemon/execenv/` |
+| 用户实时 | `internal/realtime/` |
+| Daemon 实时 | `internal/daemonws/` |
+| 协议常量 | `pkg/protocol/` |
+| Provider 适配 | `pkg/agent/` |
+| sqlc 模型 | `pkg/lightweightdb/models.go` |
+| 迁移 SQL | `lightweight/migrations/` |
+| 失败原因枚举 | `pkg/taskfailure/` |

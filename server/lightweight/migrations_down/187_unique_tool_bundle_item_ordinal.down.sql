@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_187_unique_tool_bundle_item_ordinal;

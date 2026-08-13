@@ -1,0 +1,114 @@
+# Self-hosting Docker Compose — starts PostgreSQL, backend, and frontend.
+#
+# Services bind to 127.0.0.1 only. For cross-machine or public access, front
+# them with a reverse proxy (Caddy / nginx / Cloudflare Tunnel) that terminates
+# TLS and forwards to 127.0.0.1:8080 (backend) and 127.0.0.1:3000 (frontend).
+# Do NOT change these bindings to 0.0.0.0 — Docker bypasses host firewalls
+# (UFW/iptables) by default, so the raw ports would be exposed to the internet
+# with the default JWT_SECRET and Postgres credentials. See:
+#   apps/docs/content/docs/self-host-quickstart.mdx
+#
+# Usage:
+#   cp .env.example .env
+#   # Edit .env — change JWT_SECRET at minimum
+#   docker compose -f docker-compose.selfhost.yml up -d
+#
+# Frontend: http://localhost:${FRONTEND_PORT:-3000}
+# Backend:  http://localhost:${BACKEND_PORT:-${API_PORT:-${SERVER_PORT:-${PORT:-8080}}}}
+#
+# The published values above are HOST ports; the containers always listen on
+# 8080 / 3000 internally, so changing them never needs a rebuild. PORT is the
+# variable to edit; BACKEND_PORT, API_PORT and SERVER_PORT are optional aliases
+# that override it in that order. Keep this alias order identical to Makefile
+# and scripts/local-env.sh. The web dev fallback intentionally omits PORT
+# because Next uses that variable for its own frontend listener.
+#
+# Note that *which source* wins differs per entry point — Compose lets the
+# calling environment outrank this file, while make lets the included env file
+# outrank the environment. Nothing re-derives the published port from the inputs
+# any more: `make selfhost` (via scripts/selfhost-wait.sh) and both installers
+# read it back with `docker compose port`, so the health check and the printed
+# URL always match what was actually published.
+
+name: dars
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dars_lightweight}
+      POSTGRES_USER: ${POSTGRES_USER:-dars}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dars}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-dars} -d ${POSTGRES_DB:-dars_lightweight}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ${DARS_BACKEND_IMAGE:-ghcr.io/kms9/dars-backend}:${DARS_IMAGE_TAG:-latest}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-${API_PORT:-${SERVER_PORT:-${PORT:-8080}}}}:8080"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-dars}:${POSTGRES_PASSWORD:-dars}@postgres:5432/${POSTGRES_DB:-dars_lightweight}?sslmode=disable
+      EXPECTED_DATABASE_NAME: ${POSTGRES_DB:-dars_lightweight}
+      DARS_EDITION: ${DARS_EDITION:-lightweight}
+      DATABASE_MAX_CONNS: ${DATABASE_MAX_CONNS:-25}
+      DATABASE_MIN_CONNS: ${DATABASE_MIN_CONNS:-5}
+      DATABASE_MAX_IDLE_CONNS: ${DATABASE_MAX_IDLE_CONNS:-5}
+      DATABASE_MAX_CONN_LIFETIME: ${DATABASE_MAX_CONN_LIFETIME:-300s}
+      DARS_AGENT_SECRET_KEY: ${DARS_AGENT_SECRET_KEY:-}
+      DARS_AGENT_SECRET_KEY_ID: ${DARS_AGENT_SECRET_KEY_ID:-primary}
+      PORT: "8080"
+      METRICS_ADDR: ${METRICS_ADDR:-}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-noreply@dars.ai}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-25}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_TLS: ${SMTP_TLS:-}
+      SMTP_TLS_INSECURE: ${SMTP_TLS_INSECURE:-false}
+      SMTP_EHLO_NAME: ${SMTP_EHLO_NAME:-}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+      APP_ENV: ${APP_ENV:-production}
+      DARS_DEV_VERIFICATION_CODE: ${DARS_DEV_VERIFICATION_CODE:-}
+      DARS_APP_URL: ${DARS_APP_URL:-http://localhost:3000}
+      DARS_SHUTDOWN_HOLD_DURATION: ${DARS_SHUTDOWN_HOLD_DURATION:-}
+      ALLOW_SIGNUP: ${ALLOW_SIGNUP:-true}
+      ALLOWED_EMAILS: ${ALLOWED_EMAILS:-}
+      ALLOWED_EMAIL_DOMAINS: ${ALLOWED_EMAIL_DOMAINS:-}
+      DISABLE_WORKSPACE_CREATION: ${DISABLE_WORKSPACE_CREATION:-}
+      DARS_PUBLIC_URL: ${DARS_PUBLIC_URL:-}
+      # Comma-separated CIDRs whose forwarding headers are trusted.
+      DARS_TRUSTED_PROXIES: ${DARS_TRUSTED_PROXIES:-}
+    restart: unless-stopped
+
+  frontend:
+    image: ${DARS_WEB_IMAGE:-ghcr.io/kms9/dars-web}:${DARS_IMAGE_TAG:-latest}
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+    environment:
+      HOSTNAME: "0.0.0.0"
+      REMOTE_API_URL: ${REMOTE_API_URL:-http://backend:8080}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+      NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-}
+    restart: unless-stopped
+
+volumes:
+  pgdata:

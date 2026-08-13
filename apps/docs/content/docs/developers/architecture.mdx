@@ -1,0 +1,322 @@
+---
+title: 项目架构（Lightweight 现状）
+description: DARS Lightweight 交付目标下的仓库结构、后端分层、认证边界、模块通信与关键业务流程。
+---
+
+本文描述 **当前交付目标（Lightweight）** 的真实代码结构与后端主路径，以 Go Server、Daemon/CLI、Web 与共享包之间的通信为主。产品向解释见 [DARS 的工作方式](/how-dars-works)。
+
+> **交付边界**：目标产品是 Web + Server + 本机 Daemon/CLI。仓库内仍保留 Desktop / Mobile / Docs，但它们不是 Lightweight 的兼容与发布门禁；根目录 `pnpm build|typecheck|test|lint` 与 `make check` 只覆盖 `@dars/web` 与 `packages/core|ui|views`。
+
+## 1. 产品定位与运行时拓扑
+
+DARS 是面向小团队的 AI-native 任务协作平台：智能体（agent）可作为一等负责人，领取 issue / chat 任务、评论、改状态，并在本机 runtime 上执行编程 CLI。
+
+```text
+┌─────────────┐     HTTP + WS /ws      ┌──────────────────────┐
+│  apps/web   │ ─────────────────────► │  cmd/server          │
+│  (+ core)   │ ◄───────────────────── │  lightweightapi      │
+└─────────────┘     实时事件帧         └──────────┬───────────┘
+                                                  │ sqlc
+                                                  ▼
+                                         PostgreSQL
+                                      (dars_lightweight)
+                                                  ▲
+┌─────────────┐  ddt_ + /api/daemon/*             │
+│ dars     │ ────────────────────────► Chi 路由 ┘
+│ daemon/CLI  │ ◄── WS /api/daemon/ws ───┘
+└──────┬──────┘
+       │ 注入 dat_，调用 pkg/agent Backend
+       ▼
+  本机 AI 编程工具（Claude / Codex / Cursor …）
+```
+
+默认开发库：`postgres://…/dars_lightweight`。Redis 可选，用于多实例用户侧 WebSocket 扇出。
+
+## 2. 仓库结构
+
+| 目录 | 职责 | 技术 |
+| --- | --- | --- |
+| `server/` | HTTP API、认证、任务调度、实时、CLI、守护进程、migration、sqlc | Go、Chi、sqlc、gorilla/websocket |
+| `apps/web/` | Lightweight 目标 UI | Next.js App Router |
+| `apps/desktop/` | Electron（非目标门禁，默认不改） | Electron |
+| `apps/mobile/` | 独立 iOS 工作区 | Expo / RN |
+| `apps/docs/` | 文档站（本页所在） | Fumadocs |
+| `packages/core/` | API client、类型、Query/Mutation、Zustand、协议镜像 | TanStack Query、Zustand |
+| `packages/ui/` | 无业务逻辑的原子组件 | shadcn / Base UI |
+| `packages/views/` | Web 消费的业务页面 | React |
+| `openspec/` | Lightweight 契约、规格与变更证据 | contracts / specs |
+
+共享包导出原始 `.ts` / `.tsx`，由消费方编译。依赖方向：`views → core + ui`；`core` 与 `ui` 互不依赖。
+
+## 3. 后端目录（以 Lightweight 为准）
+
+旧文档中的 `internal/handler/` + `pkg/db/` **不是** 当前交付路径。Shipping 路径如下：
+
+| 路径 | 作用 |
+| --- | --- |
+| `server/cmd/server/` | HTTP 入口、`NewLightweightComposition`、sweeper、scope authorizer、WS listener 注册 |
+| `server/cmd/dars/` | CLI：`login` / `setup` / `daemon` 与轻量资源命令 |
+| `server/cmd/migrate/` | migration runner（advisory lock，支持 `CREATE INDEX CONCURRENTLY`） |
+| `server/internal/lightweightapi/` | **主 HTTP handler 层**（业务逻辑集中在此） |
+| `server/internal/middleware/` | 请求日志、CSP、限流、client metadata |
+| `server/internal/auth/` | JWT、cookie、CSRF、token 生成/哈希 |
+| `server/internal/events/` | 进程内同步事件总线 |
+| `server/internal/realtime/` | 用户侧 WebSocket Hub |
+| `server/internal/daemonws/` | 守护进程 WebSocket Hub（唤醒、RPC） |
+| `server/internal/daemon/` | 本机守护进程：claim 循环、工作目录、调用 agent backend |
+| `server/internal/service/` | 横切能力（邮件、builtin skills、skill bundle） |
+| `server/lightweight/migrations/` | Lightweight SQL migration |
+| `server/lightweight/queries/` | 手写 SQL（sqlc 输入） |
+| `server/pkg/lightweightdb/` | sqlc 生成代码（27 张表） |
+| `server/pkg/agent/` | Provider `Backend` 适配（Execute / 流式 / 取消） |
+| `server/pkg/protocol/` | 冻结的 daemon 路由与 WS 事件名 |
+
+### 3.1 请求分层（现状）
+
+Lightweight 是 **handler-centric**：
+
+```text
+Chi route manifest
+  → auth boundary middleware
+  → lightweightapi.Handler 方法
+  → pgx 事务 + lightweightdb.Queries
+  → PostgreSQL
+  → h.publish(...) → events.Bus → realtime / daemonws
+```
+
+没有厚重的 domain service 层；跨查询事务在 handler 内用 `pool.Begin` + `q.WithTx(tx)` 完成。`internal/service/` 只承载邮件与 skills 等横切逻辑。
+
+### 3.2 路由组合根
+
+单一组合根：`server/cmd/server/lightweight_composition.go`。
+
+全局中间件顺序（摘要）：RequestID → 错误信封 → ClientMetadata → RequestLogger →（可选 metrics）→ Recoverer → CSP → CORS。
+
+路由在 `lightweightRouteManifest()` 中声明，按 **auth boundary** 挂载中间件：
+
+| Boundary | 中间件含义 |
+| --- | --- |
+| `boundaryPublic` | 无认证（如 `/health`、`/auth/send-code`） |
+| `boundaryHuman` | JWT / PAT（人类会话） |
+| `boundaryWorkspace` | HumanAuth + `X-Workspace-ID` 成员校验 |
+| `boundaryWorkspaceAdmin` | 额外要求 `owner` / `admin` |
+| `boundaryWorkspaceOwner` | 额外要求 `owner` |
+| `boundaryTaskScoped` | Human **或** task token（`dat_`）+ 工作区上下文 |
+| `boundaryDaemon` | Daemon token（`ddt_`） |
+| `boundaryWebSocket` | HTTP 层不鉴权，在 WS handler 内完成 |
+
+## 4. 认证与工作区边界
+
+### 4.1 Principal 种类
+
+定义见 `server/internal/lightweightapi/middleware.go`：
+
+| 凭据 | Kind | 用途 |
+| --- | --- | --- |
+| JWT（Bearer 或 HttpOnly cookie） | `jwt` | 人类 Web / CLI |
+| `dpat_` | `pat` | Personal Access Token |
+| `ddt_` | `daemon_token` | 守护进程 API（仅 Bearer） |
+| `dat_` | `task_token` | 单次任务内智能体 HTTP 访问 |
+
+Cookie 会话需要 CSRF（`X-CSRF-Token`）。Daemon / task token 不得用于人类路由。
+
+### 4.2 `X-Workspace-ID`
+
+- 工作区路由必须带 `X-Workspace-ID`（UUID）。
+- 服务端用 `GetMember(workspace_id, user_id)` 校验成员；URL 中的 `{workspaceId}` 必须与 header 一致。
+- Task principal 跳过 member 表查找，工作区来自 token。
+- 前端：`packages/core/api/client.ts` 从当前工作区镜像写入该 header；工作区身份由路由驱动（`packages/core/platform/`）。
+
+成员角色：`owner` | `admin` | `member`。
+
+## 5. 数据模型（27 表）
+
+契约清单：`openspec/contracts/tables.txt`。**不建数据库外键**；关系与级联清理在应用层事务中完成。索引 migration 使用 `CREATE [UNIQUE] INDEX CONCURRENTLY`，且每个并发索引单独成文件。
+
+按域分组：
+
+| 域 | 表 |
+| --- | --- |
+| 身份与凭据 | `user`, `verification_code`, `workspace`, `member`, `personal_access_token`, `daemon_token`, `task_token`, `schema_metadata` |
+| Runtime / Agent / Skill | `runtime_profile`, `agent_runtime`, `agent`, `skill`, `skill_file`, `agent_skill`, `agent_invocation_target`, `agent_builder_draft` |
+| 协作与任务 | `squad`, `squad_member`, `issue`, `comment`, `agent_task_queue`, `task_message`, `task_usage`, `activity_log` |
+| Chat | `chat_session`, `chat_message`, `chat_draft_restore` |
+
+**已退出 Lightweight schema 的域**（勿再假设存在）：`inbox`、`workspace_invitation`、`project`、`channel_*`、`autopilot` 等。通知在目标产品中主要靠实时 WS + issue/chat UI，而非独立 inbox API。
+
+### 5.1 关键领域语义
+
+- **Issue**：`identifier = {issue_prefix}-{number}`；`status ∈ backlog|todo|in_progress|in_review|done|blocked|cancelled`。
+- **Assignee**：`assignee_type ∈ agent|squad`（**不是**人类 member）。人类是创建者 / 评论者。
+- **Agent task queue**：状态 `deferred|queued|dispatched|waiting_local_directory|running|completed|failed|cancelled`；`issue_id` 与 `chat_session_id` 互斥其一。
+- **Comment**：追加写；可通过 mention 路由出新 task。
+- **Squad**：小队指派落到 leader agent；成员任务可回传 leader。
+
+## 6. 模块通信
+
+### 6.1 Web ↔ Server
+
+```text
+apps/web
+  → packages/core/lightweight/api.ts
+  → packages/core/api/client.ts   (Authorization + X-Workspace-ID + CSRF)
+  → Chi (lightweight_composition)
+  → lightweightapi.Handler
+  → pkg/lightweightdb → PostgreSQL
+```
+
+用户实时：`packages/core/api/ws-client.ts` → `GET /ws?workspace_id=…` → `internal/realtime`。
+
+API JSON 在边界用 zod + `parseWithFallback` 解析（`packages/core/api/schema.ts`），禁止把网络 JSON 直接断言成 `T`。
+
+### 6.2 CLI / Daemon ↔ Server
+
+```text
+dars daemon
+  → internal/daemon (claim 循环 / execenv)
+  → internal/daemon/client.go   Bearer ddt_
+  → /api/daemon/*（protocol 冻结路径）
+  → 可选 GET /api/daemon/ws（daemonws.Hub）
+```
+
+注册：人类 JWT → `POST /api/daemon/register` → 写入 / 更新 `agent_runtime`，签发 `ddt_`。
+
+守护进程还通过 `GET /api/daemon/workspaces`、repos、runtime-profiles 发现可执行上下文。
+
+### 6.3 Agent 进程 ↔ Server
+
+Agent CLI **不**以 daemon 身份直连。链路是：
+
+1. Daemon claim task，响应里带 `auth_token`（`dat_`）。
+2. Daemon 把 `DARS_TOKEN` 注入子进程环境。
+3. Agent 用 task token 访问 **task-scoped** 人类路由（读 issue、发评论、有限字段更新等）。
+4. 进度 / 完成仍由 **daemon** 调 `/api/daemon/tasks/{taskId}/progress|messages|complete|fail`。
+
+### 6.4 进程内事件 → 双平面实时
+
+```text
+Handler.publish(type, workspaceID, actor…)
+  → events.Bus（同步）
+  → registerLightweightListeners（仅 allowlist 用户事件）
+  → realtime.Broadcaster.BroadcastToWorkspace
+       ├─ 单机：内存 Hub
+       └─ 多机：可选 Redis relay
+
+队列侧：announceQueuedTask → task:queued + DaemonWakeupNotifier
+  → daemonws（daemon:task_available / pending_work / RPC）
+```
+
+用户侧事件名见 `server/pkg/protocol/events.go`，前端镜像在 `packages/core/types/lightweight-protocol.ts`（`issue:*`、`comment:created`、`task:*`、`agent:*`、`skill:*`、`squad:*`、`chat:*`、`workspace:*`）。Daemon 事件走 `daemonws`，不进用户 Hub。
+
+## 7. 关键后端流程
+
+### 7.1 登录
+
+1. `POST /auth/send-code` → 写 `verification_code`，发 6 位码（限流）。
+2. `POST /auth/verify-code` → 校验哈希；按需建用户（受 `ALLOW_SIGNUP` / allowlist 约束）。
+3. 签发 JWT，`auth.SetAuthCookies`；响应 `{ token, user }`。
+4. `POST /auth/logout` 清 cookie。
+
+实现：`lightweightapi/auth.go`、`internal/auth/`。
+
+### 7.2 工作区
+
+**创建** `POST /api/workspaces`（`boundaryHuman`）：事务内 `CreateWorkspace` + `CreateMember(role=owner)`。
+
+**选择**：`GET /api/workspaces` 列表；前端把当前 workspace UUID 镜像到平台存储，后续请求带 `X-Workspace-ID`。
+
+Lightweight 路由清单中 **无** 邀请加入 / 添加成员 API；成员目前在创建工作区时写入 owner。多成员协作若需扩展，属于后续 API，不是现状路径。
+
+### 7.3 Issue 创建与入队
+
+`POST /api/issues`（需 `Idempotency-Key`）：
+
+1. 解析 title / status / assignee。
+2. `resolveIssueAssignee`：`agent` 校验 runtime 在线与调用权限；`squad` 锁小队并解析唯一 leader。
+3. 锁工作区 issue 计数器 → `CreateIssue`。
+4. 若 `status == todo` → `enqueueInitialIssueTask` 写入 `agent_task_queue`（`queued`）。
+5. 提交；发布 `issue:created`；若已入队则 `announceQueuedTask`（`task:queued` + daemon 唤醒）。
+
+`PUT /api/issues/{issueId}` 为 `boundaryTaskScoped`：人类或持 `dat_` 的 agent（agent 不可改 title/description/acceptance criteria 等字段）。再次进入 `todo` 且尚未执行过时可能重新入队。
+
+### 7.4 Task 执行生命周期
+
+```text
+queued
+  → POST /api/daemon/tasks/claim          → dispatched（签发 dat_）
+  →（可选）wait-local-directory
+  → POST .../start                        → running
+  → POST .../progress | .../messages
+  → POST .../complete | .../fail | cancel → terminal
+```
+
+**Claim**（`claim.go`）：按 runtime 批量领取（上限约 32）→ 组装 agent 配置、skills、squad、repos、上下文 → 铸造 `task_token` → 发布 `task:dispatch`。
+
+**本机执行**（`internal/daemon/`）：准备 workdir / 克隆仓库 / 写 skill 文件 → 按 provider 选 `pkg/agent.Backend` → `Execute` 流式回传 → complete/fail。
+
+**Complete**（`task_lifecycle.go`）：更新队列状态 → 投影评论或 chat 消息 → 可能触发 squad 后续任务 → 发布 `task:completed` 等。
+
+**Sweeper**（约 30s）：回收过期 prepare lease、提升 deferred、处理陈旧任务（`task_sweeper.go` + `lightweight_sweeper.go`）。
+
+### 7.5 Chat（并行于 Issue run）
+
+人类在工作区创建 `chat_session`、发送 `chat_message`，同样入队 `agent_task_queue`（绑定 `chat_session_id`）。完成投影写回 chat；实时事件为 `chat:message` / `chat:done` 等。任务作用域路由允许 agent 读会话消息。
+
+### 7.6 评论与再入队
+
+人类或 agent 在 issue 下 `POST .../comments`。Mention / 路由逻辑（`comment_routing.go`）可创建后续 task，形成「评论 → 再执行」闭环。Comment 在 Lightweight 为追加写模型。
+
+## 8. API 面一览（按域）
+
+以下摘自 `lightweightRouteManifest` 与 `protocol` 冻结常量，便于对照代码，非完整 OpenAPI。
+
+| 域 | 代表路径 |
+| --- | --- |
+| 健康 / 配置 | `GET /health`, `GET /readyz`, `GET /api/config` |
+| 认证 | `POST /auth/send-code`, `POST /auth/verify-code`, `POST /auth/logout` |
+| 用户 / Token | `GET|PATCH /api/me`, `/api/tokens` |
+| 工作区 | `/api/workspaces`, members, runtime-profiles |
+| Runtime | `/api/runtimes`, models / local-skills 异步请求 |
+| Agent | `/api/agents`, skills、env、archive/restore、tasks/cancel |
+| Agent Builder | `/api/agent-builder/sessions` |
+| Skill | `/api/skills` CRUD、files、import、search |
+| Chat | `/api/chat/sessions`, messages, pending-task, draft-restores |
+| Squad | `/api/squads`, members, role, status |
+| Issue / Task（用户） | `/api/issues`, comments, task-runs, active-task, `/api/tasks/{id}/…` |
+| 用户 WS | `GET /ws` |
+| Daemon | `/api/daemon/register|heartbeat|ws|workspaces|…/tasks/claim|start|complete|…`（见 `pkg/protocol`） |
+
+## 9. 前端状态约定（与后端边界对齐）
+
+- **TanStack Query**：服务端状态（issue、agent、member、chat…）。
+- **Zustand**：纯客户端状态（筛选、草稿、弹窗、布局）；store 只放在 `packages/core/`。
+- WS 事件只应 patch / invalidate Query；禁止把服务端对象镜像进 Zustand（清理客户端指针除外）。
+- 会导航的 mutation（创建/删除/离开）必须等待服务端成功后再清理或跳转。
+- 工作区 query key 必须包含 `wsId`。
+
+## 10. 关键源码索引
+
+| 关注点 | 路径 |
+| --- | --- |
+| 路由与 composition | `server/cmd/server/lightweight_composition.go` |
+| 用户事件桥接 | `server/cmd/server/lightweight_listeners.go` |
+| Auth middleware | `server/internal/lightweightapi/middleware.go` |
+| Issue | `server/internal/lightweightapi/issue.go` |
+| Claim | `server/internal/lightweightapi/claim.go` |
+| Task 生命周期 | `server/internal/lightweightapi/task_lifecycle.go` |
+| Daemon API | `server/internal/lightweightapi/daemon.go` |
+| 协议常量 | `server/pkg/protocol/lightweight_contract.go`, `events.go` |
+| sqlc 模型 | `server/pkg/lightweightdb/models.go` |
+| Daemon 客户端 | `server/internal/daemon/client.go` |
+| 前端 Lightweight API | `packages/core/lightweight/api.ts` |
+| 前端 HTTP / WS | `packages/core/api/client.ts`, `ws-client.ts` |
+| Schema 契约测试 | `server/lightweight/contract_test.go` |
+| OpenSpec 表 / 路由契约 | `openspec/contracts/tables.txt`, `routes.txt` |
+
+## 11. 相关文档
+
+- 仓库硬规则：[CLAUDE.md](https://github.com/kms9/dars/blob/main/CLAUDE.md) / `AGENTS.md`
+- [开发规范](/developers/conventions) — 命名、术语、中文文案
+- [守护进程与 runtime](/daemon-runtimes)
+- [自托管](https://github.com/kms9/dars/blob/main/SELF_HOSTING.md)
+- OpenSpec Lightweight 规格：`openspec/specs/`

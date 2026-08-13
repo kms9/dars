@@ -1,0 +1,38 @@
+---
+title: 成员与权限
+description: 用 owner、admin 和 member 三种角色管理工作区权限。
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+加入[工作区](/workspaces)的人都是成员，每位成员有一个角色：`owner`、`admin` 或 `member`。角色控制工作区设置与管理类操作；创建 issue、发表评论等日常协作对所有成员开放。
+
+## 三种角色
+
+| 操作 | owner | admin | member |
+|---|:---:|:---:|:---:|
+| 查看工作区并参与日常协作 | ✓ | ✓ | ✓ |
+| 修改工作区设置 | ✓ | ✓ | — |
+| 管理 runtime profile 等管理项 | ✓ | ✓ | — |
+| 删除工作区 | ✓ | — | — |
+
+创建工作区的人自动成为 `owner`。工作区必须始终保留至少一名 `owner`。
+
+<Callout type="info">
+角色不决定谁能运行智能体。每个智能体有独立的访问范围（Access），`owner` 和 `admin` 也不能绕过它运行未授权的智能体。详见[智能体](/agents#权限与-access)。
+</Callout>
+
+## 当前交付说明
+
+Lightweight 目标路径目前没有工作区邀请 / 添加成员的产品 API：成员行在创建工作区时写入 `owner`。多成员协作若需要扩展，属于后续能力，不是现状路径。
+
+查看成员列表可使用 Web 设置页或：
+
+```bash
+dars workspace member list
+```
+
+## 接下来
+
+- [工作区](/workspaces) — 了解工作区边界与设置。
+- [智能体](/agents) — Access 如何限制谁能触发执行。

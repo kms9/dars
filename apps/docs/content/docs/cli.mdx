@@ -1,0 +1,124 @@
+---
+title: 使用 CLI
+description: 安装并登录 DARS CLI，在终端中连接运行时，并管理 Lightweight 工作区、issue、智能体与对话。
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+DARS CLI 负责本机守护进程连接，也可在终端中操作 Lightweight 资源。当前支持的参数以命令自身的 `--help` 为准。
+
+## 安装
+
+**macOS / Linux**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kms9/dars/main/scripts/install.sh | bash
+```
+
+安装了 Homebrew 时也可以运行：
+
+```bash
+brew install kms9/tap/dars
+```
+
+**Windows PowerShell**
+
+```powershell
+irm https://raw.githubusercontent.com/kms9/dars/main/scripts/install.ps1 | iex
+```
+
+确认安装成功：
+
+```bash
+dars version
+```
+
+## 登录与初始化
+
+```bash
+dars login
+# 或一步完成登录 + 守护进程
+dars setup
+```
+
+自托管实例：
+
+```bash
+dars setup self-host \
+  --server-url https://api.example.com \
+  --app-url https://app.example.com
+```
+
+查看认证与当前配置：
+
+```bash
+dars auth status
+dars config show
+```
+
+## 守护进程
+
+```bash
+dars daemon start
+dars daemon status
+dars daemon stop
+dars daemon logs
+```
+
+运行机制见[守护进程与运行时](/daemon-runtimes)。
+
+## 命令概览
+
+Lightweight CLI 顶层命令：
+
+| 命令 | 用途 |
+| --- | --- |
+| `issue` | 创建、更新、分配与删除 issue；评论、执行记录 |
+| `chat` | 管理直接对话、消息与 pending task |
+| `agent` | 管理智能体、env、skill 绑定、归档/恢复 |
+| `skill` | 管理 skill 与文件、导入与搜索 |
+| `squad` | 管理小队与成员、leader evaluation |
+| `workspace` | 列出/创建/切换工作区与成员 |
+| `runtime` | 查看、重命名、删除本机运行时与 profile |
+| `daemon` | 启停本机守护进程 |
+| `user` | 查看或更新当前用户 |
+| `auth` / `login` / `setup` | 登录与初始化连接 |
+| `config` | 查看或修改本地 CLI profile |
+| `version` | 查看版本 |
+
+常用子命令（完整列表以 `--help` 为准）：
+
+```bash
+dars issue list
+dars issue create --title "..." --assignee-type agent --assignee-id <id>
+dars issue comment add <issue-id> --content "..."
+dars issue runs <issue-id>
+dars agent list
+dars skill list
+dars squad list
+dars chat list
+dars workspace list
+dars runtime list
+```
+
+## Profile 与配置
+
+默认配置保存在 `~/.dars/config.json`。使用 `--profile <name>` 可以隔离另一套服务地址、令牌、默认工作区和守护进程状态：
+
+```bash
+dars setup self-host --profile staging \
+  --server-url https://api.staging.example.com \
+  --app-url https://app.staging.example.com
+
+dars issue list --profile staging
+```
+
+<Callout type="warning">
+CLI 配置文件包含可代表你访问 DARS 的令牌。不要提交到仓库、上传到日志或与他人共享。
+</Callout>
+
+## 接下来
+
+- [守护进程与运行时](/daemon-runtimes) — 运行时如何领取与执行任务。
+- [个人访问令牌](/auth-tokens) — 在非交互场景使用 PAT。
+- [故障排查](/troubleshooting) — 守护进程与执行问题定位。

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "source": "docs/prd/multica_lightweight_runtime_docs/03_database_retention_spec.md sections 1.3, 16, 17 and 20",
+  "database_policy": {
+    "foreign_keys": [],
+    "cascade_actions": [],
+    "table_ddl_primary_key": false,
+    "table_ddl_unique": false,
+    "indexes_use_concurrently": true,
+    "one_index_statement_per_migration": true,
+    "unique_constraints_bind_prebuilt_index": true
+  },
+  "row_checks": [
+    {
+      "id": "schema_metadata.identity",
+      "table": "schema_metadata",
+      "rule": "id = 1 AND edition = 'multica_lightweight'"
+    },
+    {
+      "id": "workspace.issue_counter_non_negative",
+      "table": "workspace",
+      "rule": "issue_counter >= 0"
+    },
+    {
+      "id": "agent.max_concurrent_tasks",
+      "table": "agent",
+      "rule": "max_concurrent_tasks >= 1"
+    },
+    {
+      "id": "issue.number_non_negative",
+      "table": "issue",
+      "rule": "number >= 0"
+    },
+    {
+      "id": "issue.idempotency_pair",
+      "table": "issue",
+      "rule": "(idempotency_key IS NULL) = (request_hash IS NULL)"
+    },
+    {
+      "id": "comment.idempotency_pair",
+      "table": "comment",
+      "rule": "(idempotency_key IS NULL) = (request_hash IS NULL)"
+    },
+    {
+      "id": "task.root_xor",
+      "table": "agent_task_queue",
+      "rule": "(issue_id IS NULL) <> (chat_session_id IS NULL)"
+    },
+    {
+      "id": "task.attempt_bounds",
+      "table": "agent_task_queue",
+      "rule": "attempt >= 1 AND max_attempts >= attempt"
+    },
+    {
+      "id": "task.issue_only_fields",
+      "table": "agent_task_queue",
+      "rule": "issue_id IS NOT NULL OR (squad_id IS NULL AND is_leader_task = false AND trigger_comment_id IS NULL)"
+    },
+    {
+      "id": "task.completed_at_coherence",
+      "table": "agent_task_queue",
+      "rule": "(status IN ('completed','failed','cancelled')) = (completed_at IS NOT NULL)"
+    },
+    {
+      "id": "task_message.seq_non_negative",
+      "table": "task_message",
+      "rule": "seq >= 0"
+    },
+    {
+      "id": "task_usage.non_negative",
+      "table": "task_usage",
+      "rule": "input_tokens >= 0 AND output_tokens >= 0 AND cache_read_tokens >= 0 AND cache_write_tokens >= 0 AND (cost_usd_ticks IS NULL OR cost_usd_ticks >= 0)"
+    },
+    {
+      "id": "chat_message.elapsed_non_negative",
+      "table": "chat_message",
+      "rule": "elapsed_ms IS NULL OR elapsed_ms >= 0"
+    },
+    {
+      "id": "chat_message.idempotency_pair",
+      "table": "chat_message",
+      "rule": "(idempotency_key IS NULL) = (request_hash IS NULL)"
+    }
+  ],
+  "service_invariants": [
+    "comment.workspace_id equals issue.workspace_id",
+    "comment.source_task_id, when present, identifies a task in the same workspace and issue",
+    "comment is append-only and has no update or delete query",
+    "task.runtime_id belongs to task.workspace_id",
+    "agent.runtime_id, when present, belongs to agent.workspace_id",
+    "squad.leader_id belongs to squad.workspace_id and is present in squad_member with role leader",
+    "each unarchived squad has exactly one leader",
+    "squad_member.agent_id belongs to the squad workspace",
+    "mention targets belong to the issue workspace",
+    "task tokens authorize only their bound current task, issue or chat session",
+    "agent invocation satisfies permission_mode and invocation targets",
+    "terminal task states cannot transition back to a non-terminal state",
+    "duplicate idempotency keys with a different request hash return conflict",
+    "token and verification comparisons use only persisted hashes",
+    "cross-table create, update, delete and archive operations use explicit transactions and locks when atomicity is required",
+    "workspace deletion explicitly removes dependent workspace data while preserving schema_metadata, user, verification_code and personal_access_token"
+  ]
+}

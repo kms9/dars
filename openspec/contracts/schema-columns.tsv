@@ -1,0 +1,288 @@
+table	column	type	nullable	default	enum
+schema_metadata	id	smallint	false	1	
+schema_metadata	edition	text	false	"dars_lightweight"
+schema_metadata	schema_version	integer	false		
+schema_metadata	installed_at	timestamptz	false		
+schema_metadata	updated_at	timestamptz	false		
+user	id	uuid	false	gen_random_uuid()	
+user	name	text	false		
+user	email	text	false		
+user	language	text	false	"en"	
+user	timezone	text	true		
+user	created_at	timestamptz	false	now()	
+user	updated_at	timestamptz	false	now()	
+verification_code	id	uuid	false	gen_random_uuid()	
+verification_code	email	text	false		
+verification_code	code_hash	text	false		
+verification_code	expires_at	timestamptz	false		
+verification_code	used_at	timestamptz	true		
+verification_code	attempts	integer	false	0	
+verification_code	created_at	timestamptz	false	now()	
+workspace	id	uuid	false	gen_random_uuid()	
+workspace	name	text	false		
+workspace	slug	text	false		
+workspace	description	text	true		
+workspace	context	text	false	""	
+workspace	settings	jsonb	false	{}	
+workspace	repos	jsonb	false	[]	
+workspace	issue_prefix	text	false		
+workspace	issue_counter	integer	false	0	
+workspace	attribution_fail_closed	boolean	false	false	
+workspace	created_at	timestamptz	false	now()	
+workspace	updated_at	timestamptz	false	now()	
+member	id	uuid	false	gen_random_uuid()	
+member	workspace_id	uuid	false		
+member	user_id	uuid	false		
+member	role	text	false		owner|admin|member
+member	created_at	timestamptz	false	now()	
+personal_access_token	id	uuid	false	gen_random_uuid()	
+personal_access_token	user_id	uuid	false		
+personal_access_token	name	text	false		
+personal_access_token	token_hash	text	false		
+personal_access_token	token_prefix	text	false		
+personal_access_token	expires_at	timestamptz	true		
+personal_access_token	last_used_at	timestamptz	true		
+personal_access_token	revoked	boolean	false	false	
+personal_access_token	created_at	timestamptz	false	now()	
+daemon_token	id	uuid	false	gen_random_uuid()	
+daemon_token	token_hash	text	false		
+daemon_token	workspace_id	uuid	false		
+daemon_token	daemon_id	text	false		
+daemon_token	expires_at	timestamptz	false		
+daemon_token	created_at	timestamptz	false	now()	
+task_token	id	uuid	false	gen_random_uuid()	
+task_token	token_hash	text	false		
+task_token	task_id	uuid	false		
+task_token	agent_id	uuid	false		
+task_token	workspace_id	uuid	false		
+task_token	user_id	uuid	false		
+task_token	expires_at	timestamptz	false		
+task_token	created_at	timestamptz	false	now()	
+runtime_profile	id	uuid	false	gen_random_uuid()	
+runtime_profile	workspace_id	uuid	false		
+runtime_profile	display_name	text	false		
+runtime_profile	protocol_family	text	false		
+runtime_profile	command_name	text	false		
+runtime_profile	description	text	true		
+runtime_profile	fixed_args	jsonb	false	[]	
+runtime_profile	created_by	uuid	false		
+runtime_profile	enabled	boolean	false	true	
+runtime_profile	created_at	timestamptz	false	now()	
+runtime_profile	updated_at	timestamptz	false	now()	
+agent_runtime	id	uuid	false	gen_random_uuid()	
+agent_runtime	workspace_id	uuid	false		
+agent_runtime	daemon_id	text	false		
+agent_runtime	name	text	false		
+agent_runtime	runtime_mode	text	false	"local"	local
+agent_runtime	provider	text	false		
+agent_runtime	status	text	false	"offline"	online|offline
+agent_runtime	device_info	text	false	""	
+agent_runtime	metadata	jsonb	false	{}	
+agent_runtime	last_seen_at	timestamptz	true		
+agent_runtime	owner_id	uuid	false		
+agent_runtime	profile_id	uuid	true		
+agent_runtime	custom_name	text	true		
+agent_runtime	created_at	timestamptz	false	now()	
+agent_runtime	updated_at	timestamptz	false	now()	
+agent	id	uuid	false	gen_random_uuid()	
+agent	workspace_id	uuid	false		
+agent	runtime_id	uuid	true		
+agent	owner_id	uuid	false		
+agent	name	text	false		
+agent	description	text	false	""	
+agent	instructions	text	false	""	
+agent	avatar_url	text	true		
+agent	runtime_mode	text	false	"local"	local
+agent	runtime_config	jsonb	false	{}	
+agent	status	text	false	"offline"	idle|working|blocked|error|offline
+agent	max_concurrent_tasks	integer	false	1	
+agent	custom_env	jsonb	false	{}	
+agent	custom_args	jsonb	false	[]	
+agent	mcp_config	jsonb	false	{}	
+agent	model	text	true		
+agent	thinking_level	text	true		
+agent	service_tier	text	true		
+agent	permission_mode	text	false		private|public_to
+agent	disabled_runtime_skills	jsonb	false	[]	
+agent	kind	text	false	"user"	user|system
+agent	system_key	text	true
+agent	archived_at	timestamptz	true		
+agent	archived_by	uuid	true		
+agent	created_at	timestamptz	false	now()	
+agent	updated_at	timestamptz	false	now()	
+agent_builder_draft	chat_session_id	uuid	false
+agent_builder_draft	workspace_id	uuid	false
+agent_builder_draft	draft	jsonb	false	{}
+agent_builder_draft	updated_at	timestamptz	false	now()
+skill	id	uuid	false	gen_random_uuid()	
+skill	workspace_id	uuid	false		
+skill	name	text	false		
+skill	description	text	false	""	
+skill	content	text	false	""	
+skill	config	jsonb	false	{}	
+skill	created_by	uuid	false		
+skill	created_at	timestamptz	false	now()	
+skill	updated_at	timestamptz	false	now()	
+skill_file	id	uuid	false	gen_random_uuid()	
+skill_file	skill_id	uuid	false		
+skill_file	path	text	false		
+skill_file	content	text	false		
+skill_file	created_at	timestamptz	false	now()	
+skill_file	updated_at	timestamptz	false	now()	
+agent_skill	agent_id	uuid	false		
+agent_skill	skill_id	uuid	false		
+agent_skill	enabled	boolean	false	true	
+agent_skill	created_at	timestamptz	false	now()	
+agent_invocation_target	id	uuid	false	gen_random_uuid()	
+agent_invocation_target	agent_id	uuid	false		
+agent_invocation_target	target_type	text	false		workspace|member
+agent_invocation_target	target_id	uuid	false		
+agent_invocation_target	created_by	uuid	false		
+agent_invocation_target	created_at	timestamptz	false	now()	
+squad	id	uuid	false	gen_random_uuid()	
+squad	workspace_id	uuid	false		
+squad	name	text	false		
+squad	description	text	false	""	
+squad	instructions	text	false	""	
+squad	leader_id	uuid	false		
+squad	creator_id	uuid	false		
+squad	avatar_url	text	true		
+squad	archived_at	timestamptz	true		
+squad	archived_by	uuid	true		
+squad	created_at	timestamptz	false	now()	
+squad	updated_at	timestamptz	false	now()	
+squad_member	id	uuid	false	gen_random_uuid()	
+squad_member	squad_id	uuid	false		
+squad_member	agent_id	uuid	false		
+squad_member	role	text	false		
+squad_member	created_at	timestamptz	false	now()	
+issue	id	uuid	false	gen_random_uuid()	
+issue	workspace_id	uuid	false		
+issue	title	text	false		
+issue	description	text	false	""	
+issue	status	text	false		backlog|todo|in_progress|in_review|done|blocked|cancelled
+issue	assignee_type	text	false		agent|squad
+issue	assignee_id	uuid	false		
+issue	creator_type	text	false		member|agent
+issue	creator_id	uuid	false		
+issue	acceptance_criteria	jsonb	false	[]	
+issue	context_refs	jsonb	false	[]	
+issue	number	integer	false		
+issue	idempotency_key	text	true		
+issue	request_hash	text	true		
+issue	first_executed_at	timestamptz	true		
+issue	created_at	timestamptz	false	now()	
+issue	updated_at	timestamptz	false	now()	
+comment	id	uuid	false	gen_random_uuid()	
+comment	workspace_id	uuid	false		
+comment	issue_id	uuid	false		
+comment	author_type	text	false		member|agent|system
+comment	author_id	uuid	true		
+comment	content	text	false		
+comment	type	text	false	"message"	message
+comment	source_task_id	uuid	true		
+comment	idempotency_key	text	true		
+comment	request_hash	text	true		
+comment	created_at	timestamptz	false	now()	
+agent_task_queue	id	uuid	false	gen_random_uuid()	
+agent_task_queue	workspace_id	uuid	false		
+agent_task_queue	agent_id	uuid	false		
+agent_task_queue	runtime_id	uuid	false		
+agent_task_queue	issue_id	uuid	true		
+agent_task_queue	chat_session_id	uuid	true		
+agent_task_queue	squad_id	uuid	true		
+agent_task_queue	is_leader_task	boolean	false	false	
+agent_task_queue	status	text	false		deferred|queued|dispatched|waiting_local_directory|running|completed|failed|cancelled
+agent_task_queue	priority	integer	false	0	
+agent_task_queue	attempt	integer	false	1	
+agent_task_queue	max_attempts	integer	false	2	
+agent_task_queue	parent_task_id	uuid	true		
+agent_task_queue	session_id	text	true		
+agent_task_queue	work_dir	text	true		
+agent_task_queue	context	jsonb	false	{}	
+agent_task_queue	result	jsonb	true		
+agent_task_queue	error	text	true		
+agent_task_queue	failure_reason	text	true		
+agent_task_queue	trigger_summary	text	true		
+agent_task_queue	force_fresh_session	boolean	false	false	
+agent_task_queue	handoff_note	text	true		
+agent_task_queue	wait_reason	text	true		
+agent_task_queue	prepare_lease_expires_at	timestamptz	true		
+agent_task_queue	fire_at	timestamptz	true		
+agent_task_queue	runtime_mcp_overlay	jsonb	false	{}	
+agent_task_queue	initiator_user_id	uuid	true		
+agent_task_queue	originator_user_id	uuid	true		
+agent_task_queue	accountable_user_id	uuid	true		
+agent_task_queue	originator_source	text	true		
+agent_task_queue	trigger_comment_id	uuid	true		
+agent_task_queue	coalesced_comment_ids	uuid[]	false	[]	
+agent_task_queue	delivered_comment_ids	uuid[]	false	[]	
+agent_task_queue	chat_input_task_id	uuid	true		
+agent_task_queue	chat_finalize_deferred_at	timestamptz	true		
+agent_task_queue	escalation_for_task_id	uuid	true		
+agent_task_queue	delegated_from_task_id	uuid	true		
+agent_task_queue	retry_of_task_id	uuid	true		
+agent_task_queue	rerun_of_task_id	uuid	true		
+agent_task_queue	trigger_evidence_kind	text	true		
+agent_task_queue	trigger_evidence_ref_id	uuid	true		
+agent_task_queue	session_rollout_missing	boolean	false	false	
+agent_task_queue	retired_session_id	text	true		
+agent_task_queue	dispatched_at	timestamptz	true		
+agent_task_queue	started_at	timestamptz	true		
+agent_task_queue	completed_at	timestamptz	true		
+agent_task_queue	created_at	timestamptz	false	now()	
+task_message	id	uuid	false	gen_random_uuid()	
+task_message	task_id	uuid	false		
+task_message	seq	integer	false		
+task_message	type	text	false		
+task_message	tool	text	true		
+task_message	content	text	true		
+task_message	input	jsonb	true		
+task_message	output	text	true		
+task_message	created_at	timestamptz	false	now()	
+task_usage	id	uuid	false	gen_random_uuid()	
+task_usage	task_id	uuid	false		
+task_usage	provider	text	false		
+task_usage	model	text	false		
+task_usage	input_tokens	bigint	false	0	
+task_usage	output_tokens	bigint	false	0	
+task_usage	cache_read_tokens	bigint	false	0	
+task_usage	cache_write_tokens	bigint	false	0	
+task_usage	cost_usd_ticks	bigint	true		
+task_usage	created_at	timestamptz	false	now()	
+task_usage	updated_at	timestamptz	false	now()	
+activity_log	id	uuid	false	gen_random_uuid()	
+activity_log	workspace_id	uuid	false		
+activity_log	issue_id	uuid	true		
+activity_log	actor_type	text	false		member|agent|system
+activity_log	actor_id	uuid	true		
+activity_log	action	text	false		
+activity_log	details	jsonb	false	{}	
+activity_log	created_at	timestamptz	false	now()	
+chat_session	id	uuid	false	gen_random_uuid()	
+chat_session	workspace_id	uuid	false		
+chat_session	agent_id	uuid	false		
+chat_session	creator_id	uuid	false		
+chat_session	runtime_id	uuid	false		
+chat_session	title	text	false		
+chat_session	session_id	text	true		
+chat_session	work_dir	text	true		
+chat_session	status	text	false		active|archived
+chat_session	created_at	timestamptz	false	now()	
+chat_session	updated_at	timestamptz	false	now()	
+chat_message	id	uuid	false	gen_random_uuid()	
+chat_message	chat_session_id	uuid	false		
+chat_message	role	text	false		user|assistant|system
+chat_message	content	text	false		
+chat_message	task_id	uuid	true		
+chat_message	failure_reason	text	true		
+chat_message	elapsed_ms	bigint	true		
+chat_message	message_kind	text	false	"message"	message|no_response
+chat_message	idempotency_key	text	true		
+chat_message	request_hash	text	true		
+chat_message	created_at	timestamptz	false	now()	
+chat_draft_restore	id	uuid	false	gen_random_uuid()	
+chat_draft_restore	chat_session_id	uuid	false		
+chat_draft_restore	task_id	uuid	false		
+chat_draft_restore	content	text	false		
+chat_draft_restore	created_at	timestamptz	false	now()	

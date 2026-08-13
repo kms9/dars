@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX CONCURRENTLY lw_128_unique_personal_access_token_hash ON personal_access_token (token_hash);

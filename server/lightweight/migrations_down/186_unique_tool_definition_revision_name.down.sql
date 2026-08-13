@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_186_unique_tool_definition_revision_name;

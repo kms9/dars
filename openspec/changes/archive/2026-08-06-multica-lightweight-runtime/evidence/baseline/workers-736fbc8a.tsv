@@ -1,0 +1,16 @@
+status	component	evidence
+active	realtime.in_memory_hub	SIGQUIT goroutine dump: realtime.(*Hub).Run
+active	runtime.sweeper	SIGQUIT goroutine dump: main.runRuntimeSweeper
+active	runtime.batched_heartbeat	SIGQUIT goroutine dump: handler.(*BatchedHeartbeatScheduler).Run
+active	autopilot.failure_monitor	SIGQUIT goroutine dump: main.runAutopilotFailureMonitor
+active	database.stats_logger	SIGQUIT goroutine dump: main.runDBStatsLogger
+active	webhook.delivery_supervisor	SIGQUIT goroutine dump: handler.(*WebhookDeliveryWorker).Run
+active	webhook.delivery_worker[0..2]	SIGQUIT goroutine dump: three handler.(*WebhookDeliveryWorker).runLoop goroutines
+active	channel.inbound_supervisor	SIGQUIT goroutine dump: channel/engine.(*Supervisor).Run
+active	channel.media_reconciler	SIGQUIT goroutine dump: service.(*ChannelMediaReconciler).Run
+active	scheduler.manager	SIGQUIT goroutine dump: scheduler.(*Manager).Run
+registered	scheduler.rollup_task_usage_hourly	startup source and successful execution log at 2026-08-05T06:30:01+08:00
+registered	scheduler.autopilot_schedule_dispatch	startup source registration
+inactive	github.pr_refresh	Start is a no-op because the GitHub client was disabled in the probe environment
+inactive	realtime.redis_relay	REDIS_URL was unset; startup selected the in-memory hub
+inactive	metrics.listener	metrics environment was unset; no metrics listener goroutine

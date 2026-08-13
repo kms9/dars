@@ -1,0 +1,1 @@
+DROP INDEX CONCURRENTLY IF EXISTS lw_174_access_agent_builder_draft_workspace;

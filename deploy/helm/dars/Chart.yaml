@@ -1,0 +1,16 @@
+apiVersion: v2
+name: dars
+description: |
+  Distributed Agent Runtime System control plane for routing and observing agent work.
+  Self-host the backend, frontend, and PostgreSQL (pgvector) on a Kubernetes cluster.
+type: application
+version: 0.1.0
+appVersion: "latest"
+home: https://dars.ai
+sources:
+  - https://github.com/kms9/dars
+keywords:
+  - dars
+  - distributed-agent-runtime
+  - ai-agents
+  - self-host
