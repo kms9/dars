@@ -172,6 +172,10 @@ API key 与 base URL 都为空时，服务端 LLM 生成关闭，调用方会使
 | 变量 | 默认值 | 说明 |
 |---|---|---|
 | `DARS_SERVER_URL` | `ws://localhost:8080/ws` | DARS API / WebSocket 地址，也接受 `http(s)` |
+| `DARS_WORKSPACE_ID` | profile 中的 Workspace | 覆盖守护进程目标 Workspace；Daemon Token 必须具有相同 scope |
+| `DARS_DAEMON_ID` | 本机稳定 ID | 守护进程 identity；同 Token/ID 重启会复用 Runtime |
+| `DARS_DAEMON_TOKEN_FILE` | 空 | `ddt_` Secret 文件；设置后优先且读取失败时不回退 |
+| `DARS_DAEMON_TOKEN` | 空 | 直接注入 `ddt_`；低于 token file、高于 profile |
 | `DARS_DAEMON_DEVICE_NAME` | 主机名 | 运行时列表中的设备名 |
 | `DARS_AGENT_RUNTIME_NAME` | `Local Agent` | 运行时显示名 |
 | `DARS_DAEMON_POLL_INTERVAL` | `30s` | 没有唤醒事件时的执行任务轮询间隔 |
@@ -187,6 +191,18 @@ API key 与 base URL 都为空时，服务端 LLM 生成关闭，调用方会使
 | `DARS_DAEMON_AUTO_UPDATE_INTERVAL` | `6h` | 检查更新的间隔 |
 | `DARS_WORKSPACES_ROOT` | `~/dars_workspaces` | 执行任务工作目录的根目录 |
 | `DARS_KEEP_ENV_AFTER_TASK` | `false` | 保留执行任务目录用于调试 |
+
+daemon-pi 镜像还读取以下变量：
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `PI_CODING_AGENT_DIR` | `/config/pi` | Pi config mount；例如把 `/Users/logo/.pi/agent` 挂载到这里 |
+| `DARS_PI_PATH` | `/usr/local/bin/pi` | Pi 可执行文件 |
+| `DARS_PI_MODEL` | Pi `settings.json` 默认值 | 精确 `provider/model` |
+| `DARS_PI_PREFLIGHT` | `basic` | `basic`、`active` 或显式 `disabled`；custom Provider 使用 `active` |
+| `DARS_WORKSPACES_ROOT` | `/workspaces` | 容器内 task workspace volume |
+
+私有 CA 可以只读挂载到容器，再同时设置 `SSL_CERT_FILE`、`GIT_SSL_CAINFO` 与 `NODE_EXTRA_CA_CERTS` 指向该 PEM；不要关闭 TLS 校验。用宿主用户访问 bind mount 时，在 Compose 环境中设置 `DARS_UID=$(id -u)` 与 `DARS_GID=$(id -g)` 作为构建参数，并确保 Pi config、DARS state 与 workspace 的权限分别满足读写要求。
 
 各 AI 编程工具可以使用 `DARS_<PROVIDER>_PATH` 和 `DARS_<PROVIDER>_MODEL` 覆盖命令路径与默认模型。全机默认参数 `DARS_<PROVIDER>_ARGS` 目前支持 Claude Code、Codex、CodeBuddy 和 Qwen Code 四款工具。对应变量是 `DARS_CLAUDE_ARGS`、`DARS_CODEX_ARGS`、`DARS_CODEBUDDY_ARGS` 和 `DARS_QWEN_ARGS`。例如：
 

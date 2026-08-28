@@ -10,6 +10,7 @@ DELETE /api/squads/{squadId}/members
 DELETE /api/tokens/{tokenId}
 DELETE /api/tool-sources/{sourceId}
 DELETE /api/workspaces/{workspaceId}
+DELETE /api/workspaces/{workspaceId}/daemon-tokens/{tokenId}
 DELETE /api/workspaces/{workspaceId}/runtime-profiles/{profileId}
 GET /api/agent-builder/sessions
 GET /api/agents
@@ -61,6 +62,7 @@ GET /api/tool-sources/{sourceId}
 GET /api/tool-sources/{sourceId}/tools
 GET /api/workspaces
 GET /api/workspaces/{workspaceId}
+GET /api/workspaces/{workspaceId}/daemon-tokens
 GET /api/workspaces/{workspaceId}/members
 GET /api/workspaces/{workspaceId}/runtime-profiles
 GET /api/workspaces/{workspaceId}/runtime-profiles/{profileId}
@@ -124,6 +126,7 @@ POST /api/tool-sources/{sourceId}/disable
 POST /api/tool-sources/{sourceId}/enable
 POST /api/tool-sources/{sourceId}/validate
 POST /api/workspaces
+POST /api/workspaces/{workspaceId}/daemon-tokens
 POST /api/workspaces/{workspaceId}/runtime-profiles
 POST /auth/logout
 POST /auth/send-code

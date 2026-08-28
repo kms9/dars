@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -67,16 +68,16 @@ func toRuntimeResponse(runtime lwdb.AgentRuntime) runtimeResponse {
 }
 
 type daemonRegisterResponse struct {
-	Token       string            `json:"token"`
+	Token       string            `json:"token,omitempty"`
 	WorkspaceID string            `json:"workspace_id"`
 	DaemonID    string            `json:"daemon_id"`
-	ExpiresAt   string            `json:"expires_at"`
+	ExpiresAt   string            `json:"expires_at,omitempty"`
 	Runtimes    []runtimeResponse `json:"runtimes"`
 }
 
 func (h *Handler) DaemonRegister(w http.ResponseWriter, r *http.Request) {
 	principal, ok := principalFromContext(r.Context())
-	if !ok || (principal.Kind != principalJWT && principal.Kind != principalPAT) {
+	if !ok || (principal.Kind != principalJWT && principal.Kind != principalPAT && principal.Kind != principalDaemon) {
 		writeCode(w, http.StatusForbidden, "forbidden")
 		return
 	}
@@ -91,7 +92,7 @@ func (h *Handler) DaemonRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	request.DaemonID = strings.TrimSpace(request.DaemonID)
 	request.DeviceName = strings.TrimSpace(request.DeviceName)
-	if request.DaemonID == "" || len(request.DaemonID) > 200 || len(request.Runtimes) == 0 {
+	if request.DaemonID == "" || len(request.DaemonID) > 200 || len(request.DeviceName) > 120 || len(request.Runtimes) == 0 {
 		writeCode(w, http.StatusBadRequest, "invalid_argument")
 		return
 	}
@@ -105,9 +106,16 @@ func (h *Handler) DaemonRegister(w http.ResponseWriter, r *http.Request) {
 		writeCode(w, http.StatusUnauthorized, "unauthenticated")
 		return
 	}
-	if _, err := h.q.GetMember(r.Context(), lwdb.GetMemberParams{WorkspaceID: workspaceID, UserID: userID}); err != nil {
-		writeCode(w, http.StatusNotFound, "not_found")
-		return
+	if principal.Kind == principalDaemon {
+		if principal.WorkspaceID != request.WorkspaceID || principal.DaemonID != request.DaemonID {
+			writeCode(w, http.StatusForbidden, "forbidden")
+			return
+		}
+	} else {
+		if _, err := h.q.GetMember(r.Context(), lwdb.GetMemberParams{WorkspaceID: workspaceID, UserID: userID}); err != nil {
+			writeCode(w, http.StatusNotFound, "not_found")
+			return
+		}
 	}
 
 	tx, err := h.pool.Begin(r.Context())
@@ -117,6 +125,14 @@ func (h *Handler) DaemonRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(r.Context())
 	qtx := h.q.WithTx(tx)
+	if principal.Kind == principalDaemon {
+		current, tokenErr := qtx.GetDaemonTokenByHashForUpdate(r.Context(), principal.TokenHash)
+		if tokenErr != nil || !current.UserID.Valid || uuidString(current.UserID) != principal.UserID ||
+			uuidString(current.WorkspaceID) != request.WorkspaceID || current.DaemonID != request.DaemonID {
+			writeCode(w, http.StatusUnauthorized, "unauthenticated")
+			return
+		}
+	}
 	runtimes := make([]runtimeResponse, 0, len(request.Runtimes))
 	for _, candidate := range request.Runtimes {
 		provider := strings.ToLower(strings.TrimSpace(candidate.Type))
@@ -161,26 +177,37 @@ func (h *Handler) DaemonRegister(w http.ResponseWriter, r *http.Request) {
 		}
 		runtimes = append(runtimes, toRuntimeResponse(row))
 	}
-	plaintext, err := auth.GenerateDaemonToken()
-	if err != nil {
-		writeCode(w, http.StatusInternalServerError, "internal_error")
-		return
+	response := daemonRegisterResponse{
+		WorkspaceID: request.WorkspaceID, DaemonID: request.DaemonID, Runtimes: runtimes,
 	}
-	expiresAt := pgtype.Timestamptz{Time: h.now().Add(defaultDaemonTTL), Valid: true}
-	if _, err := qtx.CreateDaemonToken(r.Context(), lwdb.CreateDaemonTokenParams{
-		TokenHash: auth.HashToken(plaintext), WorkspaceID: workspaceID, DaemonID: request.DaemonID, ExpiresAt: expiresAt,
-	}); err != nil {
-		writeCode(w, http.StatusInternalServerError, "internal_error")
-		return
+	if principal.Kind != principalDaemon {
+		plaintext, tokenErr := auth.GenerateDaemonToken()
+		if tokenErr != nil {
+			writeCode(w, http.StatusInternalServerError, "internal_error")
+			return
+		}
+		expiresAt := pgtype.Timestamptz{Time: h.now().Add(defaultDaemonTTL), Valid: true}
+		name := request.DeviceName
+		if name == "" {
+			name = request.DaemonID
+		}
+		if _, tokenErr = qtx.CreateDaemonToken(r.Context(), lwdb.CreateDaemonTokenParams{
+			TokenHash: auth.HashToken(plaintext), WorkspaceID: workspaceID, DaemonID: request.DaemonID,
+			ExpiresAt: expiresAt, UserID: userID,
+			Name:        pgtype.Text{String: name, Valid: true},
+			TokenPrefix: pgtype.Text{String: tokenPrefix(plaintext), Valid: true},
+		}); tokenErr != nil {
+			writeCode(w, http.StatusInternalServerError, "internal_error")
+			return
+		}
+		response.Token = plaintext
+		response.ExpiresAt = expiresAt.Time.UTC().Format(time.RFC3339Nano)
 	}
 	if err := tx.Commit(r.Context()); err != nil {
 		writeCode(w, http.StatusInternalServerError, "internal_error")
 		return
 	}
-	writeJSON(w, http.StatusCreated, daemonRegisterResponse{
-		Token: plaintext, WorkspaceID: request.WorkspaceID, DaemonID: request.DaemonID,
-		ExpiresAt: expiresAt.Time.UTC().Format("2006-01-02T15:04:05.999999999Z07:00"), Runtimes: runtimes,
-	})
+	writeJSON(w, http.StatusCreated, response)
 }
 
 func (h *Handler) DaemonDeregister(w http.ResponseWriter, r *http.Request) {
@@ -217,10 +244,6 @@ func (h *Handler) DaemonDeregister(w http.ResponseWriter, r *http.Request) {
 	defer tx.Rollback(r.Context())
 	qtx := h.q.WithTx(tx)
 	if _, err := qtx.MarkAgentRuntimesOffline(r.Context(), lwdb.MarkAgentRuntimesOfflineParams{WorkspaceID: workspaceID, DaemonID: principal.DaemonID}); err != nil {
-		writeCode(w, http.StatusInternalServerError, "internal_error")
-		return
-	}
-	if _, err := qtx.DeleteDaemonTokensByDaemon(r.Context(), lwdb.DeleteDaemonTokensByDaemonParams{WorkspaceID: workspaceID, DaemonID: principal.DaemonID}); err != nil {
 		writeCode(w, http.StatusInternalServerError, "internal_error")
 		return
 	}

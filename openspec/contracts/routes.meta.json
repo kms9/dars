@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "source": "specs/lightweight-api-security/spec.md",
-  "source_sha256": "67f1267f3e48017aa381f00a3ff163a6ddedbf8395326fd8532fa8cb15d07308",
+  "source_sha256": "e5a9122837ffbf7ac466d736ec7a2356039f84fdefd0fac10a2e6c0dd84b024d",
   "normalization": "uppercase_method + single_space + path_template; query_string_excluded",
   "sort": "ascending_byte_order",
-  "route_count": 126,
-  "unique_route_count": 126,
+  "route_count": 145,
+  "unique_route_count": 145,
   "fixture": "routes.txt",
-  "fixture_sha256": "6258fe8426e87a51c5254440efa3449c98b87ed2f04af4906a6068b47b72481a"
+  "fixture_sha256": "79da64d85101ffc8da5ee621af507bc58fe7d6e24b88e4ac5b645c985449aa24"
 }

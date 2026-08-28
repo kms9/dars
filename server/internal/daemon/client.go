@@ -193,7 +193,9 @@ func (c *Client) SetToken(token string) {
 	c.tokenMu.Lock()
 	defer c.tokenMu.Unlock()
 	c.token = token
-	if !strings.HasPrefix(token, "ddt_") {
+	if strings.HasPrefix(token, "ddt_") {
+		c.pairingToken = ""
+	} else {
 		c.pairingToken = token
 	}
 }

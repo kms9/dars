@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+printf 'dars %s\n' "$*" >>"${FAKE_DAEMON_PI_LOG:?}"
+if [ "${1:-}" = daemon ] && [ "${2:-}" = auth-preflight ]; then
+  [ "${FAKE_DARS_AUTH_FAIL:-0}" != 1 ]
+  exit
+fi
+if [ "${1:-}" = daemon ] && [ "${2:-}" = container-health ]; then
+  [ "${FAKE_DARS_HEALTH_FAIL:-0}" != 1 ]
+  exit
+fi
+if [ "${1:-}" = daemon ] && [ "${2:-}" = start ] && [ "${3:-}" = --foreground ]; then
+  if [ "${FAKE_DARS_STAY_RUNNING:-0}" = 1 ]; then
+    trap 'exit 0' TERM INT
+    while :; do
+      sleep 1 &
+      wait $!
+    done
+  fi
+  exit 0
+fi
+exit 2

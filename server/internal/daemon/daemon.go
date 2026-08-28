@@ -22,7 +22,6 @@ import (
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/singleflight"
 
-	"github.com/kms9/dars/internal/cli"
 	"github.com/kms9/dars/internal/daemon/execenv"
 	"github.com/kms9/dars/internal/daemon/repocache"
 	"github.com/kms9/dars/internal/selfexec"
@@ -1228,23 +1227,14 @@ func (d *Daemon) deregisterRuntimes() {
 	}
 }
 
-// resolveAuth loads the auth token from the CLI config for the active profile.
+// resolveAuth loads the daemon credential through the shared fail-closed resolver.
 func (d *Daemon) resolveAuth() error {
-	cfg, err := cli.LoadCLIConfigForProfile(d.cfg.Profile)
+	credential, err := ResolveDaemonCredential(d.cfg.Profile)
 	if err != nil {
-		return fmt.Errorf("load CLI config: %w", err)
+		return err
 	}
-	if cfg.Token == "" {
-		loginHint := "'dars login'"
-		if d.cfg.Profile != "" {
-			loginHint = fmt.Sprintf("'dars login --profile %s'", d.cfg.Profile)
-		}
-		d.logger.Warn("not authenticated — run " + loginHint + " to authenticate, then restart the daemon")
-		return fmt.Errorf("not authenticated: run %s first", loginHint)
-	}
-	d.client.SetToken(cfg.Token)
-	d.logger.Info("authenticated")
-	d.logger.Debug("auth token loaded", "profile", d.cfg.Profile, "token_len", len(cfg.Token))
+	d.client.SetToken(credential.Token)
+	d.logger.Info("authenticated", "credential_source", credential.Source)
 	return nil
 }
 

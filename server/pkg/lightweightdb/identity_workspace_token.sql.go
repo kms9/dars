@@ -26,11 +26,19 @@ func (q *Queries) ConsumeVerificationCode(ctx context.Context, id pgtype.UUID) (
 }
 
 const createDaemonToken = `-- name: CreateDaemonToken :one
-INSERT INTO daemon_token (token_hash, workspace_id, daemon_id, expires_at)
-VALUES ($1, $2, $3, $4)
+INSERT INTO daemon_token (token_hash, workspace_id, daemon_id, expires_at, user_id, name, token_prefix)
+VALUES (
+    $1, $2, $3, $4,
+    $5, $6, $7
+)
 ON CONFLICT (workspace_id, daemon_id) DO UPDATE
-SET token_hash = EXCLUDED.token_hash, expires_at = EXCLUDED.expires_at, created_at = now()
-RETURNING id, token_hash, workspace_id, daemon_id, expires_at, created_at
+SET token_hash = EXCLUDED.token_hash,
+    expires_at = EXCLUDED.expires_at,
+    user_id = EXCLUDED.user_id,
+    name = EXCLUDED.name,
+    token_prefix = EXCLUDED.token_prefix,
+    created_at = now()
+RETURNING id, token_hash, workspace_id, daemon_id, expires_at, created_at, user_id, name, token_prefix
 `
 
 type CreateDaemonTokenParams struct {
@@ -38,6 +46,9 @@ type CreateDaemonTokenParams struct {
 	WorkspaceID pgtype.UUID        `json:"workspace_id"`
 	DaemonID    string             `json:"daemon_id"`
 	ExpiresAt   pgtype.Timestamptz `json:"expires_at"`
+	UserID      pgtype.UUID        `json:"user_id"`
+	Name        pgtype.Text        `json:"name"`
+	TokenPrefix pgtype.Text        `json:"token_prefix"`
 }
 
 func (q *Queries) CreateDaemonToken(ctx context.Context, arg CreateDaemonTokenParams) (DaemonToken, error) {
@@ -46,6 +57,9 @@ func (q *Queries) CreateDaemonToken(ctx context.Context, arg CreateDaemonTokenPa
 		arg.WorkspaceID,
 		arg.DaemonID,
 		arg.ExpiresAt,
+		arg.UserID,
+		arg.Name,
+		arg.TokenPrefix,
 	)
 	var i DaemonToken
 	err := row.Scan(
@@ -55,6 +69,9 @@ func (q *Queries) CreateDaemonToken(ctx context.Context, arg CreateDaemonTokenPa
 		&i.DaemonID,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+		&i.UserID,
+		&i.Name,
+		&i.TokenPrefix,
 	)
 	return i, err
 }
@@ -269,22 +286,32 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 	return i, err
 }
 
-const deleteDaemonTokensByDaemon = `-- name: DeleteDaemonTokensByDaemon :execrows
+const deleteDaemonTokenByID = `-- name: DeleteDaemonTokenByID :one
 DELETE FROM daemon_token
-WHERE workspace_id = $1 AND daemon_id = $2
+WHERE id = $1 AND workspace_id = $2
+RETURNING id, token_hash, workspace_id, daemon_id, expires_at, created_at, user_id, name, token_prefix
 `
 
-type DeleteDaemonTokensByDaemonParams struct {
+type DeleteDaemonTokenByIDParams struct {
+	ID          pgtype.UUID `json:"id"`
 	WorkspaceID pgtype.UUID `json:"workspace_id"`
-	DaemonID    string      `json:"daemon_id"`
 }
 
-func (q *Queries) DeleteDaemonTokensByDaemon(ctx context.Context, arg DeleteDaemonTokensByDaemonParams) (int64, error) {
-	result, err := q.db.Exec(ctx, deleteDaemonTokensByDaemon, arg.WorkspaceID, arg.DaemonID)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
+func (q *Queries) DeleteDaemonTokenByID(ctx context.Context, arg DeleteDaemonTokenByIDParams) (DaemonToken, error) {
+	row := q.db.QueryRow(ctx, deleteDaemonTokenByID, arg.ID, arg.WorkspaceID)
+	var i DaemonToken
+	err := row.Scan(
+		&i.ID,
+		&i.TokenHash,
+		&i.WorkspaceID,
+		&i.DaemonID,
+		&i.ExpiresAt,
+		&i.CreatedAt,
+		&i.UserID,
+		&i.Name,
+		&i.TokenPrefix,
+	)
+	return i, err
 }
 
 const deleteDaemonTokensByWorkspace = `-- name: DeleteDaemonTokensByWorkspace :execrows
@@ -385,7 +412,7 @@ func (q *Queries) DeleteWorkspace(ctx context.Context, id pgtype.UUID) (int64, e
 }
 
 const getDaemonTokenByHash = `-- name: GetDaemonTokenByHash :one
-SELECT id, token_hash, workspace_id, daemon_id, expires_at, created_at FROM daemon_token
+SELECT id, token_hash, workspace_id, daemon_id, expires_at, created_at, user_id, name, token_prefix FROM daemon_token
 WHERE token_hash = $1 AND expires_at > now()
 `
 
@@ -399,6 +426,32 @@ func (q *Queries) GetDaemonTokenByHash(ctx context.Context, tokenHash string) (D
 		&i.DaemonID,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+		&i.UserID,
+		&i.Name,
+		&i.TokenPrefix,
+	)
+	return i, err
+}
+
+const getDaemonTokenByHashForUpdate = `-- name: GetDaemonTokenByHashForUpdate :one
+SELECT id, token_hash, workspace_id, daemon_id, expires_at, created_at, user_id, name, token_prefix FROM daemon_token
+WHERE token_hash = $1 AND expires_at > now()
+FOR UPDATE
+`
+
+func (q *Queries) GetDaemonTokenByHashForUpdate(ctx context.Context, tokenHash string) (DaemonToken, error) {
+	row := q.db.QueryRow(ctx, getDaemonTokenByHashForUpdate, tokenHash)
+	var i DaemonToken
+	err := row.Scan(
+		&i.ID,
+		&i.TokenHash,
+		&i.WorkspaceID,
+		&i.DaemonID,
+		&i.ExpiresAt,
+		&i.CreatedAt,
+		&i.UserID,
+		&i.Name,
+		&i.TokenPrefix,
 	)
 	return i, err
 }
@@ -641,6 +694,42 @@ func (q *Queries) IncrementVerificationCodeAttempts(ctx context.Context, id pgty
 	var attempts int32
 	err := row.Scan(&attempts)
 	return attempts, err
+}
+
+const listDaemonTokensByWorkspace = `-- name: ListDaemonTokensByWorkspace :many
+SELECT id, token_hash, workspace_id, daemon_id, expires_at, created_at, user_id, name, token_prefix FROM daemon_token
+WHERE workspace_id = $1
+ORDER BY created_at DESC, id DESC
+`
+
+func (q *Queries) ListDaemonTokensByWorkspace(ctx context.Context, workspaceID pgtype.UUID) ([]DaemonToken, error) {
+	rows, err := q.db.Query(ctx, listDaemonTokensByWorkspace, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []DaemonToken{}
+	for rows.Next() {
+		var i DaemonToken
+		if err := rows.Scan(
+			&i.ID,
+			&i.TokenHash,
+			&i.WorkspaceID,
+			&i.DaemonID,
+			&i.ExpiresAt,
+			&i.CreatedAt,
+			&i.UserID,
+			&i.Name,
+			&i.TokenPrefix,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listPersonalAccessTokens = `-- name: ListPersonalAccessTokens :many

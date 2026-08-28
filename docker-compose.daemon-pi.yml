@@ -1,0 +1,41 @@
+services:
+  daemon-pi:
+    build:
+      context: .
+      dockerfile: Dockerfile.daemon-pi
+      args:
+        VERSION: ${DARS_VERSION:-dev}
+        COMMIT: ${DARS_COMMIT:-unknown}
+        PI_VERSION: ${PI_VERSION:-0.84.2}
+        DARS_UID: ${DARS_UID:-1000}
+        DARS_GID: ${DARS_GID:-1000}
+    environment:
+      DARS_SERVER_URL: ${DARS_SERVER_URL:?set DARS_SERVER_URL}
+      DARS_WORKSPACE_ID: ${DARS_WORKSPACE_ID:?set DARS_WORKSPACE_ID}
+      DARS_DAEMON_ID: ${DARS_DAEMON_ID:?set DARS_DAEMON_ID}
+      DARS_DAEMON_DEVICE_NAME: ${DARS_DAEMON_DEVICE_NAME:-daemon-pi}
+      DARS_AGENT_RUNTIME_NAME: ${DARS_AGENT_RUNTIME_NAME:-DARS Pi Runtime}
+      DARS_DAEMON_MAX_CONCURRENT_TASKS: ${DARS_DAEMON_MAX_CONCURRENT_TASKS:-1}
+      DARS_PI_MODEL: ${DARS_PI_MODEL:-}
+      DARS_PI_PREFLIGHT: ${DARS_PI_PREFLIGHT:-basic}
+      DARS_DAEMON_TOKEN_FILE:
+      DARS_DAEMON_TOKEN:
+      PI_CODING_AGENT_DIR: /config/pi
+      DARS_WORKSPACES_ROOT: /workspaces
+    secrets:
+      - dars_daemon_token
+    volumes:
+      - ${DARS_PI_CONFIG_DIR:?set DARS_PI_CONFIG_DIR}:/config/pi
+      - daemon-pi-state:/home/dars/.dars
+      - daemon-pi-workspaces:/workspaces
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+
+secrets:
+  dars_daemon_token:
+    file: ${DARS_DAEMON_TOKEN_SECRET_FILE:-/dev/null}
+
+volumes:
+  daemon-pi-state:
+  daemon-pi-workspaces:

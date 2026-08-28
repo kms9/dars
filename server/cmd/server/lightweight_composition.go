@@ -185,6 +185,7 @@ const (
 	boundaryWorkspaceAdmin
 	boundaryWorkspaceOwner
 	boundaryTaskScoped
+	boundaryDaemonRegister
 	boundaryDaemon
 	boundaryWebSocket
 )
@@ -283,6 +284,7 @@ func registerLightweightRESTRoutes(
 		boundaryWorkspaceAdmin: {core.HumanAuth, core.RequireWorkspaceMember, core.RequireWorkspaceRole("owner", "admin")},
 		boundaryWorkspaceOwner: {core.HumanAuth, core.RequireWorkspaceMember, core.RequireWorkspaceRole("owner")},
 		boundaryTaskScoped:     {core.HumanOrTaskAuth, core.RequireWorkspaceMember},
+		boundaryDaemonRegister: {core.HumanOrDaemonAuth},
 		boundaryDaemon:         {core.DaemonAuth},
 		boundaryWebSocket:      nil,
 	}
@@ -363,6 +365,9 @@ func lightweightRouteManifest(
 		route(http.MethodPost, "/api/workspaces", boundaryHuman, http.HandlerFunc(core.CreateWorkspace)),
 		route(http.MethodGet, "/api/workspaces/{workspaceId}", boundaryWorkspace, http.HandlerFunc(core.GetWorkspace)),
 		route(http.MethodPut, "/api/workspaces/{workspaceId}", boundaryWorkspaceAdmin, http.HandlerFunc(core.UpdateWorkspace)),
+		route(http.MethodGet, "/api/workspaces/{workspaceId}/daemon-tokens", boundaryWorkspaceAdmin, http.HandlerFunc(core.ListDaemonTokens)),
+		route(http.MethodPost, "/api/workspaces/{workspaceId}/daemon-tokens", boundaryWorkspaceAdmin, http.HandlerFunc(core.CreateDaemonToken)),
+		route(http.MethodDelete, "/api/workspaces/{workspaceId}/daemon-tokens/{tokenId}", boundaryWorkspaceAdmin, http.HandlerFunc(core.RevokeDaemonToken)),
 		route(http.MethodDelete, "/api/workspaces/{workspaceId}", boundaryWorkspaceOwner, http.HandlerFunc(core.DeleteWorkspace)),
 		route(http.MethodGet, "/api/workspaces/{workspaceId}/members", boundaryWorkspace, http.HandlerFunc(core.ListWorkspaceMembers)),
 		route(http.MethodGet, "/api/workspaces/{workspaceId}/runtime-profiles", boundaryWorkspace, http.HandlerFunc(core.ListRuntimeProfiles)),
@@ -466,7 +471,7 @@ func lightweightRouteManifest(
 		route(http.MethodGet, "/api/tasks/{taskId}/messages", boundaryTaskScoped, http.HandlerFunc(core.ListTaskMessagesForUser)),
 		route(http.MethodPost, "/api/tasks/{taskId}/cancel", boundaryWorkspace, http.HandlerFunc(core.CancelTaskByUser)),
 
-		route(http.MethodPost, protocol.DaemonRouteRegister, boundaryHuman, http.HandlerFunc(core.DaemonRegister)),
+		route(http.MethodPost, protocol.DaemonRouteRegister, boundaryDaemonRegister, http.HandlerFunc(core.DaemonRegister)),
 		route(http.MethodPost, protocol.DaemonRouteDeregister, boundaryDaemon, http.HandlerFunc(core.DaemonDeregister)),
 		route(http.MethodPost, protocol.DaemonRouteHeartbeat, boundaryDaemon, http.HandlerFunc(core.DaemonHeartbeat)),
 		route(http.MethodGet, protocol.DaemonRouteWebSocket, boundaryDaemon, http.HandlerFunc(core.DaemonWebSocket)),

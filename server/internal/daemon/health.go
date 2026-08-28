@@ -46,8 +46,9 @@ type HealthResponse struct {
 }
 
 type healthWorkspace struct {
-	ID       string   `json:"id"`
-	Runtimes []string `json:"runtimes"`
+	ID               string            `json:"id"`
+	Runtimes         []string          `json:"runtimes"`
+	RuntimeProviders map[string]string `json:"runtime_providers,omitempty"`
 }
 
 // listenHealth binds the health port. Returns the listener or an error if
@@ -79,9 +80,15 @@ func (d *Daemon) healthHandler(startedAt time.Time) http.HandlerFunc {
 		d.mu.Lock()
 		var wsList []healthWorkspace
 		for id, ws := range d.workspaces {
+			runtimeIDs := append([]string(nil), ws.runtimeIDs...)
+			providers := make(map[string]string, len(runtimeIDs))
+			for _, runtimeID := range runtimeIDs {
+				if runtime, ok := d.runtimeIndex[runtimeID]; ok {
+					providers[runtimeID] = runtime.Provider
+				}
+			}
 			wsList = append(wsList, healthWorkspace{
-				ID:       id,
-				Runtimes: ws.runtimeIDs,
+				ID: id, Runtimes: runtimeIDs, RuntimeProviders: providers,
 			})
 		}
 		d.mu.Unlock()

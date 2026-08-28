@@ -13,14 +13,25 @@ older claim URL or change the credential type after an authorization failure.
 ## Credential boundary
 
 - Human operations use a `dpat_` PAT or the Web session.
-- Daemon registration returns an `ddt_` token bound to one workspace and
-  daemon. Heartbeats, claim, Daemon WebSocket, and result delivery use it.
+- A workspace owner/admin can pre-provision one `ddt_` Daemon Token for a
+  stable daemon ID. Local Human-authenticated registration can also rotate and
+  return that token. A matching `ddt_` registration reuses the token and never
+  returns its plaintext. Heartbeats, claim, Daemon WebSocket, and result
+  delivery use it.
+- Container credentials resolve in the strict order
+  `DARS_DAEMON_TOKEN_FILE` → `DARS_DAEMON_TOKEN`. If the file variable is set,
+  an absent, unreadable, empty, or non-`ddt_` file fails closed; containers do
+  not fall back to a Human profile. `DARS_WORKSPACE_ID` must match the token's
+  server-side workspace scope.
 - A claim returns a short-lived `dat_` Task Token. In a task process the daemon
   injects that token with `DARS_WORKSPACE_ID`, `DARS_AGENT_ID`, and
   `DARS_TASK_ID`. The CLI forwards the corresponding trusted
   `X-Workspace-ID`, `X-Agent-ID`, and `X-Task-ID` headers.
 - Never replace a missing or rejected Task Token with a user PAT. Do not copy a
   task token into another task, workspace, terminal, or log.
+- Never expose a Daemon Token or Human PAT to Pi, ACP discovery, or a task
+  process. Those child environments remove inherited `DARS_*` variables and
+  receive only the task-scoped `dat_` values required by the protocol.
 
 Task Tokens expose only the current Run or Direct Chat context, append-only
 comments/messages, task status, and the Leader evaluation endpoint. A 403 or

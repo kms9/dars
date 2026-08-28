@@ -253,6 +253,14 @@ echo ""
 echo "==> [4/6] Go tests against the fresh check database..."
 echo "==> Verifying Go test wrapper..."
 bash scripts/test-go.test.sh || { EXIT_CODE=1; exit 1; }
+echo "==> Verifying daemon-pi deterministic contracts..."
+bash scripts/daemon-pi-entrypoint.test.sh || { EXIT_CODE=1; exit 1; }
+bash scripts/daemon-pi-config.test.sh || { EXIT_CODE=1; exit 1; }
+if [ "${DARS_RUN_DAEMON_PI_IMAGE_TEST:-0}" = 1 ]; then
+  bash scripts/daemon-pi-image.test.sh || { EXIT_CODE=1; exit 1; }
+else
+  echo "    daemon-pi image test skipped (set DARS_RUN_DAEMON_PI_IMAGE_TEST=1 to enable)"
+fi
 echo "==> Running database migrations..."
 (cd server && go run ./cmd/migrate up) || { EXIT_CODE=1; exit 1; }
 bash scripts/test-go.sh || { EXIT_CODE=1; exit 1; }

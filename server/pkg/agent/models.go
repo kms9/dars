@@ -998,7 +998,8 @@ func discoverACPModels(ctx context.Context, executablePath string, p acpDiscover
 	}
 	cmd := exec.CommandContext(runCtx, executablePath, cmdArgs...)
 	hideAgentWindow(cmd)
-	childEnv := append(os.Environ(), p.extraEnv...)
+	childEnv := mergeEnv(os.Environ(), nil)
+	childEnv = append(childEnv, p.extraEnv...)
 	cmd.Env = childEnv
 	stdin, err := cmd.StdinPipe()
 	if err != nil {

@@ -36,6 +36,19 @@ DARS 当前会检测以下命令：
 
 "受支持"表示 DARS 能够调用对应 CLI，不代表 DARS 会替你提供该工具的账号、订阅或模型额度。
 
+### Pi 容器节点
+
+如果目标机器只承载 Pi，可以使用仓库的 daemon-pi 镜像，不必在宿主机另装 DARS CLI 或 Node。镜像固定 Pi 0.84.2 和 Node 22.19.0，并把宿主 Pi config 作为显式 mount 复用。macOS 上当前常见路径是 `/Users/<user>/.pi/agent`；本机示例为 `/Users/logo/.pi/agent`。
+
+先在宿主机确认该配置能使用目标模型：
+
+```bash
+PI_CODING_AGENT_DIR=/Users/logo/.pi/agent pi --version
+PI_CODING_AGENT_DIR=/Users/logo/.pi/agent pi auth check --model xai/grok-4.6 --json --no-refresh
+```
+
+然后按[守护进程与运行时](/daemon-runtimes#使用-daemon-pi-容器)创建 Workspace Daemon Token 并启动 Compose。不要把 `auth.json`、Provider key 或 `ddt_` 复制进镜像；分别使用 Pi config mount、环境 secret 或 Compose secret file。
+
 ## 2. 在本机完成登录
 
 安装后，先在终端中单独启动一次工具，并按照它自己的流程登录或配置模型服务。工具在终端中无法完成请求时，守护进程调用它同样会失败。

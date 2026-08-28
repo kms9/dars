@@ -5,7 +5,7 @@ description: 了解浏览器登录、个人访问令牌，以及智能体执行�
 
 import { Callout } from "fumadocs-ui/components/callout";
 
-日常使用 DARS 时，你主要会接触两种凭据：浏览器登录会话和个人访问令牌。浏览器会话用于 Web 与 Desktop；个人访问令牌用于 CLI、守护进程、脚本和 API。
+日常使用 DARS 时，你主要会接触浏览器登录会话和个人访问令牌。无交互守护进程还可以使用工作区范围的 Daemon Token。
 
 ## 浏览器登录会话
 
@@ -40,7 +40,7 @@ import { Callout } from "fumadocs-ui/components/callout";
 ~/.dars/profiles/<name>/config.json
 ```
 
-守护进程使用同一个 PAT 连接 DARS。带过期时间的 `dpat_` PAT 在剩余有效期不足 7 天时自动续期，延长到当时起 90 天后。续期失败不会改变令牌本身；令牌已经过期或被吊销时，需要重新运行 `dars login`。
+本地交互式守护进程可以使用同一个 PAT 完成注册。带过期时间的 `dpat_` PAT 在剩余有效期不足 7 天时自动续期，延长到当时起 90 天后。续期失败不会改变令牌本身；令牌已经过期或被吊销时，需要重新运行 `dars login`。
 
 无浏览器环境可以先在 Web 中创建 PAT，再让 CLI 安全地提示输入：
 
@@ -83,6 +83,22 @@ curl https://api.dars.ai/api/issues \
 
 这类令牌由服务器自动创建，用户不需要保存或管理。
 
+## 工作区 Daemon Token
+
+Daemon Token 以 `ddt_` 开头，只能代表一个 Workspace 中的稳定 daemon identity。它可以访问 Daemon 注册、心跳、领取和上报协议，不能代替 Human PAT 调用普通管理 API。
+
+Workspace owner/admin 可以预配：
+
+```bash
+dars daemon token create --daemon-id daemon-pi-prod --name "Pi production" > daemon-token.json
+jq -r .token daemon-token.json > daemon-token.secret
+chmod 600 daemon-token.secret
+```
+
+明文只在创建或轮换时返回一次；`dars daemon token list` 只显示 ID、名称、prefix 与时间。相同 `daemon-id` 再次创建会轮换旧 Token 并让对应 Runtime 离线。`dars daemon token revoke <token-id>` 会立即撤销并离线；正常停止或重启不会撤销。默认有效期 90 天，最长 365 天。
+
+容器首选以只读 secret file 注入，并设置 `DARS_DAEMON_TOKEN_FILE`。该变量一旦存在就是权威来源，文件错误不会回退到环境变量或本地 PAT。不要把 `ddt_` 写入 Compose 文件、镜像 layer 或日志。
+
 ## 其他机器凭据
 
 服务端还识别两种内部或托管场景中的凭据：
@@ -90,9 +106,9 @@ curl https://api.dars.ai/api/issues \
 | 前缀 | 用途 | 谁管理 |
 | --- | --- | --- |
 | `dcn_` | DARS Cloud Node 连接 | DARS Cloud Fleet |
-| `ddt_` | 工作区范围的守护进程认证协议 | 服务端内部流程 |
+| `ddt_` | 工作区范围的守护进程认证协议 | Workspace owner/admin 预配或 Human 注册流程 |
 
-普通 Cloud、自托管和 Desktop 安装都不需要手动创建它们。用户侧的 CLI 与守护进程始终使用 `dpat_` PAT；不要自行构造其他前缀的令牌。
+不要自行构造任何前缀的令牌；只通过 DARS 的创建流程取得。普通交互式本地守护进程仍可使用 `dpat_`，容器和无界面节点应使用预配 `ddt_`。
 
 ## 接下来
 

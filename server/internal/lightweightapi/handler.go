@@ -25,7 +25,8 @@ const (
 	verificationTTL    = 10 * time.Minute
 	maxVerificationTry = int32(5)
 	defaultPATTTL      = 90 * 24 * time.Hour
-	defaultDaemonTTL   = 30 * 24 * time.Hour
+	defaultDaemonTTL   = 90 * 24 * time.Hour
+	maxDaemonTTL       = 365 * 24 * time.Hour
 )
 
 const protocolVersion = protocol.DaemonProtocolVersion

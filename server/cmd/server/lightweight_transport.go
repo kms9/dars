@@ -258,6 +258,8 @@ var lightweightMutationSchemas = map[string]lightweightJSONSchema{
 	"POST /api/tokens/current/renew": lightweightEmptySchema(),
 	"PATCH /api/me":                  lightweightSchema(nil, []string{"name", "language"}, []string{"timezone"}),
 	"POST /api/workspaces":           lightweightSchema([]string{"name"}, []string{"slug"}, nil),
+	"POST /api/workspaces/{workspaceId}/daemon-tokens": lightweightSchema(
+		[]string{"daemon_id", "name"}, []string{"expires_at"}, nil),
 	"PUT /api/workspaces/{workspaceId}": lightweightSchema(nil,
 		[]string{"name", "context", "settings", "repos"}, []string{"description"}),
 	"POST /api/workspaces/{workspaceId}/runtime-profiles": lightweightSchema(

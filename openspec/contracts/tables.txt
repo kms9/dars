@@ -5,6 +5,7 @@ agent_invocation_target
 agent_runtime
 agent_skill
 agent_task_queue
+agent_tool_bundle_head
 chat_draft_restore
 chat_message
 chat_session
@@ -22,6 +23,13 @@ squad_member
 task_message
 task_token
 task_usage
+tool_bundle
+tool_bundle_item
+tool_definition
+tool_source
+tool_source_artifact
+tool_source_revision
+tool_source_secret
 user
 verification_code
 workspace

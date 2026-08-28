@@ -1,0 +1,32 @@
+name: Target CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  target:
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_DB: dars_lightweight
+      EXPECTED_DATABASE_NAME: dars_lightweight
+      DARS_EDITION: lightweight
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.26.1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo typecheck --filter=@dars/web --filter=@dars/core --filter=@dars/ui --filter=@dars/views
+      - run: pnpm turbo build --filter=@dars/web --filter=@dars/core --filter=@dars/ui --filter=@dars/views
+      - run: pnpm turbo test --filter=@dars/web --filter=@dars/core --filter=@dars/ui --filter=@dars/views
+      - run: pnpm turbo lint --filter=@dars/web --filter=@dars/core --filter=@dars/ui --filter=@dars/views
+      - run: go test ./...
+        working-directory: server

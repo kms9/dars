@@ -109,11 +109,11 @@ Leader SHALL 存在于同一 Squad roster 且 `role=leader`，任一未归档 Sq
 - **THEN** 更新后的 retention spec和 schema manifest列出的唯一与访问索引全部存在
 
 ### Requirement: Workspace Delete 显式且隔离清理
-Workspace Delete SHALL 仅允许 Owner，在无 Active Task和在线 Daemon时，以事务按依赖顺序显式删除全部27表中的直接或间接 Workspace数据；不得删除 `schema_metadata/user/verification_code/personal_access_token`，不得影响同一 User的其他 Workspace，也不得自动删除失去最后 Workspace的 User。事务成功后 SHALL 显式清理该 Workspace绑定的 Agent/Squad avatar objects；对象清理失败必须产生可运维诊断，不得把数据库删除伪装成完全清理。
+Workspace Delete SHALL 仅允许 Owner，在无 Active Task和在线 Daemon时，以事务按依赖顺序显式删除全部35表中的直接或间接 Workspace数据；不得删除 `schema_metadata/user/verification_code/personal_access_token`，不得影响同一 User的其他 Workspace，也不得自动删除失去最后 Workspace的 User。事务成功后 SHALL 显式清理该 Workspace绑定的 Agent/Squad avatar objects；对象清理失败必须产生可运维诊断，不得把数据库删除伪装成完全清理。
 
 #### Scenario: 删除空闲 Workspace
 - **WHEN** Owner删除无 Active Task、无在线 Daemon的测试 Workspace
-- **THEN** 27表中的该 Workspace业务数据被显式清理，无 Builder draft或其他敏感残留
+- **THEN** 35表中的该 Workspace业务数据被显式清理，无 Builder draft、Tool Registry 或其他敏感残留
 - **THEN** User、PAT与其他 Workspace保持不变，Agent/Squad avatar objects被删除或明确报告清理失败
 
 ### Requirement: 配置、CI 与恢复只使用新库契约
@@ -131,8 +131,8 @@ Workspace Delete SHALL 仅允许 Owner，在无 Active Task和在线 Daemon时�
 - **WHEN** 备份 `dars_lightweight` 并恢复到授权目标库，同时从 Secret Store 注入原密钥
 - **THEN** schema guard 通过、Secret 可正确解密且 P0 主流程继续运行
 
-### Requirement: Baseline 恰好匹配批准的 27 表 schema manifest
-目标 schema SHALL 恰好包含以下27张应用表；migration工具自己的版本表不计入数量，未列出的完整产品表 MUST NOT 创建。
+### Requirement: Baseline 恰好匹配批准的 35 表 schema manifest
+目标 schema SHALL 恰好包含以下35张应用表；migration工具自己的版本表不计入数量，未列出的完整产品表 MUST NOT 创建。
 
 ```text
 schema_metadata
@@ -156,8 +156,16 @@ squad_member
 issue
 comment
 agent_task_queue
+agent_tool_bundle_head
 task_message
 task_usage
+tool_bundle
+tool_bundle_item
+tool_definition
+tool_source
+tool_source_artifact
+tool_source_revision
+tool_source_secret
 activity_log
 chat_session
 chat_message
@@ -166,13 +174,13 @@ chat_draft_restore
 
 #### Scenario: Schema allowlist
 - **WHEN** 验收查询 `pg_catalog`的应用表并与 checked-in schema manifest比较
-- **THEN** 表集合与上述清单精确相等且数量为27
+- **THEN** 表集合与上述清单精确相等且数量为35
 - **THEN** 不存在 Integration、Invitation、Attachment、Project、Autopilot、Channel、Inbox、Billing、VCS、Quick Action、Label、Property、Subscriber、Reaction或 Usage Rollup表
 
-#### Scenario: 从 26 表 baseline 升级
-- **WHEN** 合法 `dars_lightweight`数据库从前一支持版本执行 migration
-- **THEN** 现有 user Agent、Agent-only Squad、Issue、Task、Chat和 Skill数据保持可读可执行
-- **THEN** 新 manifest精确为27表且不连接或修改原 `dars`数据库
+#### Scenario: 从 27 表 baseline 升级
+- **WHEN** 合法 `dars_lightweight`数据库从 27 表前一支持版本执行 migration
+- **THEN** 现有 user Agent、Agent-only Squad、Issue、Task、Chat和 Skill数据保持可读可执行，新增 8 张 Tool Registry 表
+- **THEN** 新 manifest精确为35表且不连接或修改原 `dars`数据库
 
 ### Requirement: Builder draft 只持久化批准的非 Secret 配置
 `agent_builder_draft` SHALL 只持久化 session/workspace关联、版本、Instructions、Skill IDs及其他批准的非 Secret Agent draft字段；它 MUST NOT 接受 Env Secret、MCP配置、Integration配置、owner/identity/history或只读 lifecycle字段。

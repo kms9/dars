@@ -31,6 +31,7 @@ type Principal struct {
 	TaskID       string
 	AgentID      string
 	ToolBundleID string
+	TokenHash    string
 }
 
 type requestContextKey uint8
@@ -146,6 +147,17 @@ func (h *Handler) HumanOrTaskAuth(next http.Handler) http.Handler {
 	})
 }
 
+func (h *Handler) HumanOrDaemonAuth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, _ := bearerOrCookie(r)
+		if strings.HasPrefix(token, "ddt_") {
+			h.DaemonAuth(next).ServeHTTP(w, r)
+			return
+		}
+		h.HumanAuth(next).ServeHTTP(w, r)
+	})
+}
+
 func (h *Handler) DaemonAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, fromCookie := bearerOrCookie(r)
@@ -160,6 +172,10 @@ func (h *Handler) DaemonAuth(next http.Handler) http.Handler {
 		}
 		principal := Principal{
 			Kind: principalDaemon, WorkspaceID: uuidString(stored.WorkspaceID), DaemonID: stored.DaemonID,
+			TokenHash: auth.HashToken(token),
+		}
+		if stored.UserID.Valid {
+			principal.UserID = uuidString(stored.UserID)
 		}
 		r.Header.Del("X-User-ID")
 		r.Header.Del("X-Workspace-Slug")

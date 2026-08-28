@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "finished_at": "2026-08-28T00:15:34Z",
+  "image": {
+    "name": "dars-daemon-pi:real-smoke",
+    "id": "sha256:a65d50d45065b2449ef6ea17fb3ff48bae6307d51a5af7aad0d8bd3ce3e6eae2",
+    "dars": "dars dev (commit: unknown, built: unknown)",
+    "node": "v22.19.0",
+    "pi": "0.84.2",
+    "non_root": true,
+    "pid_1": "tini"
+  },
+  "pi_model": "xai/grok-4.6",
+  "preflight": {
+    "mode": "active",
+    "status": "passed"
+  },
+  "workspace": {
+    "id": "07149727-f3ff-479b-bb7f-012b65f8fd59",
+    "repos_empty": true
+  },
+  "daemon": {
+    "id": "daemon-pi-real-20260828001431-98262",
+    "token_record_id": "39b0fac5-d069-4411-8924-fdc6e26dc21d",
+    "runtime_id": "cb17fdff-c2c0-49fa-b17b-61bb8aadc1bf",
+    "registered_online": true,
+    "heartbeat": true,
+    "reused_identity": true,
+    "reconnected": true
+  },
+  "tasks": {
+    "first": {
+      "id": "2e108425-97c2-4f9d-8489-ea0c1f926962",
+      "status": "completed",
+      "tool_result": true,
+      "usage_persisted": true,
+      "unique_terminal": true,
+      "completion_projection": true,
+      "exact_output": "DARS_PI_E2E_OK",
+      "tool_bundle": null
+    },
+    "after_recreate": {
+      "id": "78310290-684b-475b-abd8-70cc17a1547b",
+      "status": "completed",
+      "exact_output": "DARS_PI_E2E_OK"
+    },
+    "expected_failure": {
+      "id": "de21280c-4c91-4e9a-a470-35dc371f4e32",
+      "status": "failed",
+      "daemon_survived": true
+    },
+    "recovery": {
+      "id": "984f0237-52cd-4bd6-9589-da9a7bdb2099",
+      "status": "completed",
+      "exact_output": "DARS_PI_E2E_OK"
+    }
+  },
+  "secrets_retained": false
+}

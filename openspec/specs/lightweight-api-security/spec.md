@@ -204,28 +204,19 @@ Web事件白名单为：`workspace:updated workspace:deleted agent:created agent
 - **WHEN** Daemon RPC 请求在断线前未收到 response
 - **THEN** 相同 Task/Idempotency 规则允许安全回退 HTTP，不将 Web Workspace event 当作 control response
 
-### Requirement: Router 精确匹配批准的 126 条 manifest
-Server SHALL 只注册 checked-in route manifest中按 `HTTP method + path template`归一化后的126条路由。新 manifest SHALL 包含原批准116条路由和以下10条恢复路由，且不得注册重复路径、旧 Desktop alias、MCP管理、Integrations、Human Squad Member、Template/Composio/Attachment/Inbox/Channel路由或其他业务路由；query string不计入 path template。
+### Requirement: Router 精确匹配批准的 145 条 manifest
+Server SHALL 只注册 checked-in route manifest 中按 `HTTP method + path template` 归一化后的 145 条路由。当前 manifest 汇总此前已经批准的 142 条路由和以下 3 条 Workspace 管理员 Daemon Token 路由，且不得注册重复路径、旧 Desktop alias、MCP 管理、Integrations、Human Squad Member、Template/Composio/Attachment/Inbox/Channel 路由或其他业务路由；query string 不计入 path template。完整精确清单以 `openspec/contracts/routes.txt` 为准。
 
 ```http
-GET /api/agents/snapshot
-GET /api/agents/{agentId}/tasks
-POST /api/agents/{agentId}/tasks/cancel
-
-GET /api/agent-builder/sessions
-POST /api/agent-builder/sessions
-PATCH /api/agent-builder/sessions/{sessionId}/runtime
-PUT /api/agent-builder/sessions/{sessionId}/draft
-
-POST /api/agents/{agentId}/avatar
-POST /api/squads/{squadId}/avatar
-GET /media/avatars/{avatarId}
+GET /api/workspaces/{workspaceId}/daemon-tokens
+POST /api/workspaces/{workspaceId}/daemon-tokens
+DELETE /api/workspaces/{workspaceId}/daemon-tokens/{tokenId}
 ```
 
 #### Scenario: Router snapshot 精确匹配
 - **WHEN** contract test dump全部已注册路由并按 method+path排序
-- **THEN** 结果与 checked-in 126条 manifest精确相等、无重复并包含上述10条 delta
-- **THEN** 原批准的 Skills import/search和 Daemon lifecycle路由仍全部存在
+- **THEN** 结果与 checked-in 145 条 manifest 精确相等、无重复并包含上述 3 条 delta
+- **THEN** 原批准的 Skills import/search、Tool Gateway control plane 和 Daemon lifecycle 路由仍全部存在
 
 #### Scenario: 未批准恢复路由不可达
 - **WHEN** 客户端访问 Agent MCP管理、Lark/Slack/其他 Integration、Human Squad Member、Agent Template、Composio、通用 Attachment、Inbox/Channel、旧 Desktop alias或其他未列出路径

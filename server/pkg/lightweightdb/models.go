@@ -206,6 +206,9 @@ type DaemonToken struct {
 	DaemonID    string             `json:"daemon_id"`
 	ExpiresAt   pgtype.Timestamptz `json:"expires_at"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	UserID      pgtype.UUID        `json:"user_id"`
+	Name        pgtype.Text        `json:"name"`
+	TokenPrefix pgtype.Text        `json:"token_prefix"`
 }
 
 type Issue struct {

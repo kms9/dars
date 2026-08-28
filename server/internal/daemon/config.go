@@ -209,6 +209,9 @@ func LoadConfig(overrides Overrides) (Config, error) {
 			}
 		}
 	}
+	if envWorkspaceID := strings.TrimSpace(os.Getenv("DARS_WORKSPACE_ID")); envWorkspaceID != "" {
+		workspaceID = envWorkspaceID
+	}
 
 	// Discover installed agent CLIs. Extracted so the periodic workspace sync
 	// can re-run the same discovery on a live daemon (MUL-5439).

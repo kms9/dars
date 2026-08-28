@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+printf 'pi %s\n' "$*" >>"${FAKE_DAEMON_PI_LOG:?}"
+
+if [ "${1:-}" = "--version" ]; then
+  printf '0.84.2\n'
+  exit 0
+fi
+if [ "${1:-}" = "--list-models" ]; then
+  printf 'provider  model  context  max-out  thinking  images\n'
+  if [ "${FAKE_PI_CATALOG_MISSING:-0}" != 1 ]; then
+    printf '%s  %s  1M  1M  yes  yes\n' "${FAKE_PI_PROVIDER:-xai}" "${FAKE_PI_MODEL:-grok-4.6}"
+  fi
+  exit 0
+fi
+if [ "${1:-}" = "auth" ] && [ "${2:-}" = "check" ]; then
+  auth_provider="${FAKE_PI_PROVIDER:-xai}"
+  if [ "${FAKE_PI_CUSTOM_PROVIDER:-0}" = 1 ]; then
+    auth_provider="${auth_provider}/${FAKE_PI_MODEL:-grok-4.6}"
+  fi
+  printf '{"status":"%s","provider":"%s","authType":"oauth"}\n' "${FAKE_PI_AUTH_STATUS:-ready}" "$auth_provider"
+  exit 0
+fi
+
+if IFS= read -r _; then
+  printf 'active preflight stdin was not closed\n' >&2
+  exit 9
+fi
+if [ "${FAKE_PI_ACTIVE_FAIL:-0}" = 1 ]; then
+  exit 8
+fi
+if [ "${FAKE_PI_ACTIVE_SENTINEL:-1}" = 1 ]; then
+  printf '{"type":"message_end","content":"DARS_PI_PREFLIGHT_OK"}\n'
+else
+  printf '{"type":"message_end","content":"wrong"}\n'
+fi

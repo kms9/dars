@@ -48,6 +48,43 @@ dars daemon start
 
 守护进程至少需要检测到一款内置支持的 AI 编程工具才能启动。安装方法和可执行文件名见[安装 AI 编程工具](/install-agent-runtime)。
 
+## 使用 daemon-pi 容器
+
+Linux Docker 节点可以使用仓库根目录的 `Dockerfile.daemon-pi` 和 `docker-compose.daemon-pi.yml`。镜像包含固定版本的 DARS、Node 22.19.0 和 Pi 0.84.2，默认以非 root 用户运行。先以 Workspace owner/admin 登录 CLI，再预配一个只显示一次明文的 Daemon Token：
+
+```bash
+dars daemon token create --daemon-id daemon-pi-prod --name "Pi production" > daemon-token.json
+jq -r .token daemon-token.json > daemon-token.secret
+chmod 600 daemon-token.secret
+```
+
+下面的 macOS 示例复用已有 `/Users/logo/.pi/agent`；Linux 请替换为实际 Pi config 目录：
+
+```bash
+export DARS_SERVER_URL=http://host.docker.internal:8080
+export DARS_WORKSPACE_ID=<workspace-uuid>
+export DARS_DAEMON_ID=daemon-pi-prod
+export DARS_DAEMON_TOKEN_FILE=/run/secrets/dars_daemon_token
+export DARS_DAEMON_TOKEN_SECRET_FILE="$PWD/daemon-token.secret"
+export DARS_PI_CONFIG_DIR=/Users/logo/.pi/agent
+export DARS_UID="$(id -u)"
+export DARS_GID="$(id -g)"
+export DARS_PI_PREFLIGHT=active
+
+docker compose -f docker-compose.daemon-pi.yml up --build -d
+docker compose -f docker-compose.daemon-pi.yml ps
+```
+
+Compose 分离三个数据边界：Pi config 挂载到 `/config/pi`，DARS identity/session state 保存到 `/home/dars/.dars` volume，task checkout 保存到 `/workspaces` volume。不要挂载整个 HOME 或 Docker socket。复用相同 Token、`DARS_DAEMON_ID` 与 DARS state volume 重建容器，会继续使用原 daemon/runtime identity。
+
+<Callout type="warning">
+OAuth 配置默认应可写，以便 Pi 刷新凭据。只读挂载时 basic preflight 会使用 `--no-refresh`；凭据过期会让容器启动失败。extension/custom Provider 无法通过 Pi 的离线 auth check，必须设置 `DARS_PI_PREFLIGHT=active`。
+</Callout>
+
+`active` preflight 会真实消耗一次极小模型请求；它在空临时目录中关闭 session、tool、项目 context 和 stdin。生产环境不要使用 `disabled`。容器健康检查只有在 daemon 为 `running`、目标 Workspace 已连接且 Pi Runtime 已注册时才通过。
+
+Token 轮换或撤销后 Runtime 会立即离线：用 `dars daemon token create --daemon-id <same-id>` 轮换并更新 secret file，或用 `dars daemon token revoke <token-id>` 撤销。随后用 `docker compose up -d --force-recreate` 重新创建容器。
+
 ## 派发与在线状态
 
 运行时注册后会持续保持连接。新 task 入队时，服务器会通知对应守护进程；守护进程也会定期轮询，作为连接中断后的补充。因此运行时在线且有空闲容量时，task 通常会立即开始。
@@ -119,6 +156,23 @@ dars runtime profile unset-path <profile-id>
 3. 在同一运行环境中执行 `command -v <工具命令>`，确认守护进程能够找到它。
 4. 打开 DARS 的**运行时**页面，检查目标电脑和对应的 AI 编程工具是否显示在线。
 5. 工具刚安装、路径刚修改或配置刚更新时，运行 `dars daemon restart`。
+
+容器节点还应运行 `docker compose -f docker-compose.daemon-pi.yml ps` 并区分：entrypoint 配置失败会退出，`starting` 表示仍在 preflight/注册，`unhealthy` 表示 daemon 未运行、Workspace 不匹配或 Pi Runtime 未注册。私有 CA 应通过只读 PEM mount 配合 `SSL_CERT_FILE`、`GIT_SSL_CAINFO` 和 `NODE_EXTRA_CA_CERTS` 配置，不能用跳过 TLS 校验代替。
+
+例如新建一个只用于本机的 Compose override：
+
+```yaml
+services:
+  daemon-pi:
+    volumes:
+      - ./company-ca.pem:/run/certs/company-ca.pem:ro
+    environment:
+      SSL_CERT_FILE: /run/certs/company-ca.pem
+      GIT_SSL_CAINFO: /run/certs/company-ca.pem
+      NODE_EXTRA_CA_CERTS: /run/certs/company-ca.pem
+```
+
+启动时同时传入两个 Compose 文件。PEM 必须包含运行时所需的完整信任链，并且对容器 UID 可读。
 
 仍未解决时，参见[故障排查](/troubleshooting)。
 

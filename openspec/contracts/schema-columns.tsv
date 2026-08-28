@@ -1,6 +1,6 @@
 table	column	type	nullable	default	enum
 schema_metadata	id	smallint	false	1	
-schema_metadata	edition	text	false	"dars_lightweight"
+schema_metadata	edition	text	false	"dars_lightweight"	-
 schema_metadata	schema_version	integer	false		
 schema_metadata	installed_at	timestamptz	false		
 schema_metadata	updated_at	timestamptz	false		
@@ -50,6 +50,9 @@ daemon_token	workspace_id	uuid	false
 daemon_token	daemon_id	text	false		
 daemon_token	expires_at	timestamptz	false		
 daemon_token	created_at	timestamptz	false	now()	
+daemon_token	user_id	uuid	true		-
+daemon_token	name	text	true		-
+daemon_token	token_prefix	text	true		-
 task_token	id	uuid	false	gen_random_uuid()	
 task_token	token_hash	text	false		
 task_token	task_id	uuid	false		
@@ -58,6 +61,7 @@ task_token	workspace_id	uuid	false
 task_token	user_id	uuid	false		
 task_token	expires_at	timestamptz	false		
 task_token	created_at	timestamptz	false	now()	
+task_token	tool_bundle_id	text	true		-
 runtime_profile	id	uuid	false	gen_random_uuid()	
 runtime_profile	workspace_id	uuid	false		
 runtime_profile	display_name	text	false		
@@ -105,15 +109,15 @@ agent	service_tier	text	true
 agent	permission_mode	text	false		private|public_to
 agent	disabled_runtime_skills	jsonb	false	[]	
 agent	kind	text	false	"user"	user|system
-agent	system_key	text	true
+agent	system_key	text	true		-
 agent	archived_at	timestamptz	true		
 agent	archived_by	uuid	true		
 agent	created_at	timestamptz	false	now()	
 agent	updated_at	timestamptz	false	now()	
-agent_builder_draft	chat_session_id	uuid	false
-agent_builder_draft	workspace_id	uuid	false
-agent_builder_draft	draft	jsonb	false	{}
-agent_builder_draft	updated_at	timestamptz	false	now()
+agent_builder_draft	chat_session_id	uuid	false		-
+agent_builder_draft	workspace_id	uuid	false		-
+agent_builder_draft	draft	jsonb	false	{}	-
+agent_builder_draft	updated_at	timestamptz	false	now()	-
 skill	id	uuid	false	gen_random_uuid()	
 skill	workspace_id	uuid	false		
 skill	name	text	false		
@@ -231,6 +235,7 @@ agent_task_queue	dispatched_at	timestamptz	true
 agent_task_queue	started_at	timestamptz	true		
 agent_task_queue	completed_at	timestamptz	true		
 agent_task_queue	created_at	timestamptz	false	now()	
+agent_task_queue	tool_bundle_id	text	true		-
 task_message	id	uuid	false	gen_random_uuid()	
 task_message	task_id	uuid	false		
 task_message	seq	integer	false		
@@ -286,3 +291,77 @@ chat_draft_restore	chat_session_id	uuid	false
 chat_draft_restore	task_id	uuid	false		
 chat_draft_restore	content	text	false		
 chat_draft_restore	created_at	timestamptz	false	now()	
+tool_source	id	uuid	false	gen_random_uuid()	-
+tool_source	workspace_id	uuid	false		-
+tool_source	name	text	false		-
+tool_source	kind	text	false		server_local|remote_mcp|grpc|openapi
+tool_source	enabled	boolean	false	false	-
+tool_source	current_revision	uuid	true		-
+tool_source	created_by	uuid	false		-
+tool_source	created_at	timestamptz	false	now()	-
+tool_source	updated_at	timestamptz	false	now()	-
+tool_source_artifact	id	uuid	false	gen_random_uuid()	-
+tool_source_artifact	workspace_id	uuid	false		-
+tool_source_artifact	source_id	uuid	false		-
+tool_source_artifact	sha256	text	false		-
+tool_source_artifact	media_type	text	false		-
+tool_source_artifact	size_bytes	bigint	false		-
+tool_source_artifact	content	bytea	false		-
+tool_source_artifact	created_at	timestamptz	false	now()	-
+tool_source_secret	id	uuid	false	gen_random_uuid()	-
+tool_source_secret	workspace_id	uuid	false		-
+tool_source_secret	source_id	uuid	false		-
+tool_source_secret	envelope	jsonb	false		-
+tool_source_secret	key_id	text	false		-
+tool_source_secret	created_at	timestamptz	false	now()	-
+tool_source_secret	updated_at	timestamptz	false	now()	-
+tool_source_revision	id	uuid	false	gen_random_uuid()	-
+tool_source_revision	workspace_id	uuid	false		-
+tool_source_revision	source_id	uuid	false		-
+tool_source_revision	revision	integer	false		-
+tool_source_revision	status	text	false	"validating"	validating|ready|failed|retired
+tool_source_revision	endpoint	text	true		-
+tool_source_revision	transport_config	jsonb	false	{}	-
+tool_source_revision	artifact_id	uuid	true		-
+tool_source_revision	secret_id	uuid	true		-
+tool_source_revision	validation_code	text	true		-
+tool_source_revision	created_by	uuid	false		-
+tool_source_revision	created_at	timestamptz	false	now()	-
+tool_source_revision	published_at	timestamptz	true		-
+tool_definition	id	uuid	false	gen_random_uuid()	-
+tool_definition	workspace_id	uuid	false		-
+tool_definition	source_id	uuid	false		-
+tool_definition	source_revision_id	uuid	false		-
+tool_definition	public_name	text	false		-
+tool_definition	upstream_name	text	false		-
+tool_definition	description	text	false	""	-
+tool_definition	input_schema	jsonb	false		-
+tool_definition	output_schema	jsonb	true		-
+tool_definition	operation_metadata	jsonb	false	{}	-
+tool_definition	enabled	boolean	false	true	-
+tool_definition	created_at	timestamptz	false	now()	-
+tool_bundle	id	text	false		-
+tool_bundle	workspace_id	uuid	false		-
+tool_bundle	manifest_hash	text	false		-
+tool_bundle	status	text	false	"active"	active|revoked
+tool_bundle	created_by	uuid	false		-
+tool_bundle	created_at	timestamptz	false	now()	-
+tool_bundle	revoked_at	timestamptz	true		-
+tool_bundle_item	id	uuid	false	gen_random_uuid()	-
+tool_bundle_item	workspace_id	uuid	false		-
+tool_bundle_item	bundle_id	text	false		-
+tool_bundle_item	ordinal	integer	false		-
+tool_bundle_item	public_name	text	false		-
+tool_bundle_item	source_id	uuid	false		-
+tool_bundle_item	source_revision_id	uuid	false		-
+tool_bundle_item	tool_definition_id	uuid	false		-
+tool_bundle_item	artifact_id	uuid	true		-
+tool_bundle_item	definition_snapshot	jsonb	false		-
+tool_bundle_item	invocation_plan	jsonb	false		-
+tool_bundle_item	created_at	timestamptz	false	now()	-
+agent_tool_bundle_head	id	uuid	false	gen_random_uuid()	-
+agent_tool_bundle_head	workspace_id	uuid	false		-
+agent_tool_bundle_head	agent_id	uuid	false		-
+agent_tool_bundle_head	bundle_id	text	false		-
+agent_tool_bundle_head	updated_by	uuid	false		-
+agent_tool_bundle_head	updated_at	timestamptz	false	now()	-

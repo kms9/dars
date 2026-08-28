@@ -1,8 +1,8 @@
 # Dockerfile.daemon-pi 需求文档
 
-> 状态：Draft v0.1  
+> 状态：Implemented v1.0（架构评审、实现与真实 Pi 黑盒验收已完成）
 > 目标版本：DARS 默认可部署 Agent Runtime 节点  
-> 范围：`Dockerfile.daemon-pi`、容器启动入口、Daemon Token 环境变量认证、PI 运行时自检、DARS 连接与 Runtime 注册、端到端任务验收
+> 范围：`Dockerfile.daemon-pi`、容器启动入口、Daemon Token 预配与非交互认证、Pi 运行时自检、DARS 连接与 Runtime 注册、端到端任务验收
 
 ## 1. 背景
 
@@ -26,6 +26,27 @@
 4. Pi 模型及 Provider Credential，或一个已经存在的 Pi config 目录；
 
 即可自动启动一个 DARS 可发现、可调度、可执行任务并回传结果的 Pi Runtime 节点。
+
+---
+
+## 1.1 可行性结论与已确认约束
+
+结论：方案可行，但必须同时修改 Server、CLI/守护进程和发行物，不能只增加一个 Dockerfile。现有 Pi backend、Runtime 注册、WebSocket claim、task-scoped `dat_` 和结果回传链路可以复用；原草案中的认证与重启语义不足以支撑无人值守容器。
+
+本轮代码核查和 Grok/Codex 交叉评审确认：
+
+| 项目 | 当前事实 | 最终处理 |
+|---|---|---|
+| Daemon Token | Human 注册会签发 30 天 `ddt_`，优雅 Deregister 会删除 Token | 增加 Workspace-admin 专用预配 API；默认 90 天、上限 365 天；Deregister 只下线 Runtime，显式 rotate/revoke 才吊销 |
+| Register | 当前只接受 Human JWT/PAT | 接受 Human 或 scope 完全匹配且 owner 已解析的 `ddt_`；后者不轮换 Token |
+| 容器认证 | 当前仅从 `~/.dars/config.json` 读取 | 统一为 token file > token env > 本地 profile；file 设置即权威，任何错误均 fail closed |
+| 路由/schema 基线 | 实际为 142 条路由、35 张表；旧文档的 126/27 已过期 | 新增 3 条专用路由，目标精确为 145；只给现有表加列，仍为 35 张表 |
+| Pi 版本 | 本机 Pi 为 0.84.2，要求 Node `>=22.19.0` | 固定 Pi 0.84.2 与满足 engine 的精确 Node 22 patch |
+| Pi config | 实际可复用目录为 `/Users/logo/.pi/agent` | 挂载到 `/config/pi`；OAuth 默认可写，只读时 basic 使用 `--no-refresh` |
+| Ready | 当前 health 只有 Runtime ID | 增加兼容的 Runtime provider 映射，由容器 health 校验目标工作区中已注册 Pi Runtime |
+| E2E | 仅 build 或最终文本不足以验收 | 隔离数据库与空仓库，验证真实 tool-result、唯一 completed 行、精确最终输出、重启/重连/失败恢复 |
+
+安全边界保持不变：`ddt_` 只用于节点到 Control Plane，任务子进程只获得 task-scoped `dat_`；不会把用户 Pi 配置复制进镜像，也不会在日志或验收证据中暴露 Secret。
 
 ---
 
@@ -129,6 +150,16 @@ docker-compose.daemon-pi.yml
 
 推荐以非 root 用户运行。
 
+第一阶段发行基线固定为：
+
+- Go builder：仓库声明的 Go 1.26.1；
+- Node.js：满足 Pi engine `>=22.19.0` 的精确 Node 22 patch，不使用浮动 `node:22`；
+- Pi：`@earendil-works/pi-coding-agent@0.84.2`，允许通过 `PI_VERSION` build arg 显式覆盖；
+- Debian slim runtime，npm lifecycle scripts 禁用，构建时断言 Node/Pi 版本并清理缓存；
+- OCI labels 记录 DARS/Pi 版本，`tini` 负责 PID 1 与 signal forwarding。
+
+镜像必须支持 build-time UID/GID，使非 root `dars` 用户可读取 mode-0600 的 Pi config 并写入状态 volume。不得把宿主机 Pi 安装或 `/Users/logo/.pi` 复制进镜像。
+
 ---
 
 ## 5. 配置输入
@@ -144,25 +175,30 @@ docker-compose.daemon-pi.yml
 | 环境变量 | 必填 | 默认值 | 说明 |
 |---|---:|---|---|
 | `DARS_SERVER_URL` | 是 | 无 | 远程 DARS Server 地址 |
-| `DARS_DAEMON_TOKEN` | 是* | 无 | daemon 连接 Control Plane 的长期机器凭据；新增 |
-| `DARS_WORKSPACE_ID` | 视服务端要求 | 无 | 默认 Workspace |
-| `DARS_DAEMON_ID` | 否 | 自动持久化 UUID | 节点稳定 ID |
+| `DARS_DAEMON_TOKEN_FILE` | 是* | 无 | 首选的 Docker/Kubernetes Secret 文件；内容必须是 `ddt_` |
+| `DARS_DAEMON_TOKEN` | 是* | 无 | daemon 连接 Control Plane 的 Workspace 机器凭据；内容必须是 `ddt_` |
+| `DARS_WORKSPACE_ID` | 是 | 无 | Token 所属的唯一工作区 |
+| `DARS_DAEMON_ID` | 是 | 无 | Token 绑定的稳定节点 ID；本地 profile 流程仍可自动持久化 |
 | `DARS_DAEMON_DEVICE_NAME` | 否 | hostname | DARS 页面显示的设备名 |
 | `DARS_AGENT_RUNTIME_NAME` | 否 | `DARS Pi Runtime` | Runtime 显示名 |
 | `DARS_DAEMON_MAX_CONCURRENT_TASKS` | 否 | DARS 默认值 | 最大并发任务数 |
 | `DARS_WORKSPACES_ROOT` | 否 | `/workspaces` | Docker 内任务工作区 |
 
-`DARS_DAEMON_TOKEN` 的 `*` 表示：如果挂载的现有 DARS config 已包含有效 token，可允许回退使用 config token。
+`*` 表示 file/env 二选一。容器模式必须提供预配 `ddt_`；只有现有本地守护进程流程允许回退到 profile 中的 Human JWT/PAT 并执行配对。
 
 认证优先级必须为：
 
 ```text
+DARS_DAEMON_TOKEN_FILE contents
+    >
 DARS_DAEMON_TOKEN
     >
-~/.dars/config.json -> token
+~/.dars/config.json -> Human JWT/PAT（仅本地流程）
     >
 startup error
 ```
+
+`DARS_DAEMON_TOKEN_FILE` 一旦设置就是权威输入；文件不存在、不可读、为空或不是 `ddt_` 时必须立即失败，不得回退到环境变量或 profile。`DARS_WORKSPACE_ID` 环境变量覆盖 profile 工作区。
 
 Docker / Server 部署不得要求人工执行 `dars login`。
 
@@ -209,6 +245,8 @@ AGENTS.md
 
 挂载后 Pi 必须按其原生规则使用这些配置。
 
+OAuth 配置默认以可写方式挂载，使 Pi 能正常刷新凭据。只读挂载仅适用于无需刷新的 API Key 或仍在有效期内的 OAuth；basic preflight 必须使用 `--no-refresh`，失效时输出要求改为可写挂载的诊断。容器以非 root UID/GID 运行，入口必须在读取 Secret 前明确报告目录权限错误。
+
 ### 6.2 DARS Config / State
 
 必须支持持久化：
@@ -230,6 +268,7 @@ AGENTS.md
 - daemon identity 不应无故变化；
 - 已有 DARS config 可以继续加载；
 - 可恢复的 Pi session 不应因为容器重建直接丢失。
+- 同一个未过期、未撤销的 `ddt_` 可以重新 Register，不要求 Human 重新登录或重新配对。
 
 ---
 
@@ -277,13 +316,14 @@ Pi 必须先通过自检，再允许 daemon 启动。
 
 #### basic 模式
 
-至少检查：
+必须：
 
-1. `pi` executable 可执行；
-2. `pi --version` 成功；
-3. Pi config 可以加载；
-4. 指定 / 默认模型可以解析；
-5. Provider credential 存在或 Pi 能判断模型可用。
+1. 验证 `pi` executable 与固定版本可执行；
+2. 按 `DARS_PI_MODEL`，否则按 `settings.json` 的 `defaultProvider/defaultModel` 解析唯一 `provider/model`；
+3. 在完整 `pi --list-models` catalog 中精确匹配；
+4. 对内建 Provider 执行 `pi auth check --model <provider/model> --json` 并只接受 `status:"ready"`；
+5. 不读取或打印 credential；只读 config 追加 `--no-refresh`；
+6. custom/extension Provider 因 auth-check 不加载扩展 catalog，必须给出“使用 active”的诊断，不得误报 credential 错误。
 
 #### active 模式
 
@@ -295,7 +335,7 @@ Pi 必须先通过自检，再允许 daemon 启动。
 - model availability；
 - Pi Agent Loop 可以正常启动并返回结果。
 
-active probe 建议使用无副作用、低 token 的固定请求。
+active probe 必须在新建临时空目录中运行固定低 token 请求，使用 `--no-session --no-tools --no-context-files --mode json`，关闭 stdin，但保留 extension discovery 以支持明确挂载的 custom Provider。成功流必须以 `DARS_PI_PREFLIGHT_OK` sentinel 结束，不保留 session 或工作区。`disabled` 仅在显式配置时接受。
 
 Pi Preflight 失败时：
 
@@ -316,11 +356,11 @@ Pi Ready 后，再检查 DARS Control Plane。
 至少验证：
 
 1. `DARS_SERVER_URL` 网络可达；
-2. `DARS_DAEMON_TOKEN` 或 config token 可以完成认证；
-3. 服务端返回的身份 / Workspace 信息有效；
+2. 解析出的 `ddt_` 可以完成认证；
+3. `GET /api/daemon/workspaces` 只返回并匹配 `DARS_WORKSPACE_ID`；
 4. daemon 后续所需 HTTP / WebSocket 连接具备建立条件。
 
-推荐复用 DARS 当前认证 API，例如带 Bearer Token 调用 `/api/me`。
+Auth preflight 必须是非变更操作，不得注册 Runtime。`/api/me` 只接受 Human 凭据，禁止用于该检查。
 
 失败时：
 
@@ -370,7 +410,17 @@ Daemon 启动后必须：
 daemon → DARS Control Plane
 ```
 
-属于节点长期机器凭据。
+属于 Workspace 机器凭据，格式为 `ddt_`。它通过下列 Workspace-admin 专用接口预配和管理：
+
+```http
+GET /api/workspaces/{workspaceId}/daemon-tokens
+POST /api/workspaces/{workspaceId}/daemon-tokens
+DELETE /api/workspaces/{workspaceId}/daemon-tokens/{tokenId}
+```
+
+POST 使用 `{daemon_id,name,expires_at}`，默认有效期 90 天、最大 365 天；同一 Workspace/daemon 再次 POST 是显式 rotation，只返回一次新明文，并立即使旧 Token 失效且将对应 Runtime 标记 offline。DELETE 显式撤销并下线对应 Runtime。当前 Workspace owner/admin 可以管理机器凭据；原签发人离开不自动使其失效，rotation 将 runtime owner seed 转移给当前操作者。
+
+预配 `ddt_` 调用 Register 时必须同时匹配 Workspace ID 和 daemon ID，且其 owner 已解析；Register 只 upsert Runtime，不轮换也不返回 Token。优雅 Deregister 只将 Runtime 标记 offline，不删除 Token，因此同一节点可以使用相同 volume/Token 重启。Token 到期、Workspace 删除或显式 rotate/revoke 才使凭据失效。
 
 ### `DARS_TOKEN`
 
@@ -389,6 +439,8 @@ Pi task process
 不得将 `DARS_DAEMON_TOKEN` 作为 `DARS_TOKEN` 注入 Pi Task 进程。
 
 不得因为 Docker 化而破坏 DARS 当前的 task-scoped credential 权限边界。
+
+所有任务子进程和 ACP model discovery 都必须从移除全部继承 `DARS_*` 的环境开始，再按协议注入 task-scoped 值；Provider credential 可以保留，因为这是 Pi 支持的显式认证路径。`Client.SetToken(ddt_)` 必须清除陈旧 Human pairing token，避免挂载的旧 profile 静默轮换环境/文件 Token。
 
 ---
 
@@ -415,7 +467,13 @@ READY
 - daemon 进程存在 != Ready；
 - 只有 Pi 可调用、DARS 已认证、Runtime 已注册后才是 Ready。
 
-如果实现 Docker `HEALTHCHECK`，最终 healthy 的语义应至少覆盖 daemon 处于可调度状态，而不是仅检查 PID。
+守护进程本地 health response 在保留 `workspaces[].runtimes []string` 的同时，增加非敏感的 runtime ID→provider 映射。`dars daemon container-health` 只有在下列条件全部成立时返回成功：
+
+- health status 为 `running`；
+- 存在 `DARS_WORKSPACE_ID` 对应工作区；
+- 该工作区至少注册一个 provider 为 `pi` 的 Runtime。
+
+Docker `HEALTHCHECK` 使用该命令并配置覆盖 active preflight 与首次注册的 `start_period`，不得只检查 PID，也不要求暴露 loopback health port。
 
 ---
 
@@ -480,8 +538,12 @@ docker build -f Dockerfile.daemon-pi -t dars-daemon-pi .
 
 ```text
 DARS_SERVER_URL=<remote server>
-DARS_DAEMON_TOKEN=<token>
+DARS_WORKSPACE_ID=<workspace>
+DARS_DAEMON_ID=<daemon>
+DARS_DAEMON_TOKEN_FILE=/run/secrets/dars_daemon_token
 ```
+
+简单环境变量模式可以用 `DARS_DAEMON_TOKEN=<ddt_...>`，生产示例优先 token file。
 
 必须：
 
@@ -509,7 +571,7 @@ DARS_DAEMON_TOKEN=<token>
 - online / healthy 状态；
 - 最近 heartbeat 正常更新。
 
-节点应在配置的启动窗口内完成注册；建议默认目标不超过 60 秒。
+节点应在 HEALTHCHECK `start_period` 覆盖的启动窗口内完成注册；basic 模式目标不超过 60 秒，active 模式可按 Provider 延迟放宽。
 
 ---
 
@@ -538,12 +600,12 @@ P0 E2E Smoke Task 建议使用确定性任务：
 将 stdout 原样作为最终答案，不要添加其他文字。
 ```
 
-通过条件：
+测试工作区必须是 empty-repos，智能体必须明确绑定目标 Pi Runtime/model 且不绑定 ToolBundle，避免 DARS 工具注入改变任务行为。通过条件：
 
 - Pi Agent 实际启动；
 - Pi 实际调用 shell/tool；
-- tool 返回 `DARS_PI_E2E_OK`；
-- Pi 最终输出 `DARS_PI_E2E_OK`；
+- 已持久化的 tool-result 包含 `DARS_PI_E2E_OK`；
+- 经 Server TrimSpace/脱敏归一化后，Pi 最终输出精确等于 `DARS_PI_E2E_OK`；
 - 任务执行进程正常退出。
 
 该测试同时验证：
@@ -564,8 +626,8 @@ Model
 
 AC-07 完成后，DARS Server 上必须能够看到：
 
-- Task 状态最终为 `completed`；
-- 最终输出为 `DARS_PI_E2E_OK`；
+- 数据库恰好有一条 terminal `completed` 记录；
+- 最终持久化输出精确为 `DARS_PI_E2E_OK`；
 - 任务关联到正确 daemon / runtime；
 - 运行期间产生的状态消息能够被 DARS 接收；
 - tool-use / tool-result 等当前 DARS 已支持的 Pi 事件能够正常上报；
@@ -604,7 +666,7 @@ result submitted
 Task completed
 ```
 
-测试不得依赖人工点击或进入容器执行命令。
+测试不得依赖人工点击或进入容器执行命令。它必须由 `DARS_RUN_REAL_PI_CONTAINER_SMOKE=1` 显式授权，使用隔离 PostgreSQL/Server、唯一 daemon ID 和临时 mode-0700 Pi config 工作副本；默认 `make check` 不得消费真实 Provider quota。
 
 ---
 
@@ -619,6 +681,8 @@ Task completed
 5. daemon identity 保持稳定；
 6. Runtime 可以重新上线；
 7. 不需要重新执行 login。
+
+还必须使用相同 volume 与同一未过期 `ddt_` 完成第二个真实 task，证明优雅停止没有吊销凭据、Runtime identity 未重复、工作区状态可复用。
 
 ---
 
@@ -648,11 +712,11 @@ active preflight 必须检测到模型调用失败。
 
 ## F-05 Daemon Token 错误
 
-预期：认证失败，不注册 online Runtime。
+预期：错误 prefix、过期、已撤销、Workspace/daemon 越界、owner 未解析，或权威 token file 不可读/为空时认证失败，不回退其他凭据，不注册 online Runtime。
 
 ## F-06 DARS 连接建立后中断
 
-预期：daemon 按现有重连机制工作；Runtime 状态最终能反映 offline / online 变化，不产生新的重复 Runtime identity。
+预期：daemon 按现有重连机制工作；Server 恢复后使用相同 identity/Token 重新上线，Runtime 状态最终反映 offline / online 变化，不产生新的重复 Runtime identity，并可完成后续 task。
 
 ## F-07 Pi Task 执行失败
 
@@ -662,6 +726,8 @@ active preflight 必须检测到模型调用失败。
 - Task 被正确标记 failed / 对应错误状态；
 - 错误信息被提交到 DARS；
 - 后续新 Task 仍可执行。
+
+自动化验收必须先制造一次 failed task，再下发一个成功 task；成功 task 的完成用于证明 Runtime 没有进入不可恢复状态。
 
 ---
 
@@ -715,7 +781,9 @@ docker/daemon-pi-entrypoint.sh
 
 docker-compose.daemon-pi.yml
 
-DARS_DAEMON_TOKEN 支持
+Workspace-admin Daemon Token 预配/list/rotate/revoke API 与 CLI
+
+`DARS_DAEMON_TOKEN_FILE` / `DARS_DAEMON_TOKEN` fail-closed resolver
 
 Pi Preflight
 
@@ -725,7 +793,13 @@ Docker health/readiness logic
 
 E2E smoke test
 
-使用文档
+确定性容器测试
+
+`server/internal/service/builtin_skills/dars-runtime-protocol/SKILL.md` 协议更新
+
+145-route / 35-table contracts
+
+使用文档与脱敏验收证据
 ```
 
 ---
@@ -766,7 +840,23 @@ Task dispatched = true
 Task claimed = true
 Pi invoked = true
 Tool executed = true
-Task completed = true
+Exactly one terminal completed row = true
 Final output = DARS_PI_E2E_OK
+Persisted tool-result contains DARS_PI_E2E_OK = true
 Result persisted in DARS = true
+Same-token restart task completed = true
+Reconnect recovery = true
+Failure-then-success recovery = true
 ```
+
+验收证据只保留镜像 digest、DARS/Node/Pi 版本、非敏感 Runtime/Task/数据库断言和时间戳；不得包含 Daemon Token、Provider credential、Pi `auth.json` 或完整用户配置。
+
+---
+
+# 17. 实现与验收结果
+
+2026-08-28 已使用隔离 PostgreSQL/Server、empty-repos Workspace 和 `/Users/logo/.pi/agent` 的 mode-0700 临时工作副本完成真实 Pi 容器黑盒验收。验收覆盖 active preflight、Runtime online/heartbeat、真实 tool-result、精确最终输出 `DARS_PI_E2E_OK`、同 Token/同 volumes 重建、Server 断开后重连、失败 task 后恢复以及唯一 terminal completion projection。
+
+脱敏证据保存在 `openspec/changes/add-daemon-pi-container-runtime/evidence/real-pi-container-smoke.json`；证据中 `secrets_retained=false`，不包含 `ddt_`/`dpat_`/`dat_`、Provider credential、`auth.json`、API key、OAuth 值或私钥。
+
+最终发布门禁 `DARS_RUN_DAEMON_PI_IMAGE_TEST=1 make check` 通过，包含目标 TypeScript typecheck/build/unit contracts、Fresh Lightweight DB migrations、Go 全量测试、daemon-pi 确定性镜像契约和 Playwright 浏览器 E2E。

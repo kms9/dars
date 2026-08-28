@@ -159,19 +159,38 @@ WHERE id = sqlc.arg(id) AND user_id = sqlc.arg(user_id) AND revoked = false;
 UPDATE personal_access_token SET last_used_at = now() WHERE id = sqlc.arg(id);
 
 -- name: CreateDaemonToken :one
-INSERT INTO daemon_token (token_hash, workspace_id, daemon_id, expires_at)
-VALUES (sqlc.arg(token_hash), sqlc.arg(workspace_id), sqlc.arg(daemon_id), sqlc.arg(expires_at))
+INSERT INTO daemon_token (token_hash, workspace_id, daemon_id, expires_at, user_id, name, token_prefix)
+VALUES (
+    sqlc.arg(token_hash), sqlc.arg(workspace_id), sqlc.arg(daemon_id), sqlc.arg(expires_at),
+    sqlc.arg(user_id), sqlc.arg(name), sqlc.arg(token_prefix)
+)
 ON CONFLICT (workspace_id, daemon_id) DO UPDATE
-SET token_hash = EXCLUDED.token_hash, expires_at = EXCLUDED.expires_at, created_at = now()
+SET token_hash = EXCLUDED.token_hash,
+    expires_at = EXCLUDED.expires_at,
+    user_id = EXCLUDED.user_id,
+    name = EXCLUDED.name,
+    token_prefix = EXCLUDED.token_prefix,
+    created_at = now()
 RETURNING *;
 
 -- name: GetDaemonTokenByHash :one
 SELECT * FROM daemon_token
 WHERE token_hash = sqlc.arg(token_hash) AND expires_at > now();
 
--- name: DeleteDaemonTokensByDaemon :execrows
+-- name: GetDaemonTokenByHashForUpdate :one
+SELECT * FROM daemon_token
+WHERE token_hash = sqlc.arg(token_hash) AND expires_at > now()
+FOR UPDATE;
+
+-- name: ListDaemonTokensByWorkspace :many
+SELECT * FROM daemon_token
+WHERE workspace_id = sqlc.arg(workspace_id)
+ORDER BY created_at DESC, id DESC;
+
+-- name: DeleteDaemonTokenByID :one
 DELETE FROM daemon_token
-WHERE workspace_id = sqlc.arg(workspace_id) AND daemon_id = sqlc.arg(daemon_id);
+WHERE id = sqlc.arg(id) AND workspace_id = sqlc.arg(workspace_id)
+RETURNING *;
 
 -- name: DeleteDaemonTokensByWorkspace :execrows
 DELETE FROM daemon_token WHERE workspace_id = sqlc.arg(workspace_id);

@@ -1,4 +1,4 @@
-.PHONY: help makehelp dev server daemon cli dars build test migrate-up migrate-down sqlc seed clean setup start stop check worktree-env setup-main start-main stop-main check-main setup-worktree start-worktree stop-worktree check-worktree db-up db-down db-reset selfhost selfhost-build selfhost-stop
+.PHONY: help makehelp dev server daemon cli dars build test migrate-up migrate-down sqlc seed clean setup start stop check daemon-pi-test daemon-pi-real-smoke worktree-env setup-main start-main stop-main check-main setup-worktree start-worktree stop-worktree check-worktree db-up db-down db-reset selfhost selfhost-build selfhost-stop
 
 MAIN_ENV_FILE ?= .env
 WORKTREE_ENV_FILE ?= .env.worktree
@@ -186,6 +186,14 @@ stop: ## Stop backend and frontend processes for the current checkout
 check: ## Run the full target pipeline against an isolated fresh Lightweight check database
 	$(REQUIRE_ENV)
 	@ENV_FILE="$(ENV_FILE)" bash scripts/check.sh
+
+daemon-pi-test: ## Build and verify the daemon-pi image without using real Provider credentials
+	@bash scripts/daemon-pi-entrypoint.test.sh
+	@bash scripts/daemon-pi-config.test.sh
+	@bash scripts/daemon-pi-image.test.sh
+
+daemon-pi-real-smoke: ## Run the explicitly authorized real Provider container acceptance smoke
+	@DARS_RUN_REAL_PI_CONTAINER_SMOKE=1 bash scripts/daemon-pi-container-smoke.sh
 
 db-up: ## Start the shared PostgreSQL container used by main and worktrees
 	@$(COMPOSE) up -d postgres

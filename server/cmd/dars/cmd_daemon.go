@@ -288,18 +288,8 @@ var daemonExecutable = selfexec.Resolve
 // immediate, actionable error. Mirrors daemon.resolveAuth: the daemon only
 // authenticates via the stored config token, never DARS_TOKEN.
 func requireDaemonAuth(profile string) error {
-	cfg, err := cli.LoadCLIConfigForProfile(profile)
-	if err != nil {
-		return fmt.Errorf("load CLI config: %w", err)
-	}
-	if cfg.Token == "" {
-		loginHint := "dars login"
-		if profile != "" {
-			loginHint = fmt.Sprintf("dars login --profile %s", profile)
-		}
-		return fmt.Errorf("you are not logged in. Run '%s' first, then start the daemon", loginHint)
-	}
-	return nil
+	_, err := daemon.ResolveDaemonCredential(profile)
+	return err
 }
 
 func runDaemonStart(cmd *cobra.Command, _ []string) error {
@@ -806,9 +796,9 @@ func requireDaemonRestartPreflight(cmd *cobra.Command, profile string) error {
 	if err := requireDaemonAuth(profile); err != nil {
 		return err
 	}
-	cfg, err := cli.LoadCLIConfigForProfile(profile)
+	credential, err := daemon.ResolveDaemonCredential(profile)
 	if err != nil {
-		return fmt.Errorf("load CLI config: %w", err)
+		return err
 	}
 
 	rawURL := resolveDaemonServerURL(cmd, profile)
@@ -827,15 +817,31 @@ func requireDaemonRestartPreflight(cmd *cobra.Command, profile string) error {
 
 	ctx, cancel := cli.APIContext(context.Background())
 	defer cancel()
-	if err := cli.NewAPIClient(baseURL, "", cfg.Token).GetJSON(ctx, "/api/me", nil); err != nil {
+	var preflightErr error
+	if credential.Source == daemon.CredentialSourceProfile && !strings.HasPrefix(credential.Token, "ddt_") {
+		preflightErr = cli.NewAPIClient(baseURL, "", credential.Token).GetJSON(ctx, "/api/me", nil)
+	} else {
+		workspaceID := resolveWorkspaceID(cmd)
+		if workspaceID == "" {
+			return fmt.Errorf("refusing to restart: DARS_WORKSPACE_ID is required for Daemon Token auth; the running daemon was left untouched")
+		}
+		client := daemon.NewClient(baseURL)
+		client.SetToken(credential.Token)
+		var workspaces []daemon.WorkspaceInfo
+		workspaces, preflightErr = client.ListWorkspaces(ctx)
+		if preflightErr == nil {
+			preflightErr = validateDaemonWorkspaceScope(workspaces, workspaceID)
+		}
+	}
+	if preflightErr != nil {
 		var httpErr *cli.HTTPError
-		if errors.As(err, &httpErr) {
+		if errors.As(preflightErr, &httpErr) {
 			if httpErr.StatusCode == http.StatusUnauthorized {
 				return fmt.Errorf("refusing to restart: the server rejected your login token (it may have expired or been revoked); the running daemon was left untouched.\nRun '%s' to sign in again, then rerun 'dars daemon restart'", loginHint)
 			}
-			return fmt.Errorf("refusing to restart: preflight check against %s failed (%w); the running daemon was left untouched", baseURL, err)
+			return fmt.Errorf("refusing to restart: preflight check against %s failed (%w); the running daemon was left untouched", baseURL, preflightErr)
 		}
-		return fmt.Errorf("refusing to restart: cannot reach the DARS server at %s (%w); the running daemon was left untouched.\nMake sure the server is running and reachable, then rerun 'dars daemon restart'", baseURL, err)
+		return fmt.Errorf("refusing to restart: cannot reach the DARS server at %s (%w); the running daemon was left untouched.\nMake sure the server is running and reachable, then rerun 'dars daemon restart'", baseURL, preflightErr)
 	}
 	return nil
 }

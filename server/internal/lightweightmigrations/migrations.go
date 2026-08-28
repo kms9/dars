@@ -143,6 +143,9 @@ func Files(direction string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	if direction == "down" {
+		dir = filepath.Join(filepath.Dir(dir), "migrations_down")
+	}
 	files, err := filepath.Glob(filepath.Join(dir, "*."+direction+".sql"))
 	if err != nil {
 		return nil, err
